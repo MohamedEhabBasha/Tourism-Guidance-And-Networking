@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tourism-Guidance-And-Networking.Web", "Tourism-Guidance-And-Networking.Web\Tourism-Guidance-And-Networking.Web.csproj", "{FCFCD324-A198-451D-B268-6614C959C1BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tourism_Guidance_And_Networking.DataAccess", "Tourism_Guidance_And_Networking.DataAccess\Tourism_Guidance_And_Networking.DataAccess.csproj", "{84538398-EE43-49AA-8A6E-3CD457848D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tourism_Guidance_And_Networking.Core", "Tourism_Guidance_And_Networking.Core\Tourism_Guidance_And_Networking.Core.csproj", "{A753319C-1B0F-492C-BFF4-40D69DF63E06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCFCD324-A198-451D-B268-6614C959C1BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCFCD324-A198-451D-B268-6614C959C1BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCFCD324-A198-451D-B268-6614C959C1BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCFCD324-A198-451D-B268-6614C959C1BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84538398-EE43-49AA-8A6E-3CD457848D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84538398-EE43-49AA-8A6E-3CD457848D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84538398-EE43-49AA-8A6E-3CD457848D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84538398-EE43-49AA-8A6E-3CD457848D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A753319C-1B0F-492C-BFF4-40D69DF63E06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A753319C-1B0F-492C-BFF4-40D69DF63E06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A753319C-1B0F-492C-BFF4-40D69DF63E06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A753319C-1B0F-492C-BFF4-40D69DF63E06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02C88C29-A8C5-4029-BCD4-FE118BC61E8C}
+	EndGlobalSection
+EndGlobal
