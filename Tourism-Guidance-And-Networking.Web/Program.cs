@@ -1,11 +1,15 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Tourism_Guidance_And_Networking.Core.Helper;
 using Tourism_Guidance_And_Networking.Core.Interfaces;
 using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
-
+using Tourism_Guidance_And_Networking.Web.Services;
 
 namespace Tourism_Guidance_And_Networking.Web
 {
@@ -26,12 +30,35 @@ namespace Tourism_Guidance_And_Networking.Web
             options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+			builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
-            builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+				.AddJwtBearer(o =>
+				{
+					o.RequireHttpsMetadata = false;
+					o.SaveToken = false;
+					o.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuerSigningKey = true,
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidIssuer = builder.Configuration["JWT:Issuer"],
+						ValidAudience = builder.Configuration["JWT:Audience"],
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)),
+						ClockSkew = TimeSpan.Zero // do not give more time than expiration
+					};
+				});
+
+
 
             var app = builder.Build();
 
@@ -41,6 +68,8 @@ namespace Tourism_Guidance_And_Networking.Web
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

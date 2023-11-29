@@ -23,7 +23,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Services
 
         public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
-            _context.Set<T>().AddRange(entities);
+           await _context.Set<T>().AddRangeAsync(entities);
             return entities;
         }
         public T Update(T entity)
