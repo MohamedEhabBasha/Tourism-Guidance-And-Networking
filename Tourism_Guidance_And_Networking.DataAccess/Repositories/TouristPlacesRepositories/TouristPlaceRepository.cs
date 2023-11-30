@@ -22,7 +22,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
 
         public async Task<TouristPlace> CreateTouristPlace(TouristPlaceDTO touristPlaceDTO)
         {
-            string coverName = await SaveCover(touristPlaceDTO.ImagePath);
+            string coverName = SaveCover(touristPlaceDTO.ImagePath);
 
             TouristPlace touristPlace = new()
             {
@@ -41,7 +41,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<TouristPlace?> UpdateTouristPlace(TouristPlaceDTO touristPlaceDTO)
+        public TouristPlace? UpdateTouristPlace(TouristPlaceDTO touristPlaceDTO)
         {
             var touristPlace = _context.Tourists.SingleOrDefault(c => c.Id == touristPlaceDTO.Id);
 
@@ -57,7 +57,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
 
             if (hasNewCover)
             {
-                touristPlace.Image = await SaveCover(touristPlaceDTO.ImagePath!);
+                touristPlace.Image = SaveCover(touristPlaceDTO.ImagePath!);
                 equal = oldCover == touristPlace.Image;
             }
             if (!equal)
@@ -93,14 +93,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
 
             return true;
         }
-        private async Task<string> SaveCover(IFormFile cover)
+        private string SaveCover(IFormFile cover)
         {
             string coverName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
 
             string path = Path.Combine(_imagesPath, coverName);
 
             using var stream = File.Create(path);
-            await cover.CopyToAsync(stream);
+            cover.CopyToAsync(stream);
 
             return coverName;
         }
