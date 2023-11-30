@@ -22,5 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Tourism_Guidance_And_Networking.Core\Tourism_Guidance_And_Networking.Core.csproj" />
   </ItemGroup>
+    <ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿
-namespace Tourism_Guidance_And_Networking.DataAccess.Services
+namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
@@ -13,7 +13,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Services
         {
             return await _context.Set<T>().ToListAsync();
         }
-        public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public async Task<T?> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+
+        public T? GetById(int id) => _context.Set<T>().Find(id);
 
         public async Task<T> AddAsync(T entity)
         {
@@ -23,7 +25,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Services
 
         public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
-            _context.Set<T>().AddRange(entities);
+            await _context.Set<T>().AddRangeAsync(entities);
             return entities;
         }
         public T Update(T entity)
@@ -39,6 +41,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Services
         public void DeleteRange(IEnumerable<T> entities)
         {
             _context.Set<T>().RemoveRange(entities);
+        }
+        public bool Exist(int id)
+        {
+            var item = _context.Set<T>().Find(id);
+            if (item == null) return false;
+            return true;
         }
     }
 }
