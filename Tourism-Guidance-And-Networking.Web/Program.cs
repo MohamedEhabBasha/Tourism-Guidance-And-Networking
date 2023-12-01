@@ -1,12 +1,5 @@
 
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Tourism_Guidance_And_Networking.Core.Interfaces;
-using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
-using Tourism_Guidance_And_Networking.Core.Models;
-using Tourism_Guidance_And_Networking.DataAccess;
-using Tourism_Guidance_And_Networking.DataAccess.Data;
-using Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesRepositories;
+
 
 namespace Tourism_Guidance_And_Networking.Web
 {
@@ -32,8 +25,8 @@ namespace Tourism_Guidance_And_Networking.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-            builder.Services.AddScoped<ITouristPlaceRepository, TouristPlaceRepository>();
+          //  builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+          //  builder.Services.AddScoped<ITouristPlaceRepository, TouristPlaceRepository>();
 
             var app = builder.Build();
 

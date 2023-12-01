@@ -12,6 +12,6 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
         T Update(T entity);
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
-        bool Exist(int id)
+        bool Exist(int id);
     }
 }

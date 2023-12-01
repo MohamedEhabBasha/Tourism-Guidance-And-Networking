@@ -1,4 +1,5 @@
 ﻿
+
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class

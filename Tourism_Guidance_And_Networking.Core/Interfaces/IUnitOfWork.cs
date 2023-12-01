@@ -7,7 +7,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         ICategoryRepository Categories { get; }
-        ITouristPlaceRepository Tours { get; }
+        ITouristPlaceRepository TouristPlaces { get; }
         int Complete();
     }
 }

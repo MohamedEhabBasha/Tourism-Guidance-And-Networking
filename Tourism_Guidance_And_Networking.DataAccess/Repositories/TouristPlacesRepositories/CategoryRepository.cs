@@ -1,5 +1,4 @@
-﻿using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
-using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
+﻿
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesRepositories
 {
@@ -35,7 +34,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
         }
         public bool ExistByName(string name)
         {
-            return _context.Categories.Where(c => c.Name.Trim().ToLower() == name).FirstOrDefault() != null;
+            return _context.Categories.SingleOrDefault(c => c.Name.Trim().ToLower() == name) != null;
         }
     }
 }

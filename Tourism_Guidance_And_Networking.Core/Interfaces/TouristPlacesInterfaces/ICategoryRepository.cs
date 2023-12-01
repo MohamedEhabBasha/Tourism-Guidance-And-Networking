@@ -1,5 +1,4 @@
-﻿using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
-
+﻿
 namespace Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces
 {
     public interface ICategoryRepository : IBaseRepository<Category>

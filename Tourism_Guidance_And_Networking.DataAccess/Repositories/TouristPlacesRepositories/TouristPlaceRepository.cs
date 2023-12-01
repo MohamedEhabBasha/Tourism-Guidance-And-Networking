@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Tourism_Guidance_And_Networking.Core.Consts;
-using Tourism_Guidance_And_Networking.Core.DTOs;
-using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
-using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
+﻿
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesRepositories
 {

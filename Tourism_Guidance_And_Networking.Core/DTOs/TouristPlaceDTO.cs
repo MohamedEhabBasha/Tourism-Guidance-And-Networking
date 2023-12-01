@@ -1,9 +1,4 @@
 ﻿
-
-using Microsoft.AspNetCore.Http;
-using System.Runtime.CompilerServices;
-using Tourism_Guidance_And_Networking.Core.Consts;
-
 namespace Tourism_Guidance_And_Networking.Core.DTOs
 {
     public class TouristPlaceDTO : BaseDTO

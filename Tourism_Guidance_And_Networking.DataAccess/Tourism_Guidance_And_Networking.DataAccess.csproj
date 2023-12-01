@@ -17,10 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Tourism_Guidance_And_Networking.Core\Tourism_Guidance_And_Networking.Core.csproj" />
+	  <ProjectReference Include="..\Tourism_Guidance_And_Networking.Core\Tourism_Guidance_And_Networking.Core.csproj" />
   </ItemGroup>
     <ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
