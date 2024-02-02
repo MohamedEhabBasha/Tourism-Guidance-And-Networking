@@ -5,15 +5,22 @@ using Tourism_Guidance_And_Networking.Core.Consts;
 
 namespace Tourism_Guidance_And_Networking.Web.Controllers
 {
-	[Authorize(Roles =Roles.Admin)]
+	
 	[Route("api/[controller]")]
 	[ApiController]
 	public class SecuredController : ControllerBase
 	{
+		[Authorize(Roles = Roles.Admin)]
 		[HttpGet]
 		public IActionResult Get()
 		{
 			return Ok("Accessed Sucessfully");
+		}
+
+		[HttpGet("data")]
+		public IActionResult GetData()
+		{
+			return Ok("Data Returned");
 		}
 	}
 }
