@@ -1,0 +1,12 @@
+﻿global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Tourism_Guidance_And_Networking.Core.DTOs;
+global using Tourism_Guidance_And_Networking.Core.Interfaces;
+global using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
+global using Tourism_Guidance_And_Networking.DataAccess;
+global using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
+global using Tourism_Guidance_And_Networking.DataAccess.Data;
+global using Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesRepositories;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Tourism_Guidance_And_Networking.Core.Models;

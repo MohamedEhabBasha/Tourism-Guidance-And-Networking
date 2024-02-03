@@ -8,5 +8,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         {
 
         }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<TouristPlace> Tourists { get; set; }
     }
 }
