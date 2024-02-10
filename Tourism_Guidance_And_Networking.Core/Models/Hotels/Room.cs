@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
 {
     public class Room 
@@ -17,7 +19,7 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         public int Capicity { get; set; }
         [Required]
         public int HotelId { get; set; }
-
+        [JsonIgnore]
         public Hotel Hotel { get; set; } = default!;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Tourism_Guidance_And_Networking.Core.Models.TouristPlaces
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace Tourism_Guidance_And_Networking.Core.Models.TouristPlaces
 {
     public class TouristPlace : BaseEntity
     {
@@ -8,6 +10,7 @@
         [MaxLength(500)]
         public string Image { get; set; } = string.Empty;
         public int CategoryId { get; set; }
+        [ValidateNever]
         public Category Category { get; set; } = default!;
     }
 }

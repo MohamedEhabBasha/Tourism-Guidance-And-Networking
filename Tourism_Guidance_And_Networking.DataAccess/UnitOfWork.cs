@@ -18,7 +18,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             Categories = new CategoryRepository(_context);
             TouristPlaces = new TouristPlaceRepository(_context, webHost);
             Hotels = new HotelRepository(_context,webHost);
-            Rooms = new RoomRepository(_context);
+            Rooms = new RoomRepository(_context,webHost);
         }
 
         public int Complete()

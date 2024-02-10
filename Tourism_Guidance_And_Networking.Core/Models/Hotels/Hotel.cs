@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
 {
     public class Hotel : BaseEntity
@@ -12,7 +14,7 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
 
         [Required]
         public string Image { get; set; } = string.Empty;
-
+        [JsonIgnore]
         public ICollection<Room> Rooms { get; set; } = default!;
     }
 }

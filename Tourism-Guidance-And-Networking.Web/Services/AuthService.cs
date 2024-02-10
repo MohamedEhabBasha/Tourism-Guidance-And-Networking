@@ -111,8 +111,8 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 			await _userManager.AddToRoleAsync(user, Roles.Tourist); 
 			
 			var jwtSecurityToken = await CreateJwtToken(user);
-
-			return new AuthModel
+            var refreshToken = GenerateRefreshToken();
+            return new AuthModel
 			{
 				Email=user.Email,
 				Username = user.UserName,
@@ -120,7 +120,8 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 				Message = "Successfully Registered",
 				Roles = new List<string> { Roles.Tourist },
 				Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-				//ExpiresOn = jwtSecurityToken.ValidTo
+				RefreshToken = refreshToken.Token,
+				RefrshTokenExpiration = refreshToken.ExpiresOn,
 			};
 
 		}
