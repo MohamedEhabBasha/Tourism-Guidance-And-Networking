@@ -46,7 +46,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(hotel);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateHotel(HotelDTO hotelDTO)
+        public async Task<IActionResult> CreateHotel([FromForm]HotelDTO hotelDTO)
         {
             if (hotelDTO == null)
                 return BadRequest(ModelState);

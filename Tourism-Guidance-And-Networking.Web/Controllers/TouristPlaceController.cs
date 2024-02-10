@@ -60,7 +60,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         }
 
         [HttpPost("touristplace")]
-        public async Task<IActionResult> CreateTouristPlace(TouristPlaceDTO touristPlaceDTO)
+        public async Task<IActionResult> CreateTouristPlace([FromForm]TouristPlaceDTO touristPlaceDTO)
         {
             if (touristPlaceDTO == null)
                 return BadRequest(ModelState);

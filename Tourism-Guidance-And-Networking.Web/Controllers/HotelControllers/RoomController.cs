@@ -62,7 +62,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(rooms);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(RoomDTO roomDTO)
+        public async Task<IActionResult> CreateRoom([FromForm] RoomDTO roomDTO)
         {
             if (roomDTO == null)
                 return BadRequest(ModelState);
