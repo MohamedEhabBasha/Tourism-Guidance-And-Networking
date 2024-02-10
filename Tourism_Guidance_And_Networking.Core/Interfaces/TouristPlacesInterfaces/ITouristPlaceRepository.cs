@@ -6,7 +6,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterface
     {
         Task<TouristPlace> CreateTouristPlace(TouristPlaceDTO touristPlaceDTO);
         Task<ICollection<TouristPlace>> SearchByName(string name);
-        TouristPlace? UpdateTouristPlace(TouristPlaceDTO touristPlaceDTO);
+        Task<TouristPlace?> UpdateTouristPlace(TouristPlaceDTO touristPlaceDTO);
 
         bool DeleteTouristPlace(int id);
     }

@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="WWWroot\images\HotelImages\" />
     <Folder Include="WWWroot\images\TouristPlaceImages\" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>

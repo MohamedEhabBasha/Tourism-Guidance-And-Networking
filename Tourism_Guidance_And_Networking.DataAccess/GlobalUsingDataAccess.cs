@@ -14,3 +14,4 @@ global using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
 global using Tourism_Guidance_And_Networking.Core.Interfaces;
 global using Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesRepositories;
 global using Tourism_Guidance_And_Networking.Core.Models;
+global using Tourism_Guidance_And_Networking.Core.Models.Hotels;

@@ -49,5 +49,16 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
             if (item == null) return false;
             return true;
         }
+        public async Task<string> SaveCover(IFormFile cover, string _imagesPath)
+        {
+            string coverName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
+
+            string path = Path.Combine(_imagesPath, coverName);
+
+            using var stream = File.Create(path);
+            await cover.CopyToAsync(stream);
+
+            return coverName;
+        }
     }
 }

@@ -10,7 +10,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
         {
             _context = context;
         }
-
+        public async Task<Category> GetCategoryByNameAsync(string name)
+        {
+            return await _context.Categories
+                    .AsNoTracking()
+                    .SingleAsync(c => c.Name == name);
+        }
         public async Task<ICollection<TouristPlace>> GetTouristPlacesByIdAsync(int categoryId)
         {
             return await _context.Tourists

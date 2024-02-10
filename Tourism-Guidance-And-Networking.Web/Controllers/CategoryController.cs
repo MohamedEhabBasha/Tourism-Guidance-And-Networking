@@ -21,10 +21,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             return Ok(categories);
         }
-        [HttpGet("categories/{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var category = await _unitOfWork.Categories.GetByIdAsync(id);
+
+            if (!ModelState.IsValid || category is null)
+                return BadRequest(ModelState);
+
+            return Ok(category);
+        }
+        [HttpGet("categoryName")]
+        public async Task<IActionResult> GetCategoryByName(string name)
+        {
+            var category = await _unitOfWork.Categories.GetCategoryByNameAsync(name);
 
             if (!ModelState.IsValid || category is null)
                 return BadRequest(ModelState);
