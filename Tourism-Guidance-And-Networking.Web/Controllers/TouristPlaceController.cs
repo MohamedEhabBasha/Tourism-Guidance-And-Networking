@@ -1,4 +1,7 @@
 ﻿
+using Tourism_Guidance_And_Networking.Core.DTOs;
+using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+
 namespace Tourism_Guidance_And_Networking.Web.Controllers
 {
     [Route("api/[controller]")]
@@ -62,7 +65,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpPost("touristplace")]
         public async Task<IActionResult> CreateTouristPlace([FromForm]TouristPlaceDTO touristPlaceDTO)
         {
-            if (touristPlaceDTO == null)
+            if (touristPlaceDTO == null || !_unitOfWork.Categories.Exist(touristPlaceDTO.CategoryId))
                 return BadRequest(ModelState);
 
             /*if (_unitOfWork.Categories.ExistByName(category.Name.Trim().ToLower()))
@@ -89,7 +92,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpPut("{touristplaceId:int}")]
         public IActionResult UpdateTouristPlace([FromRoute] int touristplaceId, [FromForm] TouristPlaceDTO updatedTouristPlace)
         {
-            if (updatedTouristPlace == null)
+            if (updatedTouristPlace == null || !_unitOfWork.Categories.Exist(updatedTouristPlace.CategoryId))
                 return BadRequest(ModelState);
 
             if (!_unitOfWork.TouristPlaces.Exist(touristplaceId))
