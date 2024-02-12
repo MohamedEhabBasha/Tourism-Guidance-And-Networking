@@ -10,7 +10,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<ICollection<Room>> SearchRoomByNameAsync(string name);
         Task<Room> CreateRoomAsync(RoomDTO roomlDTO);
 
-        Task<Room?> UpdateRoom(RoomDTO roomDTO);
+        Task<Room?> UpdateRoom(int roomId, RoomDTO roomDTO);
 
         bool DeleteRoom(int id);
         bool TypeExist(string type);

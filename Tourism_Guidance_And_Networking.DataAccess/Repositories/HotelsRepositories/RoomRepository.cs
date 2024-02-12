@@ -40,9 +40,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return await AddAsync(room);
         }
-        public async Task<Room?> UpdateRoom(RoomDTO roomDTO)
+        public async Task<Room?> UpdateRoom(int roomId,RoomDTO roomDTO)
         {
-            var room = _context.Rooms.SingleOrDefault(c => c.Id == roomDTO.Id);
+            var room = _context.Rooms.SingleOrDefault(c => c.Id == roomId);
             if (room is null) { return null; }
 
             bool hasNewCover = roomDTO.ImagePath is not null;

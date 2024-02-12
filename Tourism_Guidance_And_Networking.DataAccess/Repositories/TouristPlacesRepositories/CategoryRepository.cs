@@ -32,8 +32,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
         }
         public async Task<ICollection<TouristPlace>> GetTouristPlacesByName(string name)
         {
+            Category category = await GetCategoryByNameAsync(name);
             return await _context.Tourists
-                .Where(c => c.Name == name)
+                .Where(c => c.CategoryId == category.Id)
                 .AsNoTracking()
                 .ToListAsync();
         }

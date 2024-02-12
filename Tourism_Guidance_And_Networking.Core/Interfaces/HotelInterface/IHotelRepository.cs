@@ -15,7 +15,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
 
         Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO);
 
-        Task<Hotel?> UpdateHotel(HotelDTO hotelDTO);
+        Task<Hotel?> UpdateHotel(int hotelId, HotelDTO hotelDTO);
 
         bool DeleteHotel(int id);
     }

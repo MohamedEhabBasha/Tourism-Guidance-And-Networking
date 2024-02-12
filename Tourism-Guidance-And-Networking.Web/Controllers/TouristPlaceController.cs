@@ -87,7 +87,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         }
 
         [HttpPut("{touristplaceId:int}")]
-        public IActionResult UpdateTouristPlace([FromRoute] int touristplaceId, [FromBody] TouristPlaceDTO updatedTouristPlace)
+        public IActionResult UpdateTouristPlace([FromRoute] int touristplaceId, [FromForm] TouristPlaceDTO updatedTouristPlace)
         {
             if (updatedTouristPlace == null)
                 return BadRequest(ModelState);
@@ -100,7 +100,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             var touristplace =  _unitOfWork.TouristPlaces.GetById(touristplaceId);
 
-            _unitOfWork.TouristPlaces.UpdateTouristPlace(updatedTouristPlace);
+            _unitOfWork.TouristPlaces.UpdateTouristPlace(touristplaceId,updatedTouristPlace);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -108,7 +108,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            updatedTouristPlace.Id = touristplace!.Id;
+           // updatedTouristPlace.Id = touristplace!.Id;
 
             return Ok(updatedTouristPlace);
         }

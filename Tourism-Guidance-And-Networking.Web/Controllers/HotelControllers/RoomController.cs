@@ -80,7 +80,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return StatusCode(201, room);
         }
         [HttpPut("{roomId:int}")]
-        public async Task<IActionResult> UpdateRoom([FromRoute] int roomId, [FromBody] RoomDTO roomDTO)
+        public async Task<IActionResult> UpdateRoom([FromRoute] int roomId, [FromForm] RoomDTO roomDTO)
         {
             if (roomDTO == null)
                 return BadRequest(ModelState);
@@ -93,7 +93,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             var room = _unitOfWork.Rooms.GetById(roomId);
 
-            await _unitOfWork.Rooms.UpdateRoom(roomDTO);
+            await _unitOfWork.Rooms.UpdateRoom(roomId,roomDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -101,7 +101,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 return StatusCode(500, ModelState);
             }
 
-            roomDTO.Id = room!.Id;
+          //  roomDTO.Id = room!.Id;
 
             return Ok(room);
         }

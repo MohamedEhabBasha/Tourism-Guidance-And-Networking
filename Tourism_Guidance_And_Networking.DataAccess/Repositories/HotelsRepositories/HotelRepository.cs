@@ -55,9 +55,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return await AddAsync(hotel);
         }
-        public async Task<Hotel?> UpdateHotel(HotelDTO hotelDTO)
+        public async Task<Hotel?> UpdateHotel(int hotelId,HotelDTO hotelDTO)
         {
-            var hotel = _context.Hotels.SingleOrDefault(c => c.Id == hotelDTO.Id);
+            var hotel = _context.Hotels.SingleOrDefault(c => c.Id == hotelId);
             if (hotel is null) { return null; }
 
             bool hasNewCover = hotelDTO.ImagePath is not null;

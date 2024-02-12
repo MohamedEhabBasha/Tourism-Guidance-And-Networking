@@ -36,9 +36,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<TouristPlace?> UpdateTouristPlace(TouristPlaceDTO touristPlaceDTO)
+        public async Task<TouristPlace?> UpdateTouristPlace(int touristId,TouristPlaceDTO touristPlaceDTO)
         {
-            var touristPlace = _context.Tourists.SingleOrDefault(c => c.Id == touristPlaceDTO.Id);
+            var touristPlace = _context.Tourists.SingleOrDefault(c => c.Id == touristId);
 
             if (touristPlace is null) { return null; }
 
