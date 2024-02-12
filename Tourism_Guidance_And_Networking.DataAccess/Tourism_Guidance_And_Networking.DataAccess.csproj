@@ -19,7 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
 	  <ProjectReference Include="..\Tourism_Guidance_And_Networking.Core\Tourism_Guidance_And_Networking.Core.csproj" />
   </ItemGroup>
     <ItemGroup>
