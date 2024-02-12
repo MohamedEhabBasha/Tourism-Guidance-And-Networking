@@ -19,7 +19,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         public Task<Company> GetCompanyByNameAsync(string name)
         {
             throw new NotImplementedException();
-        }
+        } 
         public Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
         {
             throw new NotImplementedException();
