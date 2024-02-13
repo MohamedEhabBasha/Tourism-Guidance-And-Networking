@@ -1,5 +1,7 @@
 ﻿
 
+using System.Linq.Expressions;
+
 namespace Tourism_Guidance_And_Networking.Core.Interfaces
 {
     public interface IBaseRepository<T> where T : class
@@ -14,5 +16,10 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
         void DeleteRange(IEnumerable<T> entities);
         bool Exist(int id);
         Task<string> SaveCover(IFormFile cover, string _imagesPath);
+
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> critera, string[] includes = null);
+        Task<T> FindAsync(Expression<Func<T, bool>> critera, string[] includes = null);
+
+
     }
 }

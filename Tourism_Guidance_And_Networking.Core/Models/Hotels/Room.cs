@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.Text.Json.Serialization;
 
 namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
@@ -22,7 +23,9 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         public int Count { get; set; }
         [Required]
         public int HotelId { get; set; }
+        public bool IsReserved { get; set; } = false;
         [JsonIgnore]
+        [ValidateNever]
         public Hotel Hotel { get; set; } = default!;
     }
 }

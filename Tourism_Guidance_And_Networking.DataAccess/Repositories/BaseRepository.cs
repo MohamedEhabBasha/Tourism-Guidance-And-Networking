@@ -1,5 +1,8 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
@@ -60,5 +63,32 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
 
             return coverName;
         }
+
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> critera, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.Where(critera).ToListAsync();
+        }
+
+        public async Task<T> FindAsync(Expression<Func<T, bool>> critera, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.FirstOrDefaultAsync(critera);
+        }
+
     }
 }
