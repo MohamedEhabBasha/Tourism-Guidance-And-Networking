@@ -11,7 +11,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public ITouristPlaceRepository TouristPlaces { get; private set; }
         public IHotelRepository Hotels { get; private set; } 
         public IRoomRepository Rooms { get; private set; }
-
+        public ICompanyRepository Companies { get; private set; }
+        public IAccommodationRepository Accommodations { get; private set; }
         public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost)
         {
             _context = context;
@@ -19,6 +20,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             TouristPlaces = new TouristPlaceRepository(_context, webHost);
             Hotels = new HotelRepository(_context,webHost);
             Rooms = new RoomRepository(_context,webHost);
+            Companies = new CompanyRepository(_context,webHost);
+            Accommodations = new AccommodationRepository(_context,webHost);
         }
 
         public int Complete()

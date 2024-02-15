@@ -61,7 +61,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
             using var stream = File.Create(path);
             await cover.CopyToAsync(stream);
 
-            return coverName;
+            return path;
         }
 
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> critera, string[] includes = null)

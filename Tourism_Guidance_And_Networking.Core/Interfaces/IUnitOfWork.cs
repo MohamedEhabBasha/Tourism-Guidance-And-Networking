@@ -11,6 +11,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
        public ITouristPlaceRepository TouristPlaces { get; }
        public IHotelRepository Hotels { get; }
        public IRoomRepository Rooms { get; }
+        public ICompanyRepository Companies { get; }
+       public IAccommodationRepository Accommodations { get; }
         int Complete();
     }
 }

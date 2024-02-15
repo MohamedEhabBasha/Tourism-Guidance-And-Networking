@@ -1,7 +1,5 @@
 ﻿
 
-using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
-using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
@@ -16,22 +14,87 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _webHostEnvironment = webHostEnvironment;
             _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettings.companyImagesPath}";
         }
-        public Task<Company> GetCompanyByNameAsync(string name)
+        public async Task<Company?> GetCompanyByNameAsync(string name)
         {
-            throw new NotImplementedException();
+            Company? company = await _context.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
+
+            if (company is null)
+                return null;
+            return company;
         } 
-        public Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
+        public async Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
         {
-            throw new NotImplementedException();
+            string coverName = await SaveCover(companyDTO.ImagePath, _imagesPath);
+
+            Company company = new()
+            {
+                Name = companyDTO.Name,
+                Address = companyDTO.Address,
+                Rating = companyDTO.Rating,
+                Reviews = companyDTO.Reviews,
+                Image = coverName
+            };
+
+            return await AddAsync(company);
         }
-        public Task<Company?> UpdateCompany(int companyId, CompanyDTO companyDTO)
+        public async Task<Company?> UpdateCompany(int companyId, CompanyDTO companyDTO)
         {
-            throw new NotImplementedException();
+            var company = _context.Companies.SingleOrDefault(c => c.Id == companyId);
+            if (company is null) { return null; }
+
+            bool hasNewCover = companyDTO.ImagePath is not null;
+            bool equal = Equal(company, companyDTO);
+            var oldCover = company.Image;
+
+            company.Name = companyDTO.Name;
+            company.Address = companyDTO.Address;
+            company.Rating = companyDTO.Rating;
+            company.Reviews = companyDTO.Reviews;
+
+            if (hasNewCover)
+            {
+                company.Image = await SaveCover(companyDTO.ImagePath!, _imagesPath);
+                equal = oldCover == company.Image;
+            }
+            if (!equal)
+            {
+                if (hasNewCover)
+                {
+                    var cover = Path.Combine(_imagesPath, oldCover);
+                    File.Delete(cover);
+                }
+
+                return company;
+            }
+            else
+            {
+                //var cover = Path.Combine(_imagesPath, touristPlace.Image);
+                //File.Delete(cover);
+
+                return company;
+            }
         }
         public bool DeleteCompany(int id)
         {
-            throw new NotImplementedException();
-        }
+            var company = _context.Companies.SingleOrDefault(c => c.Id == id);
 
+            if (company == null)
+            {
+                return false;
+            }
+            var cover = Path.Combine(_imagesPath, company.Image);
+            File.Delete(cover);
+
+            Delete(company);
+
+            return true;
+        }
+        private static bool Equal(Company company, CompanyDTO companyDTO)
+        {
+            if (company.Name != companyDTO.Name || company.Address != companyDTO.Address ||
+                company.Rating != companyDTO.Rating || company.Reviews != companyDTO.Reviews)
+                return false;
+            return true;
+        }
     }
 }

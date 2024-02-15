@@ -15,5 +15,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Company> Companies { get; set; }
+
+        public DbSet<Accommodation> Accommodations { get; set;}
     }
 }
