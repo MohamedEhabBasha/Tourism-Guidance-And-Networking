@@ -108,7 +108,29 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 				return new AuthModel { Message = errors };
 			}
 
-			await _userManager.AddToRoleAsync(user, Roles.Tourist); 
+            //create roles if they are not created
+            if (!_roleManager.RoleExistsAsync(Roles.Admin).GetAwaiter().GetResult())
+            {
+                _roleManager.CreateAsync(new IdentityRole(Roles.Admin)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(Roles.Tourist)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(Roles.Company)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(Roles.Hotel)).GetAwaiter().GetResult();
+
+				ApplicationUser userAdmin = new ApplicationUser()
+				{
+					UserName = "admin@gmail.com",
+					Email = "admin@gmail.com",
+					FirstName = "Anton",
+					LastName = "Samoel",
+					PhoneNumber = "1112223333",
+				};
+				
+                await _userManager.CreateAsync(userAdmin,"Admin@2001");
+                _userManager.AddToRoleAsync(userAdmin, Roles.Admin).GetAwaiter().GetResult();
+
+            }
+
+            await _userManager.AddToRoleAsync(user, Roles.Tourist); 
 			
 			var jwtSecurityToken = await CreateJwtToken(user);
             var refreshToken = GenerateRefreshToken();

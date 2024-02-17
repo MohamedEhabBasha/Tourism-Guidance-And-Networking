@@ -1,5 +1,7 @@
 ﻿
+using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
+using Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories;
 
 namespace Tourism_Guidance_And_Networking.DataAccess
@@ -11,6 +13,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public ITouristPlaceRepository TouristPlaces { get; private set; }
         public IHotelRepository Hotels { get; private set; } 
         public IRoomRepository Rooms { get; private set; }
+        public IReservationRepository Reservations { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost)
         {
@@ -19,6 +22,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             TouristPlaces = new TouristPlaceRepository(_context, webHost);
             Hotels = new HotelRepository(_context,webHost);
             Rooms = new RoomRepository(_context,webHost);
+            Reservations = new ReservationRepository(_context);
         }
 
         public int Complete()

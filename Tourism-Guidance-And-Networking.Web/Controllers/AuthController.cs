@@ -52,7 +52,6 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 			return Ok(result);
 
 		}
-		[Authorize(Roles =Roles.Admin)]
 		[HttpPost("addRole")]
 		public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleModel model)
 		{
@@ -67,7 +66,21 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 			return Ok("User Assigned Successfullly");
 		}
 
-		[HttpGet("refreshToken")]
+        [HttpPost("addRolett")]
+        public async Task<IActionResult> AddRoleToDbAsync([FromBody] AddRoleModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.AddRoleAsync(model);
+
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest(result);
+
+            return Ok("User Assigned Successfullly");
+        }
+
+        [HttpGet("refreshToken")]
 		public async Task<IActionResult> RefreshToken()
 		{
 			var refreshToken = Request.Cookies["refreshToken"];

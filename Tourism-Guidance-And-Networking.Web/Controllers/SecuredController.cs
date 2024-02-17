@@ -17,6 +17,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 			return Ok("Accessed Sucessfully");
 		}
 
+		[Authorize]
 		[HttpGet("data")]
 		public IActionResult GetData()
 		{
