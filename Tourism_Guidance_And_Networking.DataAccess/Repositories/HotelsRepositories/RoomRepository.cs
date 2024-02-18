@@ -35,7 +35,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                  Info = roomDTO.Info,
                  Capicity = roomDTO.Capicity,
                  HotelId = roomDTO.HotelId,
-                 Image = coverName
+                 Image = coverName,
+                 Count = roomDTO.Count,
             };
 
             return await AddAsync(room);

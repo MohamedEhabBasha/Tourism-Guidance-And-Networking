@@ -9,21 +9,24 @@ using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
 namespace Tourism_Guidance_And_Networking.Core.Models.Bookings
 {
-    public class Reservation
+    public class BookingDetail
     {
         public int Id { get; set; }
-        [Range(1, 1000, ErrorMessage = "Only value between 1 and 1000 is allowed")]
-        public int Count { get; set; }
+        [Required]
+        public int BookingHeaderId { get; set; }
+        [ForeignKey("BookingHeaderId")]
+        [ValidateNever]
+        [JsonIgnore]
+        public BookingHeader BookingHeader { get; set; }
         public int? AccommodationId { get; set; } = null;
         [ValidateNever]
+        [JsonIgnore]
         public Accommodation Accommodation { get; set; }
         public int? RoomId { get; set; } = null;
         [ValidateNever]
-        public Room Room { get; set; }
-        public string ApplicationUserId { get; set; }
-        [ValidateNever]
         [JsonIgnore]
-        public ApplicationUser ApplicationUser { get; set; }
+        public Room Room { get; set; }
+        public int Count { get; set; }
         public double Price { get; set; }
     }
 }

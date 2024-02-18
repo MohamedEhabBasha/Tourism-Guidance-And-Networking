@@ -1,9 +1,9 @@
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using System.Text;
 using Tourism_Guidance_And_Networking.Core.Helper;
 using Tourism_Guidance_And_Networking.Core.Interfaces;
@@ -11,7 +11,6 @@ using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 using Tourism_Guidance_And_Networking.Web.Services;
-
 namespace Tourism_Guidance_And_Networking.Web
 {
     public class Program
@@ -73,11 +72,12 @@ namespace Tourism_Guidance_And_Networking.Web
                 builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-
+            builder.Services.AddMvc();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -111,10 +111,12 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseSwaggerUI();
             //}
 
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
+
             app.UseAuthentication();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

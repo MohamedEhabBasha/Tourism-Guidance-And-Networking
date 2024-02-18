@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Tourism_Guidance_And_Networking.DataAccess.Data;
 namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240215221336_makeAcomdationIdAndRoomIdNullable")]
+    partial class makeAcomdationIdAndRoomIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,7 +288,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("BookingDate")
+                    b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("BookingStatus")
@@ -294,7 +297,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     b.Property<double>("BookingTotalPrice")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("CompleteDate")
+                    b.Property<DateTime>("CompleteDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -305,7 +308,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PaymentDate")
+                    b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentIntentId")

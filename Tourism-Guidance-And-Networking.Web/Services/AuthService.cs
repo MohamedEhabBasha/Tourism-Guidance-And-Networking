@@ -95,6 +95,8 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 				FirstName = model.FirstName,
 				LastName = model.LastName,
 				UserName=model.Username,
+				Address = model.Address,
+				PhoneNumber = model.PhoneNumber,
 			};
 
 			var result = await _userManager.CreateAsync(user,model.Password);
@@ -152,7 +154,7 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 				issuer: _jwt.Issuer,
 				audience: _jwt.Audience,
 				claims: claims,
-				expires: DateTime.Now.AddMinutes(_jwt.DurationInMinutes),
+				expires: DateTime.Now.AddHours(_jwt.DurationInHours),
 				signingCredentials: signingCredentials);
 
 			return jwtSecurityToken;

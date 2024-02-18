@@ -12,6 +12,8 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
         [Required]
         public double Price { get; set; }
         [Required]
+        public int Count { get; set; }
+        [Required]
         public double Taxes { get; set; }
         [Required]
         public string Info { get; set; } = string.Empty;

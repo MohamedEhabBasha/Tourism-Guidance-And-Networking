@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Tourism_Guidance_And_Networking.DataAccess.Data;
 namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240215132841_addBookingDetailAndBookingHeader")]
+    partial class addBookingDetailAndBookingHeader
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,6 +247,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AccommodationId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("BookingHeaderId")
@@ -256,6 +260,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .HasColumnType("float");
 
                     b.Property<int?>("RoomId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -285,7 +290,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("BookingDate")
+                    b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("BookingStatus")
@@ -294,18 +299,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     b.Property<double>("BookingTotalPrice")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("CompleteDate")
+                    b.Property<DateTime>("CompleteDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PaymentDate")
+                    b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentIntentId")
@@ -675,7 +676,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                 {
                     b.HasOne("Tourism_Guidance_And_Networking.Core.Models.Hotels.Accommodation", "Accommodation")
                         .WithMany()
-                        .HasForeignKey("AccommodationId");
+                        .HasForeignKey("AccommodationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Tourism_Guidance_And_Networking.Core.Models.Bookings.BookingHeader", "BookingHeader")
                         .WithMany()
@@ -685,7 +688,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasOne("Tourism_Guidance_And_Networking.Core.Models.Hotels.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Accommodation");
 
