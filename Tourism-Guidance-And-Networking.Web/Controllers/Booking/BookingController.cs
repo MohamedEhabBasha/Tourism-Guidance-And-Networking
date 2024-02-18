@@ -52,6 +52,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             return Ok(bookingsDb);
         }
 
+
         [HttpGet("getBookingsOfUser")]
         public async Task<IActionResult> GetBookingsOfUser([FromQuery] string status)
         {
