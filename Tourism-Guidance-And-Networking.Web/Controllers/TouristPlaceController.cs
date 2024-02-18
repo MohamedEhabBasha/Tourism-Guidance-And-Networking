@@ -119,7 +119,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpDelete("{touristplaceId:int}")]
         public IActionResult DeleteTouristPlace([FromRoute] int touristplaceId)
         {
-            if (!_unitOfWork.Categories.Exist(touristplaceId))
+            if (!_unitOfWork.TouristPlaces.Exist(touristplaceId))
                 return NotFound();
 
             if (!ModelState.IsValid)
