@@ -124,8 +124,6 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-
             _unitOfWork.TouristPlaces.DeleteTouristPlace(touristplaceId!);
 
             if (!(_unitOfWork.Complete() > 0))
