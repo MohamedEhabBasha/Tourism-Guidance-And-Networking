@@ -14,9 +14,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                 name: "FK_Accommodation_Companies_CompanyId",
                 table: "Accommodation");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Accommodation",
-                table: "Accommodation");
+            //migrationBuilder.DropPrimaryKey(
+            //    name: "PK_Accommodation",
+            //    table: "Accommodation");
 
             migrationBuilder.RenameTable(
                 name: "Accommodation",
@@ -27,10 +27,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                 table: "Accommodations",
                 newName: "IX_Accommodations_CompanyId");
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Accommodations",
-                table: "Accommodations",
-                column: "Id");
+            //migrationBuilder.AddPrimaryKey(
+            //    name: "PK_Accommodations",
+            //    table: "Accommodations",
+            //    column: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Accommodations_Companies_CompanyId",

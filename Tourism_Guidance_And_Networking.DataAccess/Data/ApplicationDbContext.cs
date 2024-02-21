@@ -19,8 +19,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<BookingDetail> BookingDetails { get; set; }
         public DbSet<BookingHeader> BookingHeaders { get; set; }
-
-
         public DbSet<Accommodation> Accommodations { get; set;}
     }
 }
