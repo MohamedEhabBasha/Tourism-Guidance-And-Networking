@@ -12,8 +12,8 @@ using Tourism_Guidance_And_Networking.DataAccess.Data;
 namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240217140440_MakeDatesOfBookingHeaderNullable")]
-    partial class MakeDatesOfBookingHeaderNullable
+    [Migration("20240228175638_fixAllConflicts")]
+    partial class fixAllConflicts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -421,7 +421,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Accommodation");
+                    b.ToTable("Accommodations");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Company", b =>

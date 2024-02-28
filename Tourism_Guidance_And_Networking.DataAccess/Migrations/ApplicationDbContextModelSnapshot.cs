@@ -266,7 +266,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("BookingDetails", (string)null);
+                    b.ToTable("BookingDetails");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Bookings.BookingHeader", b =>
@@ -325,7 +325,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("BookingHeaders", (string)null);
+                    b.ToTable("BookingHeaders");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Bookings.Reservation", b =>
@@ -360,7 +360,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Accommodation", b =>
@@ -418,7 +418,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Accommodation", (string)null);
+                    b.ToTable("Accommodations");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Company", b =>
@@ -451,7 +451,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Hotel", b =>
@@ -484,7 +484,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hotels", (string)null);
+                    b.ToTable("Hotels");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Room", b =>
@@ -530,7 +530,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("HotelId");
 
-                    b.ToTable("Rooms", (string)null);
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.TouristPlaces.Category", b =>
@@ -548,7 +548,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.TouristPlaces.TouristPlace", b =>
@@ -580,7 +580,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Tourists", (string)null);
+                    b.ToTable("Tourists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -636,7 +636,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.ApplicationUser", b =>
                 {
-                    b.OwnsMany("Tourism_Guidance_And_Networking.Core.Models.ApplicationUser.RefreshTokens#Tourism_Guidance_And_Networking.Core.Models.Authentication.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("Tourism_Guidance_And_Networking.Core.Models.Authentication.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -662,7 +662,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");
