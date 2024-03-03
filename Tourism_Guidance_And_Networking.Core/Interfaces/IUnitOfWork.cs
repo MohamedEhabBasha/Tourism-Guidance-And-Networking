@@ -2,6 +2,7 @@
 
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
+using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
 
 namespace Tourism_Guidance_And_Networking.Core.Interfaces
@@ -18,6 +19,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
        public IApplicationUserRepository ApplicationUsers { get; }
        public IBookingDetailRepository BookingDetails { get; }
        public IBookingHeaderRepository BookingHeaders { get; }
+        public IPrivateChatRepository PrivateChats { get; }
+        public IMessageRepository Messages { get; }
         int Complete();
     }
 }

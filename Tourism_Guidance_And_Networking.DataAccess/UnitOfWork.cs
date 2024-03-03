@@ -1,9 +1,11 @@
 ﻿
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
+using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories;
+using Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories;
 
 namespace Tourism_Guidance_And_Networking.DataAccess
 {
@@ -21,6 +23,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
 
         public ICompanyRepository Companies { get; private set; }
         public IAccommodationRepository Accommodations { get; private set; }
+        public IMessageRepository Messages { get; private set; }
+        public IPrivateChatRepository PrivateChats { get; private set; }
         public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost)
         {
             _context = context;
@@ -34,6 +38,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             ApplicationUsers = new ApplicationUserRepository(_context);
             BookingHeaders = new BookingHeaderRepository(_context);
             BookingDetails = new BookingDetailRepository(_context);
+            PrivateChats = new PrivateChatRepository(_context);
+            Messages = new MessageRepository(_context);
         }
 
         public int Complete()

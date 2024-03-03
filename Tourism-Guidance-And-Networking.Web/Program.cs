@@ -11,6 +11,7 @@ using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 using Tourism_Guidance_And_Networking.Web.Services;
+using Tourism_Guidance_And_Networking.Web.Services.Hubs;
 namespace Tourism_Guidance_And_Networking.Web
 {
     public class Program
@@ -100,7 +101,8 @@ namespace Tourism_Guidance_And_Networking.Web
                     };
                 });
 
-
+            // Hubs
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -119,6 +121,9 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // Hubs
+            app.MapHub<ChatHub>("/services/hubs/chathub");
 
             app.Run();
         }
