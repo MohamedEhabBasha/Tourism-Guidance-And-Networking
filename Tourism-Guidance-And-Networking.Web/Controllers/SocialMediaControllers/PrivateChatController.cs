@@ -25,6 +25,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (privateChatDTO is null || privateChatDTO.SenderEmail is null || privateChatDTO.ReceiverEmail is null)
                 return BadRequest();
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var sender = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Email == privateChatDTO.SenderEmail);
             var receiver = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Email == privateChatDTO.ReceiverEmail);
 
@@ -40,6 +43,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                     SenderId = sender.Id,
                     ReceiverId = receiver.Id
                 };
+
+                Contact contact = new()
+                {
+                    AppUserId = sender.Id,
+                    AppFriendId = receiver.Id
+                };
+
+                await _unitOfWork.UserProfiles.CreateContact(contact);
 
                 await _unitOfWork.PrivateChats.AddAsync(privateChat);
 

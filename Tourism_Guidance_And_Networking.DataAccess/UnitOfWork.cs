@@ -25,6 +25,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IAccommodationRepository Accommodations { get; private set; }
         public IMessageRepository Messages { get; private set; }
         public IPrivateChatRepository PrivateChats { get; private set; }
+        public IUserProfileRepository UserProfiles { get; private set; }
         public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost)
         {
             _context = context;
@@ -40,6 +41,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             BookingDetails = new BookingDetailRepository(_context);
             PrivateChats = new PrivateChatRepository(_context);
             Messages = new MessageRepository(_context);
+            UserProfiles = new UserProfileRepository(_context);
         }
 
         public int Complete()

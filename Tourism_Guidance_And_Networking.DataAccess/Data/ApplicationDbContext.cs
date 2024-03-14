@@ -23,5 +23,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<Accommodation> Accommodations { get; set;}
         public DbSet<PrivateChat> PrivateChats { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Friend> Friends { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
     }
 }

@@ -21,6 +21,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
        public IBookingHeaderRepository BookingHeaders { get; }
         public IPrivateChatRepository PrivateChats { get; }
         public IMessageRepository Messages { get; }
+
+        public IUserProfileRepository UserProfiles { get; }
         int Complete();
     }
 }
