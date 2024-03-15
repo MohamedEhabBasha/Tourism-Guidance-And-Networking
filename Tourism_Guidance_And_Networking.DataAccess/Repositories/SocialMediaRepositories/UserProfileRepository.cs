@@ -1,5 +1,7 @@
 ﻿
+using Microsoft.Identity.Client;
 using System.Linq.Expressions;
+using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 
@@ -65,7 +67,30 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             }
             return users;
         }
+        public async Task<UserProfileDTO> GetUserProfileDTOAsync(string id)
+        {
+            var user = await _context.Users.SingleAsync(x=> x.Id == id);
+            UserDTO userDTO = new()
+            {
+                FirstName = user.FirstName, LastName = user.LastName, Address = user.Address, Email = user.Email!
+            };
+            var friends = await GetAllFriends(id);
 
+            UserProfileDTO userProfileDTO = new() { 
+                User = userDTO,
+                Friends = friends.ToList()
+            };
+            return userProfileDTO;
+        }        
+        public async Task<bool> IsFriendAsync(string userId,string friendId)
+        {
+            var friend = await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId && x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
+            if(friend is null)
+            {
+                return false;
+            }
+            return true;
+        }
         public async Task CreateFriendAsync(Friend friend)
         {
             await _context.Friends.AddAsync(friend);
