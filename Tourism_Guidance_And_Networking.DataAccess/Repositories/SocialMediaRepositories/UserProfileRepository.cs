@@ -12,10 +12,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         {
             _context = context;
         }
-        public async Task<ICollection<ApplicationUser>> GetAllContacts(string id)
+        public async Task<ICollection<UserDTO>> GetAllContacts(string id)
         {
             var contacts = await _context.Contacts.Where(x => (x.AppUserId == id || x.AppFriendId == id)).AsNoTracking().ToListAsync();
-            List<ApplicationUser> users = new ();
+            List<UserDTO> users = new ();
             foreach (var contact in contacts)
             {
                 var user = new ApplicationUser();
@@ -26,15 +26,22 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 }else
                     user = await _context.Users.SingleAsync(x => x.Id == contact.AppUserId);
 
-                users.Add(user);
+                UserDTO userDTO = new()
+                {
+                    FirstName = user.FirstName, 
+                    LastName = user.LastName,
+                    Address = user.Address,
+                    Email = user.Email!
+                };
+                users.Add(userDTO);
             }
             return users;
         }
 
-        public async Task<ICollection<ApplicationUser>> GetAllFriends(string id)
+        public async Task<ICollection<UserDTO>> GetAllFriends(string id)
         {
             var friends = await _context.Friends.Where(x => (x.AppUserId == id || x.AppFriendId == id)).AsNoTracking().ToListAsync();
-            List<ApplicationUser> users = new();
+            List<UserDTO> users = new();
             foreach (var friend in friends)
             {
                 var user = new ApplicationUser();
@@ -46,7 +53,15 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 else
                     user = await _context.Users.SingleAsync(x => x.Id == friend.AppUserId);
 
-                users.Add(user);
+                UserDTO userDTO = new()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Address = user.Address,
+                    Email = user.Email!
+                };
+
+                users.Add(userDTO);
             }
             return users;
         }
@@ -71,9 +86,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             _context.Contacts.Remove(contact);
         }
-           public async Task<Friend?> GetFriendAsync(string userId,string friendId)
+        public async Task<Friend?> GetFriendAsync(string userId,string friendId)
         {
-            return await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId || x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
+            return await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId && x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
         }
     }
 }

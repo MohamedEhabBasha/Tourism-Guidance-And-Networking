@@ -15,12 +15,12 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
         {
             _unitOfWork = unitOfWork;
         }
-        [HttpGet("GetAllFriends/{id}")]
-        public async Task<IActionResult> GetAllFriends(string id)
+        [HttpGet("GetAllFriends")]
+        public async Task<IActionResult> GetAllFriends([FromQuery] string id)
         {
             var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == id);
 
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -31,8 +31,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(friends);
         }
-        [HttpGet("GetAllContacts/{id}")]
-        public async Task<IActionResult> GetAllContacts(string id)
+        [HttpGet("GetAllContacts")]
+        public async Task<IActionResult> GetAllContacts([FromQuery] string id)
         {
             var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == id);
 
@@ -54,7 +54,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
 
             if (user == null || friend is null)
-            { 
+            {
                 return NotFound();
             }
 
@@ -63,12 +63,12 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             var exist = await _unitOfWork.UserProfiles.GetFriendAsync(userId, friendId);
 
-            if (exist is not null)
+            if (exist is not null || (userId == friendId))
             {
-                return BadRequest("Already created");
+                return BadRequest("Already created or two ids are equals");
             }
 
-            Friend newFriend = new() { 
+            Friend newFriend = new() {
                 AppUserId = userId,
                 AppFriendId = friendId
             };
@@ -85,14 +85,18 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
         }
 
         [HttpDelete("DeleteFriend")]
-        public IActionResult DeleteFriend(string userId,string friendId)
+        public IActionResult DeleteFriend(string userId, string friendId)
         {
             var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            if (user == null) 
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            if (user == null || friend is null)
             {
                 return NotFound();
             }
-
+            if (userId == friendId)
+            {
+                return BadRequest();
+            }
             _unitOfWork.UserProfiles.DeleteFriend(userId, friendId);
 
             if (!(_unitOfWork.Complete() > 0))
@@ -107,11 +111,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
         public IActionResult DeleteContacts(string userId, string friendId)
         {
             var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            if (user == null)
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            if (user == null || friend is null)
             {
                 return NotFound();
             }
-
+            if (userId == friendId)
+            {
+                return BadRequest();
+            }
             _unitOfWork.UserProfiles.DeleteContact(userId, friendId);
 
             if (!(_unitOfWork.Complete() > 0))
