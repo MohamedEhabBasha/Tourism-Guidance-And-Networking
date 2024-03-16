@@ -63,6 +63,23 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(userProfile);
         }
+        [HttpGet("IsFriend")]
+        public async Task<IActionResult> IsFriend(string userId,string friendId)
+        {
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+
+            if (user == null || friend is null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userId, friendId);
+            return Ok(isFriend);
+        }
         [HttpPost("createFriends")]
         public async Task<IActionResult> CreateFriend(string userId, string friendId)
         {
