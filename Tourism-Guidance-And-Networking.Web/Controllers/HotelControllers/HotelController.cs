@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
@@ -7,6 +10,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAnyOrigin")]
     public class HotelController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -46,6 +50,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(hotel);
         }
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateHotel([FromForm]HotelDTO hotelDTO)
         {
             if (hotelDTO == null)

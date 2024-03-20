@@ -10,6 +10,7 @@ using Tourism_Guidance_And_Networking.Core.Interfaces;
 using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
+using Tourism_Guidance_And_Networking.DataAccess.DbInitializer;
 using Tourism_Guidance_And_Networking.Web.Services;
 namespace Tourism_Guidance_And_Networking.Web
 {
@@ -18,6 +19,15 @@ namespace Tourism_Guidance_And_Networking.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                builder => builder.AllowAnyOrigin()
+                                  .AllowAnyHeader()
+                                  .AllowAnyMethod());
+            });
 
             // Add services to the container.
 
@@ -77,6 +87,7 @@ namespace Tourism_Guidance_And_Networking.Web
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+           // builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddMvc();
             builder.Services.AddAuthentication(options =>
             {
@@ -110,8 +121,10 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseSwagger();
             app.UseSwaggerUI();
             //}
+            app.UseCors("AllowAnyOrigin");
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+            //SeedDatabase();
 
 
             app.UseAuthentication();
@@ -121,6 +134,17 @@ namespace Tourism_Guidance_And_Networking.Web
             app.MapControllers();
 
             app.Run();
+
+
+
+            //void SeedDatabase()
+            //{
+            //    using (var scope = app.Services.CreateScope())
+            //    {
+            //        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            //        dbInitializer.Initialize();
+            //    }
+            //}            
         }
     }
 }

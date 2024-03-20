@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tourism_Guidance_And_Networking.Core.Consts;
@@ -7,7 +8,8 @@ using Tourism_Guidance_And_Networking.Web.Services;
 
 namespace Tourism_Guidance_And_Networking.Web.Controllers
 {
-	[Route("api/[controller]")]
+    [EnableCors("AllowAnyOrigin")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class AuthController : ControllerBase
 	{

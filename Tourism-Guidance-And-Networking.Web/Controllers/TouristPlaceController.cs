@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 
@@ -6,6 +9,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAnyOrigin")]
     public class TouristPlaceController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -63,6 +67,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         }
 
         [HttpPost("touristplace")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateTouristPlace([FromForm]TouristPlaceDTO touristPlaceDTO)
         {
             if (touristPlaceDTO == null || !_unitOfWork.Categories.Exist(touristPlaceDTO.CategoryId))
@@ -84,7 +89,6 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-
 
             return StatusCode(201, touristPlace);
         }

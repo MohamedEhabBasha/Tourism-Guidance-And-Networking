@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -13,6 +14,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAnyOrigin")]
     [Authorize]
     public class BookingController : ControllerBase
     {
@@ -213,7 +215,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 
 
         [HttpPost("MakeBooking")]
-        public async Task<IActionResult> MakeBooking()
+        public async Task<IActionResult> MakeBooking([FromQuery]string successUrl, [FromQuery] string cancelUrl)
         {
 
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -280,8 +282,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = "https://www.facebook.com/",
-                CancelUrl = "https://www.youtube.com/"
+                SuccessUrl = successUrl,
+                CancelUrl = cancelUrl
             };
 
             foreach (var item in summaryDto.ReservationList)
