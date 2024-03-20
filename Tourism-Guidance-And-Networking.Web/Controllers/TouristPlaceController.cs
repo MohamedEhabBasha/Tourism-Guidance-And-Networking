@@ -65,7 +65,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             return Ok(touristPlaces);
         }
+        [HttpGet("GetTouristPlaceById/{id:int}")]
+        public async Task<IActionResult> GetTouristPlaceById(int id)
+        {
+            if (!_unitOfWork.TouristPlaces.Exist(id))
+            {
+                return NotFound();
+            }
+            var touristPlace = await _unitOfWork.TouristPlaces.GetByIdAsync(id);
 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(touristPlace);
+        }
         [HttpPost("touristplace")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateTouristPlace([FromForm]TouristPlaceDTO touristPlaceDTO)

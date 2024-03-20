@@ -1,6 +1,7 @@
 ﻿
 
 using Tourism_Guidance_And_Networking.Core.Models.Bookings;
+using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Data
 {
@@ -20,5 +21,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<BookingDetail> BookingDetails { get; set; }
         public DbSet<BookingHeader> BookingHeaders { get; set; }
         public DbSet<Accommodation> Accommodations { get; set;}
+        public DbSet<PrivateChat> PrivateChats { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Friend> Friends { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
     }
 }
