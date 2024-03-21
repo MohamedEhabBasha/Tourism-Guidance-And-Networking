@@ -17,6 +17,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
         public async Task<int> Decrement(Reservation item, int count)
         {
             item.Count -= count;
+            item.Price -= item.Room.Price;
             await _context.SaveChangesAsync();
             return item.Count;
         }
@@ -24,6 +25,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
         public async Task<int> Increment(Reservation item, int count)
         {
             item.Count += count;
+            item.Price += item.Room.Price;
             await _context.SaveChangesAsync();
             return item.Count;
         }

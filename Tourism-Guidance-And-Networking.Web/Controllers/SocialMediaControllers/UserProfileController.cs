@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
@@ -6,7 +8,9 @@ using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowAnyOrigin")]
     [ApiController]
+    [Authorize]
     public class UserProfileController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

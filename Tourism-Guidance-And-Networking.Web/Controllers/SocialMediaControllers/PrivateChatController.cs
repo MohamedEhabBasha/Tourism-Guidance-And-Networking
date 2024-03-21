@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
@@ -9,6 +11,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowAnyOrigin")]
+    [Authorize]
     public class PrivateChatController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

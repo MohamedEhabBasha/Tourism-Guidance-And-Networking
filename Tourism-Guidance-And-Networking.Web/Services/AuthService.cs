@@ -56,6 +56,7 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 			var roles = await _userManager.GetRolesAsync(user);
 
 			authModel.Email = user.Email;
+			authModel.UserId = user.Id;
 			authModel.Username = user.UserName;
 			authModel.IsAuthenticated  = true;
 			//authModel.ExpiresOn = jwtSecurityToken.ValidTo;
@@ -140,6 +141,7 @@ namespace Tourism_Guidance_And_Networking.Web.Services
             return new AuthModel
 			{
 				Email=user.Email,
+				UserId=user.Id,
 				Username = user.UserName,
 				IsAuthenticated = true,
 				Message = "Successfully Registered",
