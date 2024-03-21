@@ -64,10 +64,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(userProfile);
         }
         [HttpGet("IsFriend")]
-        public async Task<IActionResult> IsFriend([FromQuery]string userId,[FromQuery]string friendId)
+        public async Task<IActionResult> IsFriend([FromQuery]string userName,[FromQuery]string friendName)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
+            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
 
             if (user == null || friend is null)
             {
@@ -77,7 +77,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userId, friendId);
+            bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userName, friendName);
 
             return Ok(isFriend);
         }
