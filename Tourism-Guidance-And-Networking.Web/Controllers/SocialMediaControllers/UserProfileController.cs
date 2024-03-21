@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 
@@ -48,18 +49,22 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(contacts);
         }
         [HttpGet("GetUserProfile")]
-        public async Task<IActionResult> GetUserProfile([FromQuery] string id)
+        public async Task<IActionResult> GetUserProfile()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == id);
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
             if (user == null)
             {
                 return NotFound();
             }
 
-            var userProfile = await _unitOfWork.UserProfiles.GetUserProfileDTOAsync(id);
+            var userProfile = await _unitOfWork.UserProfiles.GetUserProfileDTOAsync(user.UserName!);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             return Ok(userProfile);
         }

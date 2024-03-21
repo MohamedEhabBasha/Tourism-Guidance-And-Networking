@@ -67,14 +67,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             }
             return users;
         }
-        public async Task<UserProfileDTO> GetUserProfileDTOAsync(string id)
+        public async Task<UserProfileDTO> GetUserProfileDTOAsync(string userName)
         {
-            var user = await _context.ApplicationUsers.SingleAsync(x=> x.Id == id);
+            var user = await _context.ApplicationUsers.SingleAsync(x=> x.UserName == userName);
            /* UserDTO userDTO = new()
             {
                 FirstName = user.FirstName, LastName = user.LastName, Address = user.Address, Email = user.Email!
             };*/
-            var friends = await GetAllFriends(id);
+            var friends = await GetAllFriends(user.Id);
 
             UserProfileDTO userProfileDTO = new() { 
                 User = user,
