@@ -78,6 +78,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return BadRequest(ModelState);
 
             bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userId, friendId);
+
             return Ok(isFriend);
         }
         [HttpPost("createFriends")]
