@@ -24,9 +24,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
                 if(contact.AppUserId == id)
                 {
-                    user = await _context.Users.SingleAsync(x => x.Id == contact.AppFriendId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppFriendId);
                 }else
-                    user = await _context.Users.SingleAsync(x => x.Id == contact.AppUserId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppUserId);
 
                 /*UserDTO userDTO = new()
                 {
@@ -50,10 +50,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
                 if (friend.AppUserId == id)
                 {
-                    user = await _context.Users.SingleAsync(x => x.Id == friend.AppFriendId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == friend.AppFriendId);
                 }
                 else
-                    user = await _context.Users.SingleAsync(x => x.Id == friend.AppUserId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == friend.AppUserId);
 
               /*  UserDTO userDTO = new()
                 {
@@ -69,7 +69,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         }
         public async Task<UserProfileDTO> GetUserProfileDTOAsync(string id)
         {
-            var user = await _context.Users.SingleAsync(x=> x.Id == id);
+            var user = await _context.ApplicationUsers.SingleAsync(x=> x.Id == id);
            /* UserDTO userDTO = new()
             {
                 FirstName = user.FirstName, LastName = user.LastName, Address = user.Address, Email = user.Email!
