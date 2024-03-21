@@ -67,14 +67,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             }
             return users;
         }
-        public async Task<UserProfileDTO> GetUserProfileDTOAsync(string id)
+        public async Task<UserProfileDTO> GetUserProfileDTOAsync(string userName)
         {
-            var user = await _context.ApplicationUsers.SingleAsync(x=> x.Id == id);
+            var user = await _context.ApplicationUsers.SingleAsync(x=> x.UserName == userName);
            /* UserDTO userDTO = new()
             {
                 FirstName = user.FirstName, LastName = user.LastName, Address = user.Address, Email = user.Email!
             };*/
-            var friends = await GetAllFriends(id);
+            var friends = await GetAllFriends(user.Id);
 
             UserProfileDTO userProfileDTO = new() { 
                 User = user,
@@ -82,10 +82,13 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             };
             return userProfileDTO;
         }        
-        public async Task<bool> IsFriendAsync(string userId,string friendId)
+        public async Task<bool> IsFriendAsync(string userName,string friendName)
+
         {
-            var friend = await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId && x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
-            if(friend is null)
+            var user = await _context.ApplicationUsers.SingleAsync(x => x.UserName == userName);
+            var friend = await _context.ApplicationUsers.SingleAsync(x => x.UserName == friendName);
+            var isFriend = await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == user.Id && x.AppFriendId == friend.Id) || (x.AppUserId == friend.Id && x.AppFriendId == user.Id)));
+            if(isFriend is null)
             {
                 return false;
             }
