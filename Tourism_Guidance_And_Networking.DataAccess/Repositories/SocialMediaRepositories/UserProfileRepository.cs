@@ -89,6 +89,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             {
                 return false;
             }
+
             return true;
         }
         public async Task CreateFriendAsync(Friend friend)
