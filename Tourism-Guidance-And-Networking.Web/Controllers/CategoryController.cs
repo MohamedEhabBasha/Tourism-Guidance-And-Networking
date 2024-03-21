@@ -1,7 +1,12 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Tourism_Guidance_And_Networking.Core.Consts;
+
 namespace Tourism_Guidance_And_Networking.Web.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("AllowAnyOrigin")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -42,6 +47,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             return Ok(category);
         }
         [HttpPost("category")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateCategory(CategoryDTO category)
         {
             if (category == null)
