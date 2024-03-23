@@ -13,8 +13,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         }
         public async Task<PrivateChat?> GetChatAsync (string senderId, string receiveId)
         {
-            return await _context.PrivateChats
-                .SingleOrDefaultAsync(c => ((c.SenderId == senderId && c.ReceiverId == receiveId) || (c.SenderId == receiveId && c.ReceiverId == senderId)))?? null;
+            return await FindAsync(c => ((c.SenderId == senderId && c.ReceiverId == receiveId) || (c.SenderId == receiveId && c.ReceiverId == senderId)))?? null;
         }
         public PrivateChat? GetChat(string senderId, string receiveId)
         {

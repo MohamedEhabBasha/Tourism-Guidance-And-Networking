@@ -11,8 +11,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
         Task<ICollection<ApplicationUser>> GetAllContacts(string id);
         Task<UserProfileDTO> GetUserProfileDTOAsync(string id);
         Task<bool> IsFriendAsync(string userId, string friendId);
-        Task CreateFriendAsync(Friend friend);
-        Task CreateContact(Contact contact);
+        Task<Friend> CreateFriendAsync(FriendDTO friendDTO);
+        Task<Contact> CreateContactAsync(Contact contact);
         void DeleteFriend(string userId, string friendId);
         void DeleteContact(string userId, string friendId);
         Task<Friend?> GetFriendAsync(string userId, string friendId);

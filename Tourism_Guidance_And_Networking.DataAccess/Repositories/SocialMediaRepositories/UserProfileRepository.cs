@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Linq.Expressions;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
@@ -24,9 +25,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
                 if(contact.AppUserId == id)
                 {
-                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppFriendId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.UserName == contact.AppFriendId);
                 }else
-                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppUserId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.UserName == contact.AppUserId);
 
                 /*UserDTO userDTO = new()
                 {
@@ -50,10 +51,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
                 if (friend.AppUserId == id)
                 {
-                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == friend.AppFriendId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.UserName == friend.AppFriendId);
                 }
                 else
-                    user = await _context.ApplicationUsers.SingleAsync(x => x.Id == friend.AppUserId);
+                    user = await _context.ApplicationUsers.SingleAsync(x => x.UserName == friend.AppUserId);
 
               /*  UserDTO userDTO = new()
                 {
@@ -95,13 +96,25 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return true;
         }
-        public async Task CreateFriendAsync(Friend friend)
+        public async Task<Friend> CreateFriendAsync(FriendDTO friendDTO)
         {
-            await _context.Friends.AddAsync(friend);
+            Friend friend = new()
+            {
+                AppUserId = friendDTO.UserName,
+                AppFriendId = friendDTO.FriendName
+            };
+            //await _context.Friends.AddAsync(friend);
+            return await AddAsync(friend);
         }
-        public async Task CreateContact(Contact contact)
+        private async Task<Friend> AddAsync(Friend entity)
+        {
+            await _context.Friends.AddAsync(entity);
+            return entity;
+        }
+        public async Task<Contact> CreateContactAsync(Contact contact)
         {
             await _context.Contacts.AddAsync(contact);
+            return contact;
         }
         public void DeleteFriend(string userId,string friendId)
         {

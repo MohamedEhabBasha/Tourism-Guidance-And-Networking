@@ -23,7 +23,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             _unitOfWork = unitOfWork;
             _chatHub = chatHub;
         }
-        [HttpPost("/getPrivateChatMessages")]
+        [HttpPost("getPrivateChatMessages")]
         public async Task<IActionResult> GetPrivateChatMessages([FromBody] PrivateChatDTO privateChatDTO)
         {
             if (privateChatDTO is null || privateChatDTO.SenderEmail is null || privateChatDTO.ReceiverEmail is null)
@@ -50,11 +50,11 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
                 Contact contact = new()
                 {
-                    AppUserId = sender.Id,
-                    AppFriendId = receiver.Id
+                    AppUserId = sender.UserName,
+                    AppFriendId = receiver.UserName
                 };
 
-                await _unitOfWork.UserProfiles.CreateContact(contact);
+                await _unitOfWork.UserProfiles.CreateContactAsync(contact);
 
                 await _unitOfWork.PrivateChats.AddAsync(privateChat);
 
@@ -73,7 +73,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return StatusCode(200, privateChatDTO);
         }
 
-        [HttpPost("/sendPrivateMessage")]
+        [HttpPost("sendPrivateMessage")]
         public async Task<IActionResult> SendPrivateMessasgeAsync([FromBody] MessageDTO messageDTO)
         {
             if(messageDTO is null)
@@ -131,5 +131,28 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok("Deleted Successfully");
         }
+        /*[HttpPost]
+        public async Task<IActionResult> CreateChat([FromBody] FriendDTO friendDTO)
+        {
+            PrivateChat privateChat = new()
+            {
+                SenderId = friendDTO.UserName,
+                ReceiverId = friendDTO.FriendName
+            };
+            PrivateChat privateChat1 =  await _unitOfWork.PrivateChats.AddAsync(privateChat);
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+            return Ok(privateChat1);
+        }
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetChat(int id)
+        {
+            PrivateChat privateChat = await _unitOfWork.PrivateChats.GetByIdAsync(id);
+
+            return Ok(privateChat);
+        }*/
     }
 }

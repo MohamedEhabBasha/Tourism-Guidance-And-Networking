@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 
@@ -37,15 +38,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(friends);
         }
         [HttpGet("GetAllContacts")]
-        public async Task<IActionResult> GetAllContacts([FromQuery] string id)
+        public async Task<IActionResult> GetAllContacts([FromQuery] string userName)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == id);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
 
             if (user == null)
             {
                 return NotFound();
             }
-            var contacts = await _unitOfWork.UserProfiles.GetAllContacts(id);
+            var contacts = await _unitOfWork.UserProfiles.GetAllContacts(userName);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -91,10 +92,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(isFriend);
         }
         [HttpPost("createFriends")]
-        public async Task<IActionResult> CreateFriend([FromQuery] string userId, [FromQuery] string friendId)
+        public async Task<IActionResult> CreateFriend([FromBody] FriendDTO friendDTO)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendDTO.UserName);
+            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendDTO.FriendName);
 
             if (user == null || friend is null)
             {
@@ -104,19 +105,16 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var exist = await _unitOfWork.UserProfiles.GetFriendAsync(userId, friendId);
+            var exist = await _unitOfWork.UserProfiles.GetFriendAsync(user.UserName!, friend.UserName!);
 
-            if (exist is not null || (userId == friendId))
+            if (exist is not null || (user.Id == friend.Id))
             {
                 return BadRequest("Already created or two ids are equals");
             }
 
-            Friend newFriend = new() {
-                AppUserId = userId,
-                AppFriendId = friendId
-            };
 
-            await _unitOfWork.UserProfiles.CreateFriendAsync(newFriend);
+
+            Friend newFriend = await _unitOfWork.UserProfiles.CreateFriendAsync(friendDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -128,19 +126,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
         }
 
         [HttpDelete("DeleteFriend")]
-        public IActionResult DeleteFriend([FromQuery] string userId, [FromQuery] string friendId)
+        public IActionResult DeleteFriend([FromQuery] string userName, [FromQuery] string friendName)
         {
-            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
+
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
             if (user == null || friend is null)
             {
                 return NotFound();
             }
-            if (userId == friendId)
+            if (userName == friendName)
             {
                 return BadRequest();
             }
-            _unitOfWork.UserProfiles.DeleteFriend(userId, friendId);
+            _unitOfWork.UserProfiles.DeleteFriend(userName, friendName);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -151,19 +150,19 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok("Deleted Successfully");
         }
         [HttpDelete("DeleteContact")]
-        public IActionResult DeleteContacts([FromQuery] string userId, [FromQuery] string friendId)
+        public IActionResult DeleteContacts([FromQuery] string userName, [FromQuery] string friendName)
         {
-            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
+            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
             if (user == null || friend is null)
             {
                 return NotFound();
             }
-            if (userId == friendId)
+            if (userName == friendName)
             {
                 return BadRequest();
             }
-            _unitOfWork.UserProfiles.DeleteContact(userId, friendId);
+            _unitOfWork.UserProfiles.DeleteContact(userName, friendName);
 
             if (!(_unitOfWork.Complete() > 0))
             {
