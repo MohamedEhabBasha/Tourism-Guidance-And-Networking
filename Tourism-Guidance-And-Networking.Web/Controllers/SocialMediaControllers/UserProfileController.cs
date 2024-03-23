@@ -38,15 +38,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(friends);
         }
         [HttpGet("GetAllContacts")]
-        public async Task<IActionResult> GetAllContacts([FromQuery] string userName)
+        public async Task<IActionResult> GetAllContacts([FromQuery] string userId)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
 
             if (user == null)
             {
                 return NotFound();
             }
-            var contacts = await _unitOfWork.UserProfiles.GetAllContacts(userName);
+            var contacts = await _unitOfWork.UserProfiles.GetAllContacts(userId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -66,7 +66,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return NotFound();
             }
 
-            var userProfile = await _unitOfWork.UserProfiles.GetUserProfileDTOAsync(user.UserName!);
+            var userProfile = await _unitOfWork.UserProfiles.GetUserProfileDTOAsync(user.Id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -74,10 +74,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(userProfile);
         }
         [HttpGet("IsFriend")]
-        public async Task<IActionResult> IsFriend([FromQuery]string userName,[FromQuery]string friendName)
+        public async Task<IActionResult> IsFriend([FromQuery]string userId,[FromQuery]string friendId)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
-            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
 
             if (user == null || friend is null)
             {
@@ -87,15 +87,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userName, friendName);
+            bool isFriend = await _unitOfWork.UserProfiles.IsFriendAsync(userId, friendId);
 
             return Ok(isFriend);
         }
         [HttpPost("createFriends")]
         public async Task<IActionResult> CreateFriend([FromBody] FriendDTO friendDTO)
         {
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendDTO.UserName);
-            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendDTO.FriendName);
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendDTO.UserId);
+            var friend = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendDTO.FriendId);
 
             if (user == null || friend is null)
             {
@@ -105,7 +105,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var exist = await _unitOfWork.UserProfiles.GetFriendAsync(user.UserName!, friend.UserName!);
+            var exist = await _unitOfWork.UserProfiles.GetFriendAsync(user.Id, friend.Id);
 
             if (exist is not null || (user.Id == friend.Id))
             {
@@ -126,20 +126,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
         }
 
         [HttpDelete("DeleteFriend")]
-        public IActionResult DeleteFriend([FromQuery] string userName, [FromQuery] string friendName)
+        public IActionResult DeleteFriend([FromQuery] string userId, [FromQuery] string friendId)
         {
-            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
+            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
 
-            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
             if (user == null || friend is null)
             {
                 return NotFound();
             }
-            if (userName == friendName)
+            if (userId == friendId)
             {
                 return BadRequest();
             }
-            _unitOfWork.UserProfiles.DeleteFriend(userName, friendName);
+            _unitOfWork.UserProfiles.DeleteFriend(userId, friendId);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -150,19 +150,19 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok("Deleted Successfully");
         }
         [HttpDelete("DeleteContact")]
-        public IActionResult DeleteContacts([FromQuery] string userName, [FromQuery] string friendName)
+        public IActionResult DeleteContacts([FromQuery] string userId, [FromQuery] string friendId)
         {
-            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == userName);
-            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.UserName == friendName);
+            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+            var friend = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == friendId);
             if (user == null || friend is null)
             {
                 return NotFound();
             }
-            if (userName == friendName)
+            if (userId == friendId)
             {
                 return BadRequest();
             }
-            _unitOfWork.UserProfiles.DeleteContact(userName, friendName);
+            _unitOfWork.UserProfiles.DeleteContact(userId, friendId);
 
             if (!(_unitOfWork.Complete() > 0))
             {

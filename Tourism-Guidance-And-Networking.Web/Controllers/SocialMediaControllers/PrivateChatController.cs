@@ -50,8 +50,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
                 Contact contact = new()
                 {
-                    AppUserId = sender.UserName,
-                    AppFriendId = receiver.UserName
+                    AppUserId = sender.Id,
+                    AppFriendId = receiver.Id
                 };
 
                 await _unitOfWork.UserProfiles.CreateContactAsync(contact);
@@ -131,28 +131,5 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok("Deleted Successfully");
         }
-        /*[HttpPost]
-        public async Task<IActionResult> CreateChat([FromBody] FriendDTO friendDTO)
-        {
-            PrivateChat privateChat = new()
-            {
-                SenderId = friendDTO.UserName,
-                ReceiverId = friendDTO.FriendName
-            };
-            PrivateChat privateChat1 =  await _unitOfWork.PrivateChats.AddAsync(privateChat);
-            if (!(_unitOfWork.Complete() > 0))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-            return Ok(privateChat1);
-        }
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetChat(int id)
-        {
-            PrivateChat privateChat = await _unitOfWork.PrivateChats.GetByIdAsync(id);
-
-            return Ok(privateChat);
-        }*/
     }
 }
