@@ -73,6 +73,23 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(userProfile);
         }
+        [HttpGet("GetUserProfileById/{userId}")]
+        public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
+        {
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userProfile = await _unitOfWork.UserProfiles.GetUserProfileDTOAsync(user.Id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(userProfile);
+        }
         [HttpGet("IsFriend")]
         public async Task<IActionResult> IsFriend([FromQuery]string userId,[FromQuery]string friendId)
         {

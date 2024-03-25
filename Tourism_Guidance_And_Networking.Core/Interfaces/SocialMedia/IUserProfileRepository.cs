@@ -8,7 +8,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
     public interface IUserProfileRepository
     {
         Task<ICollection<UserDTO>> GetAllFriends(string id);
-        Task<ICollection<UserDTO>> GetAllContacts(string id);
+        Task<ICollection<ContactDTO>> GetAllContacts(string id);
         Task<UserProfileDTO> GetUserProfileDTOAsync(string id);
         Task<bool> IsFriendAsync(string userId, string friendId);
         Task<Friend> CreateFriendAsync(FriendDTO friendDTO);

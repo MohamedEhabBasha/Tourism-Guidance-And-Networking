@@ -15,10 +15,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         {
             _context = context;
         }
-        public async Task<ICollection<UserDTO>> GetAllContacts(string id)
+        public async Task<ICollection<ContactDTO>> GetAllContacts(string id)
         {
             var contacts = await _context.Contacts.Where(x => (x.AppUserId == id || x.AppFriendId == id)).AsNoTracking().ToListAsync();
-            List<UserDTO> users = new ();
+            List<ContactDTO> users = new ();
             foreach (var contact in contacts)
             {
                 var user = new ApplicationUser();
@@ -28,6 +28,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppFriendId);
                 }else
                     user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppUserId);
+
+                var chat = await _context.PrivateChats.SingleAsync(c => ((c.SenderId == id && c.ReceiverId == user.Id) || (c.ReceiverId == id && c.SenderId == user.Id)));
 
                 UserDTO userDTO = new()
                 {
@@ -39,7 +41,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     PhoneNumber = user.PhoneNumber,
                     UserName = user.UserName
                 };
-                users.Add(userDTO);
+                ContactDTO contactDTO = new()
+                {
+                    ChatId = chat.Id,
+                    User = userDTO
+                };
+                users.Add(contactDTO);
             }
             return users;
         }

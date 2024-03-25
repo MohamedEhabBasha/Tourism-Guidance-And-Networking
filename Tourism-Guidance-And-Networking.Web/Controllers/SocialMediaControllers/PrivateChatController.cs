@@ -23,6 +23,31 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             _unitOfWork = unitOfWork;
             _chatHub = chatHub;
         }
+        [HttpGet("GetChatById/{id:int}")]
+        public async Task<IActionResult> GetChatById(int id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var chat = await _unitOfWork.PrivateChats.GetByIdAsync(id);
+
+            if(chat == null)
+            {
+                return NotFound();
+            }
+
+            var sender = await _unitOfWork.ApplicationUsers.FindAsync(a => a.Id == chat.SenderId);
+            var receiver = await _unitOfWork.ApplicationUsers.FindAsync(a => a.Id == chat.ReceiverId);
+            var messages = await _unitOfWork.PrivateChats.GetMessagesAsync(id);
+
+            PrivateChatDTO privateChatDTO = new() { 
+                ChatId = chat.Id,
+                SenderEmail = sender.Email,
+                ReceiverEmail = receiver.Email,
+                Messages = messages
+            };
+            return Ok(privateChatDTO);
+        }
         [HttpPost("getPrivateChatMessages")]
         public async Task<IActionResult> GetPrivateChatMessages([FromBody] PrivateChatDTO privateChatDTO)
         {
@@ -72,7 +97,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             }
             return StatusCode(200, privateChatDTO);
         }
-
+        
         [HttpPost("sendPrivateMessage")]
         public async Task<IActionResult> SendPrivateMessasgeAsync([FromBody] MessageDTO messageDTO)
         {
