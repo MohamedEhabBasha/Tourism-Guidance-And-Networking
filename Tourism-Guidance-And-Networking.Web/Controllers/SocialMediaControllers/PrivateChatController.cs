@@ -131,7 +131,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             }
 
             await _chatHub.Clients
-                .Users(sender.Id, receiver.Id)
+                //.Users(sender.Id, receiver.Id)
+                .All
                 .SendAsync("sendPrivateMessage", messageDTO.Text);
 
             return Ok(newMessage);
