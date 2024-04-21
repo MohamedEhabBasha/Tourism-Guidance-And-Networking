@@ -13,7 +13,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
         private new readonly ApplicationDbContext _context;
         public ApplicationUserRepository(ApplicationDbContext context) : base(context)
         {
-            _context= context;
+            _context = context;
         }
 
         public async Task<ApplicationUser> GetApplicationUserByUserName(string userName)

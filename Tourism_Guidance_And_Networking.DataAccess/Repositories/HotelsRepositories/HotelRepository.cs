@@ -1,12 +1,4 @@
-﻿
-
-using Tourism_Guidance_And_Networking.Core.DTOs;
-using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
-using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
-using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
-
-
-namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
+﻿namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class HotelRepository : BaseRepository<Hotel>, IHotelRepository
     {
