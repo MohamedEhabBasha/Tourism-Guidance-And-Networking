@@ -127,7 +127,7 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseSwagger();
             app.UseSwaggerUI();
             //}
-<<<<<<< HEAD
+
 
             app.UseCors("AllowAnyOrigin");
 
@@ -137,15 +137,14 @@ namespace Tourism_Guidance_And_Networking.Web
                 Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
                 RequestPath = "/StaticFiles"
             });
-=======
-            
-        /*    app.UseStaticFiles(new StaticFileOptions
+
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(builder.Environment.WebRootPath, "images")), RequestPath = "/WWWroot/images"
-            });*/
+                Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
+                RequestPath = "/StaticFiles"
+            });
             app.UseCors("AllowAnyOrigin");
->>>>>>> 6510c338d5aaeef7e83cb5616d75a61f9ee7294b
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
             //SeedDatabase();
@@ -164,14 +163,7 @@ namespace Tourism_Guidance_And_Networking.Web
 
 
 
-            //void SeedDatabase()
-            //{
-            //    using (var scope = app.Services.CreateScope())
-            //    {
-            //        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            //        dbInitializer.Initialize();
-            //    }
-            //}            
+                     
         }
     }
 }
