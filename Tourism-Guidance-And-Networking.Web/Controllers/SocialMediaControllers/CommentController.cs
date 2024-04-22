@@ -30,6 +30,24 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(comments);
         }
+        [HttpGet("GetCommentLikeStatus/{commentId}")]
+        public async Task<IActionResult> GetPostLikeStatus(int commentId, [FromQuery] string userId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+            var comment = await _unitOfWork.Comments.FindAsync(p => p.Id == commentId && p.ApplicationUserId == userId);
+
+            if (user is null || comment is null)
+            {
+                return NotFound();
+            }
+            int status = await _unitOfWork.Comments.GetCommentLikeStatus(commentId, userId);
+
+            return Ok(status);
+
+        }
         [HttpGet("GetAllCommentsByUserId")]
         public async Task<IActionResult> GetAllCommentsByUserId([FromQuery] string userId)
         {

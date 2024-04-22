@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="WWWroot\images\HotelImages\" />
+    <Folder Include="WWWroot\images\Posts\" />
     <Folder Include="WWWroot\images\PostImages\" />
     <Folder Include="WWWroot\images\RoomImages\" />
     <Folder Include="WWWroot\images\TouristPlaceImages\" />
