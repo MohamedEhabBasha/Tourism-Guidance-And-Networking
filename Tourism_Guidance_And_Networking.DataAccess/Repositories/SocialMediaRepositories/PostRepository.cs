@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
+using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories
@@ -48,7 +49,25 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return postDTOs;
         }
+        public async Task<ICollection<PostDTO>> GetAllFriendsPostsByUserId(string id)
+        {
+            List<PostDTO> postDTOs = new();
 
+            Func<Friend, string> func = f => f.AppFriendId == id? f.AppUserId:f.AppFriendId;
+
+            var friends = await _context.Friends.Where(f => f.AppFriendId == id || f.AppUserId == id).Select(f => func(f)).ToListAsync();
+
+            var posts = await _context.Posts.Where(p => friends.Contains(p.ApplicationUserId)).ToListAsync();
+
+            foreach (var post in posts)
+            {
+                PostDTO postDTO = await PostToPostDTO(post);
+
+                postDTOs.Add(postDTO);
+            }
+
+            return postDTOs;
+        }
         public async Task<Post> CreatePostAsync(PostInputDTO postDTO)
         {
             Post post = new()
@@ -180,6 +199,13 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             PostDTO postDTO = new() { PostId = post.Id, Description = post.Description, Image = post.Image };
 
             var comments = await _context.Comments.Where(c => c.PostId == post.Id).ToListAsync();
+            List<CommentDTO> commentsDTO = new ();
+
+            foreach (var comment in comments)
+            {
+                CommentDTO commentDTO = await CommentToCommentDTO(comment);
+                commentsDTO.Add(commentDTO);
+            }
 
             var user = await _context.ApplicationUsers.SingleAsync(u => u.Id == post.ApplicationUserId);
 
@@ -193,18 +219,46 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 PhoneNumber = user.PhoneNumber,
                 UserName = user.UserName
             };
-            postDTO.UserDTO = userDTO;
-            postDTO.Comments = comments;
-            postDTO.TotalComments = comments.Count;
 
-            var totalLikes = _context.PostLikes.Count(c => c.IsLiked);
-            var totalDisLikes = _context.PostLikes.Count(c => !c.IsLiked);
+            
+            postDTO.UserDTO = userDTO;
+            postDTO.Comments = commentsDTO;
+            postDTO.TotalComments = commentsDTO.Count;
+
+            var totalLikes = _context.PostLikes.Where(p => p.PostId == post.Id).Count(c => c.IsLiked);
+            var totalDisLikes = _context.PostLikes.Where(p => p.PostId == post.Id).Count(c => !c.IsLiked);
 
             postDTO.TotalLikes = totalLikes;
-            postDTO.TotlaDisLikes = totalDisLikes;
+            postDTO.TotalDisLikes = totalDisLikes;
 
             return postDTO;
         }
+        private async Task<CommentDTO> CommentToCommentDTO(Comment comment)
+        {
+            CommentDTO commentDTO = new() { PostId = comment.PostId, Text = comment.Text, Id = comment.Id };
 
+            var user = await _context.ApplicationUsers.SingleAsync(a => a.Id == comment.ApplicationUserId);
+            UserDTO userDTO = new()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Address = user.Address,
+                Id = user.Id,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName
+            };
+
+            var totalLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => c.IsLiked);
+            var totalDisLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => !c.IsLiked);
+
+            commentDTO.TotalLikes = totalLikes;
+            commentDTO.TotalDisLikes = totalDisLikes;
+
+            commentDTO.ApplicationUser = userDTO;
+            commentDTO.Rate = comment.Rate;
+
+            return commentDTO;
+        }
     }
 }

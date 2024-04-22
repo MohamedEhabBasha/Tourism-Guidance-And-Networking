@@ -90,7 +90,9 @@ namespace Tourism_Guidance_And_Networking.Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IImageService, ImageService>();
-           // builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+            //builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
             builder.Services.AddMvc();
             builder.Services.AddAuthentication(options =>
             {

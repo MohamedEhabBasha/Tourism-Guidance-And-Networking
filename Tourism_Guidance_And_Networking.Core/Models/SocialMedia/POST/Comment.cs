@@ -7,6 +7,7 @@ namespace Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST
         public int Id { get; set; }
         [Required]
         public string Text { get; set; } = string.Empty;
+        public double Rate { get; set; }
         [Required]
         public string ApplicationUserId { get; set; } = string.Empty;
         [ForeignKey("ApplicationUserId")]

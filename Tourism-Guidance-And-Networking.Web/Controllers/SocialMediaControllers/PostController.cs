@@ -39,6 +39,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(posts);
         }
+        [HttpGet("GetAllFriendsPostsByUserId")]
+        public async Task<IActionResult> GetAllFriendsPostsByUserId([FromQuery] string userId)
+        {
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            var posts = await _unitOfWork.Posts.GetAllFriendsPostsByUserId(userId);
+
+            return Ok(posts);
+        }
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO)
         {

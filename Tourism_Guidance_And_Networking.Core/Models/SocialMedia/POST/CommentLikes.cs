@@ -17,5 +17,7 @@ namespace Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST
         [ValidateNever]
         [JsonIgnore]
         public Comment Comment { get; set; } = default!;
+        [Required]
+        public bool IsLiked { get; set; }
     }
 }
