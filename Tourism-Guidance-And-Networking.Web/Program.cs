@@ -127,13 +127,15 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseSwagger();
             app.UseSwaggerUI();
             //}
-            
+
+            app.UseCors("AllowAnyOrigin");
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(builder.Environment.WebRootPath, "images")), RequestPath = "/WWWroot/images"
+                Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
+                RequestPath = "/StaticFiles"
             });
-            app.UseCors("AllowAnyOrigin");
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
             //SeedDatabase();
