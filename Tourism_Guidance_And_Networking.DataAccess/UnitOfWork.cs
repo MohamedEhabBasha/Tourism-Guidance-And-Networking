@@ -26,7 +26,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IMessageRepository Messages { get; private set; }
         public IPrivateChatRepository PrivateChats { get; private set; }
         public IUserProfileRepository UserProfiles { get; private set; }
-        public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost)
+        public IPostRepository Posts { get; private set; }
+        public ICommentRepository Comments { get; private set; }
+        public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost,IImageService imageService)
         {
             _context = context;
             Categories = new CategoryRepository(_context);
@@ -42,6 +44,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             PrivateChats = new PrivateChatRepository(_context);
             Messages = new MessageRepository(_context);
             UserProfiles = new UserProfileRepository(_context);
+            Posts = new PostRepository(_context, imageService);
+            Comments = new CommentRepository(_context);
         }
 
         public int Complete()

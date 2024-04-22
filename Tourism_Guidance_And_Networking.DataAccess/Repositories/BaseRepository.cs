@@ -8,7 +8,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected ApplicationDbContext _context;
-
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -63,7 +62,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories
 
             return path;
         }
-
         public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> critera, string[] includes = null)
         {
             IQueryable<T> query = _context.Set<T>();

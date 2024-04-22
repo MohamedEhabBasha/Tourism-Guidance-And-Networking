@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Stripe;
@@ -11,6 +12,7 @@ using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 using Tourism_Guidance_And_Networking.DataAccess.DbInitializer;
+using Tourism_Guidance_And_Networking.DataAccess.Repositories;
 using Tourism_Guidance_And_Networking.Web.Services;
 using Tourism_Guidance_And_Networking.Web.Services.Hubs;
 namespace Tourism_Guidance_And_Networking.Web
@@ -29,7 +31,6 @@ namespace Tourism_Guidance_And_Networking.Web
                                   .AllowAnyHeader()
                                   .AllowAnyMethod());
             });
-
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -88,7 +89,10 @@ namespace Tourism_Guidance_And_Networking.Web
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-           // builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IImageService, ImageService>();
+
+            //builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
             builder.Services.AddMvc();
             builder.Services.AddAuthentication(options =>
             {
@@ -123,6 +127,12 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseSwagger();
             app.UseSwaggerUI();
             //}
+            
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(builder.Environment.WebRootPath, "images")), RequestPath = "/images"
+            });
             app.UseCors("AllowAnyOrigin");
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
@@ -136,7 +146,7 @@ namespace Tourism_Guidance_And_Networking.Web
             app.MapControllers();
 
             // Hubs
-            app.MapHub<ChatHub>("/services/hubs/chathub");
+            app.MapHub<ChatHub>("/services/hubs/chathub").RequireCors("AllowAnyOrigin");
 
             app.Run();
 

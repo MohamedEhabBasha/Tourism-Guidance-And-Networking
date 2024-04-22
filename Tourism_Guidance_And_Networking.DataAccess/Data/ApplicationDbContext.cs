@@ -2,6 +2,7 @@
 
 using Tourism_Guidance_And_Networking.Core.Models.Bookings;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
+using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Data
 {
@@ -25,5 +26,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Post> Posts {  get; set; }
+        public DbSet<PostLikes> PostLikes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<CommentLikes> CommentLikes { get; set; }
     }
 }

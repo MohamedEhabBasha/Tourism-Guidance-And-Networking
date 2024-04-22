@@ -11,3 +11,5 @@ global using Tourism_Guidance_And_Networking.Core.DTOs;
 global using Tourism_Guidance_And_Networking.Core.Models.TouristPlaces;
 global using Microsoft.AspNetCore.Http;
 global using Tourism_Guidance_And_Networking.Core.Consts;
+global using System.Text.Json.Serialization;
+global using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;

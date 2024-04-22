@@ -23,6 +23,9 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
         public IMessageRepository Messages { get; }
 
         public IUserProfileRepository UserProfiles { get; }
+
+        public IPostRepository Posts { get; }
+        public ICommentRepository Comments { get; }
         int Complete();
     }
 }
