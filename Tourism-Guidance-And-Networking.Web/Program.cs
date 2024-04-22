@@ -131,7 +131,7 @@ namespace Tourism_Guidance_And_Networking.Web
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                Path.Combine(builder.Environment.WebRootPath, "images")), RequestPath = "/images"
+                Path.Combine(builder.Environment.WebRootPath, "images")), RequestPath = "/WWWroot/images"
             });
             app.UseCors("AllowAnyOrigin");
 
