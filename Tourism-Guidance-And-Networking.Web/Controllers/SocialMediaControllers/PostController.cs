@@ -54,13 +54,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(posts);
         }
         [HttpPost("CreatePost")]
-        public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO)
+        public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO) 
         {
             if (postDTO == null)
                 return BadRequest(ModelState);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == postDTO.UserId);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
 
             Post post = await _unitOfWork.Posts.CreatePostAsync(postDTO);
 
