@@ -26,6 +26,8 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         [Required]
         public int Count { get; set; }
         [Required]
+        public int CountOfReserved { get; set; } = 0;
+        [Required]
         public int CompanyId { get; set; }
         [JsonIgnore]
         [ValidateNever]

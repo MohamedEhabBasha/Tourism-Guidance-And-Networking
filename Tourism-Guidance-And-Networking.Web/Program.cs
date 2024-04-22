@@ -80,7 +80,7 @@ namespace Tourism_Guidance_And_Networking.Web
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
-                builder.Configuration.GetConnectionString("ServerConnection"),
+                builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));

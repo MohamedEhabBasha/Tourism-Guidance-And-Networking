@@ -48,6 +48,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 case "completed":
                     bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Completed);
                     break;
+                case "cancelled":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Cancelled);
+                    break;
                 default:
                     break;
             }
@@ -79,6 +82,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                     break;
                 case "completed":
                     bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Completed);
+                    break;
+                case "cancelled":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Cancelled);
                     break;
                 default:
                     break;
@@ -250,8 +256,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 
             foreach (var reservation in summaryDto.ReservationList)
             {
-                if (!(reservation.Count <= (reservation.Room.Count - reservation.Room.CountOfReserved)))
-                    return BadRequest($"There is no enough number of chosen rooms");
+                if(reservation.RoomId is null)
+                {
+                    // Accomdation Check
+                    if (!(reservation.Count <= (reservation.Accommodation.Count - reservation.Accommodation.CountOfReserved)))
+                        return BadRequest($"There is no enough number of chosen Accomdation");
+                }
+                else
+                {
+                    // Room Check
+                    if (!(reservation.Count <= (reservation.Room.Count - reservation.Room.CountOfReserved)))
+                        return BadRequest($"There is no enough number of chosen rooms");
+
+                }
+               
                 summaryDto.BookingHeader.BookingTotalPrice += reservation.Price;
             }
             await _unitOfWork.BookingHeaders.AddAsync(summaryDto.BookingHeader);
@@ -259,15 +277,33 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 
             foreach (var reservation in summaryDto.ReservationList)
             {
-                BookingDetail orderDetail = new BookingDetail()
+                if( reservation.RoomId is null)
                 {
-                    BookingHeaderId = summaryDto.BookingHeader.Id,
-                    RoomId = reservation.RoomId,
-                    Price = reservation.Price,
-                    Count = reservation.Count
-                };
-                await _unitOfWork.BookingDetails.AddAsync(orderDetail);
+                    // Accommdation
+                    BookingDetail orderDetail = new BookingDetail()
+                    {
+                        BookingHeaderId = summaryDto.BookingHeader.Id,
+                        AccommodationId = reservation.AccommodationId,
+                        Price = reservation.Price,
+                        Count = reservation.Count
+                    };
+                    await _unitOfWork.BookingDetails.AddAsync(orderDetail);
+                }
+                else
+                {
+                    // Room
+                    BookingDetail orderDetail = new BookingDetail()
+                    {
+                        BookingHeaderId = summaryDto.BookingHeader.Id,
+                        RoomId = reservation.RoomId,
+                        Price = reservation.Price,
+                        Count = reservation.Count
+                    };
+                    await _unitOfWork.BookingDetails.AddAsync(orderDetail);
+                }
+                
             }
+
             _unitOfWork.Complete();
 
             // Stripe Settings
@@ -288,22 +324,46 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 
             foreach (var item in summaryDto.ReservationList)
             {
-                var sessionLineItem = new SessionLineItemOptions
+                // Accommdation
+                if (item.Room is null)
                 {
-                    PriceData = new SessionLineItemPriceDataOptions
+                    var sessionLineItem = new SessionLineItemOptions
                     {
-                        UnitAmount = (long)(item.Room.Price * 100),//20.00 -> 2000
-                        Currency = "EGP",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        PriceData = new SessionLineItemPriceDataOptions
                         {
-                            Name = item.Room.Info,
-                            Description = item.Room.Info,
+                            UnitAmount = (long)(item.Accommodation.Price * 100),//20.00 -> 2000
+                            Currency = "EGP",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Accommodation.Name,
+                                Description = item.Accommodation.Info,
+                            },
                         },
+                        Quantity = item.Count,
+                    };
+                    options.LineItems.Add(sessionLineItem);
+                }
+                else
+                {
+                    // Room
+                    var sessionLineItem = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.Room.Price * 100),//20.00 -> 2000
+                            Currency = "EGP",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Room.Info,
+                                Description = item.Room.Info,
+                            },
 
-                    },
-                    Quantity = item.Count,
-                };
-                options.LineItems.Add(sessionLineItem);
+                        },
+                        Quantity = item.Count,
+                    };
+                    options.LineItems.Add(sessionLineItem);
+                }
+               
             }
 
             var service = new SessionService();
@@ -325,6 +385,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
         public async Task<IActionResult> BookingConfirmation(int id)
         {
             var BookingHeaderDb = await _unitOfWork.BookingHeaders.GetByIdAsync(id);
+
+            if (BookingHeaderDb is null)
+                return NotFound();
             var service = new SessionService();
             Session session = service.Get(BookingHeaderDb.SessionId);
             if (session.PaymentStatus.ToLower() == "paid")
@@ -339,7 +402,13 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 IEnumerable<Reservation> reservations = await _unitOfWork.Reservations.FindAllAsync(r => r.ApplicationUserId == BookingHeaderDb.ApplicationUserId, new string[] { "Room", "Accommodation" });
                 foreach (Reservation reservation in reservations)
                 {
-                    reservation.Room.CountOfReserved += reservation.Count;
+                    if(reservation.Room is null)
+                    {
+                        // change accomdation
+                        reservation.Accommodation.CountOfReserved += reservation.Count;
+                    }
+                    else
+                        reservation.Room.CountOfReserved += reservation.Count;
                 }
                 List<Reservation> reservationList = reservations.ToList();
                 _unitOfWork.Reservations.DeleteRange(reservations);

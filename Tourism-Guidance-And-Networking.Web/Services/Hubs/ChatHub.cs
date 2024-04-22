@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace Tourism_Guidance_And_Networking.Web.Services.Hubs
 {
+    [EnableCors("AllowAnyOrigin")]
     public class ChatHub : Hub
     {
         private readonly ApplicationDbContext _context;

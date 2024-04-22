@@ -119,7 +119,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             return Ok(summaryDto);
         }
         [HttpPost("room")]
-        public async Task<IActionResult> MakeReservation(CreateReservationDTO reservationDTO)
+        public async Task<IActionResult> MakeRoomReservation(CreateReservationDTO reservationDTO)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -127,6 +127,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
 
             var room = await _unitOfWork.Rooms.GetByIdAsync(reservationDTO.AccommodationId);
+
+            if (room is null)
+                return NotFound();
 
             if (!(reservationDTO.Count <= (room.Count - room.CountOfReserved)))
                 return BadRequest($"There is no enough number of chosen room, availble number is {room.Count - room.CountOfReserved}");
@@ -158,6 +161,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             }
             else
             {
+                if (!((reservationDTO.Count + reservationFromDb.Count) <= (room.Count - room.CountOfReserved)))
+                    return BadRequest($"There is no enough number of chosen room, availble number is {room.Count - room.CountOfReserved}");
                 var resut = await _unitOfWork.Reservations.Increment(reservationFromDb, reservationDTO.Count);
 
                 if (!(resut > 0))
@@ -167,12 +172,71 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 }
                 else
                 {
-                    reservationFromDb.Price += room.Price * reservationDTO.Count;
-                    _unitOfWork.Complete();
                     return Ok(reservationFromDb);
                 }
             }
         }
+
+
+        [HttpPost("accommodation")]
+        public async Task<IActionResult> MakeAccommodationReservation(CreateReservationDTO reservationDTO)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            var accommdation = await _unitOfWork.Accommodations.GetByIdAsync(reservationDTO.AccommodationId);
+
+            if(accommdation is null)
+                return NotFound();
+
+            if (!(reservationDTO.Count <= (accommdation.Count - accommdation.CountOfReserved)))
+                return BadRequest($"There is no enough number of chosen Accomdation, availble number is {accommdation.Count - accommdation.CountOfReserved}");
+
+            var reservationFromDb = await _unitOfWork.Reservations.FindAsync(r => r.AccommodationId == reservationDTO.AccommodationId &&
+            r.ApplicationUserId == applicationUser.Id);
+
+
+            Reservation reservation = new();
+            if (reservationFromDb is null)
+            {
+                reservation.RoomId = null;
+                reservation.AccommodationId = reservationDTO.AccommodationId;
+                reservation.ApplicationUserId = applicationUser.Id;
+                reservation.Accommodation = accommdation;
+                reservation.Count = reservationDTO.Count;
+                reservation.Price = accommdation.Price * reservationDTO.Count;
+                await _unitOfWork.Reservations.AddAsync(reservation);
+
+                if (!(_unitOfWork.Complete() > 0))
+                {
+                    ModelState.AddModelError("", "Something Went Wrong While Saving");
+                    return StatusCode(500, ModelState);
+                }
+                else
+                {
+                    return Ok(reservation);
+                }
+            }
+            else
+            {
+                if (!((reservationDTO.Count + reservationFromDb.Count) <= (accommdation.Count - accommdation.CountOfReserved)))
+                    return BadRequest($"There is no enough number of chosen room, availble number is {accommdation.Count - accommdation.CountOfReserved}");
+                var resut = await _unitOfWork.Reservations.Increment(reservationFromDb, reservationDTO.Count);
+
+                if (!(resut > 0))
+                {
+                    ModelState.AddModelError("", "Something Went Wrong While Saving");
+                    return StatusCode(500, ModelState);
+                }
+                else
+                {
+                    return Ok(reservationFromDb);
+                }
+            }
+        }
+
+
 
         [HttpPost("plus/{reservationId}")]
         public async Task<IActionResult> Plus(int reservationId)
@@ -180,22 +244,46 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             if(!(_unitOfWork.Reservations.Exist(reservationId)))
                 return NotFound();
 
-            var reservationDb = await _unitOfWork.Reservations.FindAsync(r=>r.Id==reservationId,new string[] {"Room"});
+            var reservationDb = await _unitOfWork.Reservations.FindAsync(r=>r.Id==reservationId,new string[] {"Room", "Accommodation" });
 
-            if((reservationDb.Room.Count - reservationDb.Room.CountOfReserved)>1)
+            if(reservationDb.RoomId is not null)
             {
-                if (await _unitOfWork.Reservations.Increment(reservationDb, 1) > 0)
-                    return Ok(reservationDb);
-                else
+                // Room Increment
+                if (((reservationDb.Room.Count - reservationDb.Room.CountOfReserved) > 1) && ((reservationDb.Count+1)<= (reservationDb.Room.Count - reservationDb.Room.CountOfReserved)))
                 {
+                    if (await _unitOfWork.Reservations.Increment(reservationDb, 1) > 0)
+                        return Ok(reservationDb);
+                    else
+                    {
                         ModelState.AddModelError("", "Something Went Wrong While Saving");
                         return StatusCode(500, ModelState);
+                    }
+                }
+                else
+                {
+                    return BadRequest($"There is no enough number of chosen room, availble number is {reservationDb.Room.Count - reservationDb.Room.CountOfReserved}");
                 }
             }
             else
             {
-                return BadRequest($"There is no enough number of chosen room, availble number is {reservationDb.Room.Count - reservationDb.Room.CountOfReserved}");
+                // Accommodation Increment 
+                if (((reservationDb.Accommodation.Count - reservationDb.Accommodation.CountOfReserved) > 1) && ((reservationDb.Count + 1) <= (reservationDb.Accommodation.Count - reservationDb.Accommodation.CountOfReserved)))
+                {
+                    if (await _unitOfWork.Reservations.Increment(reservationDb, 1) > 0)
+                        return Ok(reservationDb);
+                    else
+                    {
+                        ModelState.AddModelError("", "Something Went Wrong While Saving");
+                        return StatusCode(500, ModelState);
+                    }
+                }
+                else
+                {
+                    return BadRequest($"There is no enough number of chosen Accommodation, availble number is {reservationDb.Accommodation.Count - reservationDb.Accommodation.CountOfReserved}");
+                }
             }
+
+            
         }
         [HttpPost("minus/{reservationId}")]
         public async Task<IActionResult> Minus(int reservationId)
@@ -203,7 +291,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             if (!(_unitOfWork.Reservations.Exist(reservationId)))
                 return NotFound();
 
-            var reservationDb = await _unitOfWork.Reservations.FindAsync(r => r.Id == reservationId, new string[] { "Room" });
+            var reservationDb = await _unitOfWork.Reservations.FindAsync(r => r.Id == reservationId, new string[] { "Room", "Accommodation" });
 
             if (reservationDb.Count <= 1)
             {
