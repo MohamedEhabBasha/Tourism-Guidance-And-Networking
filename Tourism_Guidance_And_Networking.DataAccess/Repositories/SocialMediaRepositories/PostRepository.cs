@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.VisualBasic;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
@@ -196,7 +197,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         }
         private async Task<PostDTO> PostToPostDTO(Post post)
         {
-            PostDTO postDTO = new() { PostId = post.Id, Description = post.Description, Image = post.Image };
+            PostDTO postDTO = new() { PostId = post.Id, Description = post.Description, Image = $"{FileSettings.RootPath}{_imagesPath}/{post.Image}"  };
 
             var comments = await _context.Comments.Where(c => c.PostId == post.Id).ToListAsync();
             List<CommentDTO> commentsDTO = new ();
@@ -219,7 +220,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 PhoneNumber = user.PhoneNumber,
                 UserName = user.UserName
             };
-
             
             postDTO.UserDTO = userDTO;
             postDTO.Comments = commentsDTO;
@@ -259,6 +259,18 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             commentDTO.Rate = comment.Rate;
 
             return commentDTO;
+        }
+
+        public async Task<int> GetPostLikeStatus(int postId, string userId)
+        {
+            var postLike = await _context.PostLikes.SingleOrDefaultAsync(c => c.PostId ==  postId && c.ApplicationUserId == userId);
+
+            if (postLike == null)
+                return 0;
+            else if (postLike.IsLiked) { return 1; }
+
+            return -1;
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Cors;
+using System.Runtime.InteropServices;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
@@ -52,6 +53,24 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             var posts = await _unitOfWork.Posts.GetAllFriendsPostsByUserId(userId);
 
             return Ok(posts);
+        }
+        [HttpGet("GetPostLikeStatus/{postId}")]
+        public async Task<IActionResult> GetPostLikeStatus(int postId,[FromQuery] string userId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
+            var post = await _unitOfWork.Posts.FindAsync(p => p.Id == postId && p.ApplicationUserId == userId);
+
+            if (user is null || post is null)
+            {
+                return NotFound();
+            }
+            int status = await _unitOfWork.Posts.GetPostLikeStatus(postId, userId);
+
+            return Ok(status);
+
         }
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO) 
