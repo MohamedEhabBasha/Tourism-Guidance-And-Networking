@@ -197,7 +197,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         }
         private async Task<PostDTO> PostToPostDTO(Post post)
         {
-            PostDTO postDTO = new() { PostId = post.Id, Description = post.Description, Image = $"{FileSettings.RootPath}{_imagesPath}/{post.Image}"  };
+            PostDTO postDTO = new() { PostId = post.Id, Description = post.Description, Image = $"{FileSettings.RootPath}{_imagesPath}/{post.Image}"};
 
             var comments = await _context.Comments.Where(c => c.PostId == post.Id).ToListAsync();
             List<CommentDTO> commentsDTO = new ();
