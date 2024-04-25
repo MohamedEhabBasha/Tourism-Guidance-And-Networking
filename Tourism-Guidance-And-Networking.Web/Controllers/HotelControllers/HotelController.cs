@@ -23,7 +23,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         [HttpGet("hotels")]
         public async Task<IActionResult> GetAllHotels()
         {
-            var hotels = await _unitOfWork.Hotels.GetAllAsync();
+            var hotels = await _unitOfWork.Hotels.GetAllHotels();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -59,7 +59,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Hotel hotel = await _unitOfWork.Hotels.CreateHotelAsync(hotelDTO);
+            HotelOutputDTO hotel = await _unitOfWork.Hotels.CreateHotelAsync(hotelDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -80,9 +80,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var hotel = _unitOfWork.Hotels.GetById(hotelId);
+           // var hotel = _unitOfWork.Hotels.GetById(hotelId);
 
-            await _unitOfWork.Hotels.UpdateHotel(hotelId,hotelDTO);
+            HotelOutputDTO h = await _unitOfWork.Hotels.UpdateHotel(hotelId,hotelDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -92,7 +92,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
            // hotelDTO.Id = hotel!.Id;
 
-            return Ok(hotel);
+            return Ok(h);
         }
         [HttpDelete("{hotelId:int}")]
         public IActionResult DeleteHotel([FromRoute] int hotelId)

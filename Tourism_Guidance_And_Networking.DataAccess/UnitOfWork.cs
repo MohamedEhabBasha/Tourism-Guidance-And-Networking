@@ -33,7 +33,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             _context = context;
             Categories = new CategoryRepository(_context);
             TouristPlaces = new TouristPlaceRepository(_context, webHost);
-            Hotels = new HotelRepository(_context,webHost);
+            Hotels = new HotelRepository(_context, imageService);
             Rooms = new RoomRepository(_context,webHost);
             Companies = new CompanyRepository(_context,webHost);
             Accommodations = new AccommodationRepository(_context,webHost);
