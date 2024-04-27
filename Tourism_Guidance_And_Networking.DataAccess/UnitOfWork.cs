@@ -28,15 +28,15 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IUserProfileRepository UserProfiles { get; private set; }
         public IPostRepository Posts { get; private set; }
         public ICommentRepository Comments { get; private set; }
-        public UnitOfWork(ApplicationDbContext context,IWebHostEnvironment webHost,IImageService imageService)
+        public UnitOfWork(ApplicationDbContext context ,IImageService imageService)
         {
             _context = context;
             Categories = new CategoryRepository(_context);
-            TouristPlaces = new TouristPlaceRepository(_context, webHost);
+            TouristPlaces = new TouristPlaceRepository(_context, imageService);
             Hotels = new HotelRepository(_context, imageService);
-            Rooms = new RoomRepository(_context,webHost);
-            Companies = new CompanyRepository(_context,webHost);
-            Accommodations = new AccommodationRepository(_context,webHost);
+            Rooms = new RoomRepository(_context, imageService);
+            Companies = new CompanyRepository(_context, imageService);
+            Accommodations = new AccommodationRepository(_context, imageService);
             Reservations = new ReservationRepository(_context);
             ApplicationUsers = new ApplicationUserRepository(_context);
             BookingHeaders = new BookingHeaderRepository(_context);

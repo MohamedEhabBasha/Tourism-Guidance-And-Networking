@@ -1,78 +1,103 @@
 ﻿
 
 
+using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+using Tourism_Guidance_And_Networking.Core.Models.Hotels;
+
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class CompanyRepository : BaseRepository<Company>, ICompanyRepository
     {
         private new readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageService _imageService;
         private readonly string _imagesPath;
-        public CompanyRepository(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
+        public CompanyRepository(ApplicationDbContext context, IImageService imageService) : base(context)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettings.companyImagesPath}";
+            _imageService = imageService;
+            _imagesPath = FileSettings.companyImagesPath;
         }
-        public async Task<Company?> GetCompanyByNameAsync(string name)
+        public async Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name)
         {
-            Company? company = await _context.Companies.AsNoTracking().FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
+            CompanyOutputDTO? company = await _context.Companies
+            .Select(companyDTO => new CompanyOutputDTO
+            {
+                    Name = companyDTO.Name,
+                    Address = companyDTO.Address,
+                    Rating = companyDTO.Rating,
+                    Reviews = companyDTO.Reviews,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{companyDTO.Image}"
+            })
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
 
             if (company is null)
                 return null;
             return company;
         } 
-        public async Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
+        public async Task<CompanyOutputDTO> CreateCompanyAsync(CompanyDTO companyDTO)
         {
-            string coverName = await SaveCover(companyDTO.ImagePath, _imagesPath);
 
             Company company = new()
             {
                 Name = companyDTO.Name,
                 Address = companyDTO.Address,
                 Rating = companyDTO.Rating,
-                Reviews = companyDTO.Reviews,
-                Image = coverName
+                Reviews = companyDTO.Reviews
             };
+            var fileResult = _imageService.SaveImage(companyDTO.ImagePath, _imagesPath);
 
-            return await AddAsync(company);
+            if (fileResult.Item1 == 1)
+            {
+                company.Image = fileResult.Item2;
+            }
+            CompanyOutputDTO companyOutputDTO = new()
+            {
+                Name = companyDTO.Name,
+                Address = companyDTO.Address,
+                Rating = companyDTO.Rating,
+                Reviews = companyDTO.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
+            };
+            await AddAsync(company);
+
+            return companyOutputDTO;
         }
-        public async Task<Company?> UpdateCompany(int companyId, CompanyDTO companyDTO)
+        public async Task<CompanyOutputDTO?> UpdateCompany(int companyId, CompanyDTO companyDTO)
         {
-            var company = _context.Companies.SingleOrDefault(c => c.Id == companyId);
+            var company = await _context.Companies.SingleOrDefaultAsync(c => c.Id == companyId);
             if (company is null) { return null; }
 
-            bool hasNewCover = companyDTO.ImagePath is not null;
-            bool equal = Equal(company, companyDTO);
-            var oldCover = company.Image;
+            string oldImage = company.Image;
+
+            if (companyDTO.ImagePath is not null)
+            {
+                var fileResult = _imageService.SaveImage(companyDTO.ImagePath, _imagesPath);
+
+                if (fileResult.Item1 == 1)
+                {
+                    company.Image = fileResult.Item2;
+                }
+            }
 
             company.Name = companyDTO.Name;
             company.Address = companyDTO.Address;
             company.Rating = companyDTO.Rating;
             company.Reviews = companyDTO.Reviews;
 
-            if (hasNewCover)
+            if (companyDTO.ImagePath is not null)
             {
-                company.Image = await SaveCover(companyDTO.ImagePath!, _imagesPath);
-                equal = oldCover == company.Image;
+                _imageService.DeleteImage(oldImage, _imagesPath);
             }
-            if (!equal)
+            CompanyOutputDTO companyOutputDTO = new()
             {
-                if (hasNewCover)
-                {
-                    var cover = Path.Combine(_imagesPath, oldCover);
-                    File.Delete(cover);
-                }
-
-                return company;
-            }
-            else
-            {
-                //var cover = Path.Combine(_imagesPath, touristPlace.Image);
-                //File.Delete(cover);
-
-                return company;
-            }
+                Name = companyDTO.Name,
+                Address = companyDTO.Address,
+                Rating = companyDTO.Rating,
+                Reviews = companyDTO.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
+            };
+            return companyOutputDTO;
         }
         public bool DeleteCompany(int id)
         {
@@ -82,18 +107,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 return false;
             }
-            var cover = Path.Combine(_imagesPath, company.Image);
-            File.Delete(cover);
 
             Delete(company);
+            _imageService.DeleteImage(company.Image, _imagesPath);
 
-            return true;
-        }
-        private static bool Equal(Company company, CompanyDTO companyDTO)
-        {
-            if (company.Name != companyDTO.Name || company.Address != companyDTO.Address ||
-                company.Rating != companyDTO.Rating || company.Reviews != companyDTO.Reviews)
-                return false;
             return true;
         }
     }

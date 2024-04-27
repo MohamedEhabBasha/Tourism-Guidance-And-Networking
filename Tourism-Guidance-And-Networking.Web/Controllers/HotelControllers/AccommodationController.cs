@@ -76,7 +76,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Accommodation accommodation = await _unitOfWork.Accommodations.CreateAccommodationAsync(accommodationDTO);
+            AccommodationOutputDTO accommodation = await _unitOfWork.Accommodations.CreateAccommodationAsync(accommodationDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {

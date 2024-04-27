@@ -1,37 +1,70 @@
 ﻿
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+using Tourism_Guidance_And_Networking.Core.Models.Hotels;
+
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class AccommodationRepository : BaseRepository<Accommodation>, IAccommodationRepository
     {
         private new readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageService _imageService;
         private readonly string _imagesPath;
-        public AccommodationRepository(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : base(context)
+        public AccommodationRepository(ApplicationDbContext context, IImageService imageService) : base(context)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettings.accommodationImagesPath}";
+            _imageService = imageService;
+            _imagesPath = FileSettings.accommodationImagesPath; 
         }
-        public async Task<ICollection<Accommodation>> GetAccommodationsByCompanyIdAsync(int companyId)
+        public async Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int companyId)
         {
             return await _context.Accommodations
             .Where(c => c.CompanyId == companyId)
+            .Select(accommodationDTO => new AccommodationOutputDTO
+            {
+                Name = accommodationDTO.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodationDTO.Image}",
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                Count = accommodationDTO.Count,
+                CompanyId = accommodationDTO.CompanyId
+            })
             .AsNoTracking()
             .ToListAsync();
         }
 
-        public async Task<ICollection<Accommodation>> GetAccommodationsByTypeAsync(string type, int companyId)
+        public async Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByTypeAsync(string type, int companyId)
         {
             return await _context.Accommodations
                 .Where(c => c.Type.Trim().ToLower().Contains(type) && c.CompanyId == companyId)
+                .Select(accommodationDTO => new AccommodationOutputDTO
+                {
+                    Name = accommodationDTO.Name,
+                    Address = accommodationDTO.Address,
+                    Rating = accommodationDTO.Rating,
+                    Reviews = accommodationDTO.Reviews,
+                    Type = accommodationDTO.Type,
+                    Price = accommodationDTO.Price,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodationDTO.Image}",
+                    Taxes = accommodationDTO.Taxes,
+                    Info = accommodationDTO.Info,
+                    Capicity = accommodationDTO.Capicity,
+                    Count = accommodationDTO.Count,
+                    CompanyId = accommodationDTO.CompanyId
+                })
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<Accommodation> CreateAccommodationAsync(AccommodationDTO accommodationDTO)
+        public async Task<AccommodationOutputDTO> CreateAccommodationAsync(AccommodationDTO accommodationDTO)
         {
-            string coverName = await SaveCover(accommodationDTO.ImagePath, _imagesPath);
-
             Accommodation accommodation = new()
             {
                 Name = accommodationDTO.Name,
@@ -42,22 +75,50 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Price = accommodationDTO.Price,
                 Taxes = accommodationDTO.Taxes,
                 Info = accommodationDTO.Info,
-                Image = coverName,
                 Capicity = accommodationDTO.Capicity,
                 Count = accommodationDTO.Count,
                 CompanyId = accommodationDTO.CompanyId
             };
+            var fileResult = _imageService.SaveImage(accommodationDTO.ImagePath, _imagesPath);
 
-            return await AddAsync(accommodation);
+            if (fileResult.Item1 == 1)
+            {
+                accommodation.Image = fileResult.Item2;
+            }
+            AccommodationOutputDTO accommodationOutputDTO = new()
+            {
+                Name = accommodationDTO.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{fileResult.Item2}",
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                Count = accommodationDTO.Count,
+                CompanyId = accommodationDTO.CompanyId
+            };
+            await AddAsync(accommodation);
+            return accommodationOutputDTO;
         }
-        public async Task<Accommodation?> UpdateAccommodation(int accommodationId, AccommodationDTO accommodationDTO)
+        public async Task<AccommodationOutputDTO?> UpdateAccommodation(int accommodationId, AccommodationDTO accommodationDTO)
         {
-            var accommodation = _context.Accommodations.SingleOrDefault(c => c.Id == accommodationId);
+            var accommodation = await _context.Accommodations.SingleOrDefaultAsync(c => c.Id == accommodationId);
             if (accommodation is null) { return null; }
 
-            bool hasNewCover = accommodationDTO.ImagePath is not null;
-            bool equal = Equal(accommodation, accommodationDTO);
-            var oldCover = accommodation.Image;
+            string oldImage = accommodation.Image;
+
+            if (accommodationDTO.ImagePath is not null)
+            {
+                var fileResult = _imageService.SaveImage(accommodationDTO.ImagePath, _imagesPath);
+
+                if (fileResult.Item1 == 1)
+                {
+                    accommodation.Image = fileResult.Item2;
+                }
+            }
 
             accommodation.Name = accommodationDTO.Name;
             accommodation.Address = accommodationDTO.Address;
@@ -71,28 +132,28 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             accommodation.Count = accommodationDTO.Count;
             accommodation.CompanyId = accommodationDTO.CompanyId;
 
-            if (hasNewCover)
+            if (accommodationDTO.ImagePath is not null)
             {
-                accommodation.Image = await SaveCover(accommodationDTO.ImagePath!, _imagesPath);
-                equal = oldCover == accommodation.Image;
+                _imageService.DeleteImage(oldImage, _imagesPath);
             }
-            if (!equal)
-            {
-                if (hasNewCover)
-                {
-                    var cover = Path.Combine(_imagesPath, oldCover);
-                    File.Delete(cover);
-                }
 
-                return accommodation;
-            }
-            else
+            AccommodationOutputDTO accommodationOutputDTO = new()
             {
-                //var cover = Path.Combine(_imagesPath, touristPlace.Image);
-                //File.Delete(cover);
+                Name = accommodationDTO.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodation.Image}",
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                Count = accommodationDTO.Count,
+                CompanyId = accommodationDTO.CompanyId
+            };
 
-                return accommodation;
-            }
+            return accommodationOutputDTO;
         }
         public bool DeleteAccommodation(int id)
         {
@@ -102,20 +163,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 return false;
             }
-            var cover = Path.Combine(_imagesPath, accommodation.Image);
-            File.Delete(cover);
 
             Delete(accommodation);
+            _imageService.DeleteImage(accommodation.Image, _imagesPath);
 
-            return true;
-        }
-        private static bool Equal(Accommodation accommodation, AccommodationDTO accommodationDTO)
-        {
-            if (accommodation.Name != accommodationDTO.Name || accommodation.Address != accommodationDTO.Address ||
-                accommodation.Rating != accommodationDTO.Rating || accommodation.Reviews != accommodationDTO.Reviews || accommodation.Type == accommodationDTO.Type ||
-                accommodation.Price == accommodationDTO.Price || accommodation.Taxes == accommodationDTO.Taxes || accommodation.Info == accommodationDTO.Info ||
-                accommodation.Capicity == accommodationDTO.Capicity || accommodation.Count == accommodationDTO.Count || accommodation.CompanyId == accommodationDTO.CompanyId)
-                return false;
             return true;
         }
 

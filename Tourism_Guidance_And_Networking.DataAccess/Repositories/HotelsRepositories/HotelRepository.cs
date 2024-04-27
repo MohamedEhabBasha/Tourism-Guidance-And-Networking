@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Hosting;
-using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
-using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
-
+﻿
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class HotelRepository : BaseRepository<Hotel>, IHotelRepository
