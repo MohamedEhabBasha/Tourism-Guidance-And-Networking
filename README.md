@@ -3,7 +3,7 @@
 
 ## Features
 
-* Collect all attraction places in Egypt
+* <p>Collect all attraction places in Egypt, and make it easy to search</p>
  
 ## Build with
 
