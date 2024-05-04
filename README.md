@@ -3,7 +3,9 @@
 
 ## Features
 
-* <p>Collect all attraction places in Egypt, and make it easy to search</p>
+* <p>Collect all attraction places in Egypt, and make it easy to search.</p>
+
+* <p>Filter attraction places according to tourists' needs.</p>
  
 ## Build with
 
