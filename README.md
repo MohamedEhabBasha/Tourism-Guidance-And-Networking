@@ -4,6 +4,10 @@
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=C2850F&center=true&vCenter=true&random=false&width=600&height=100&lines=Welcome+to+the+Home+of+Tourists!;Step+into+our+world+of+travel+and+exploration!" alt="Typing SVG" /></a>
 </p>
 
+## Overview
+
+<p>This website is designed to facilitate interactions between tourism service providers (hotels, apartment owners, etc.) and tourists. Service providers can create accounts and showcase their offerings through personalized pages. Tourists can explore these pages, interact with providers, and even book services directly through the platform.</p>
+
 ## Features
 
 * <p>Collect all attraction places in Egypt, and make it easy to search.</p>
