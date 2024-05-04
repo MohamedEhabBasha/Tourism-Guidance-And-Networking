@@ -4,7 +4,7 @@
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=C2850F&center=true&vCenter=true&random=false&width=600&height=100&lines=Welcome+to+the+Home+of+Tourists!;Step+into+our+world+of+travel+and+exploration!" alt="Typing SVG" /></a>
 </p>
 
-<p align="center"><a href="https://antonsamoel14.bsite.net/swagger/index.html" target="_blank">Project Swagger UI</a></p>
+<p align="center">[Project Swagger UI](https://antonsamoel14.bsite.net/swagger/index.html)</p>
 
 ## Overview
 
