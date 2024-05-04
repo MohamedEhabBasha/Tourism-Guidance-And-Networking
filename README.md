@@ -6,6 +6,20 @@
 * <p>Collect all attraction places in Egypt, and make it easy to search.</p>
 
 * <p>Filter attraction places according to tourists' needs.</p>
+
+* <p>Tourism service providers can easily create accounts to establish their presence on the platform.</p>
+
+* <p>Each provider gets a dedicated page where they can share posts, photos, and information about their services.</p>
+
+* <p>Tourists can search for specific hotels or apartments based on location, amenities, and other criteria.</p>
+
+* <p>Tourists can chat directly with service providers to inquire about services, amenities, and booking details, and with other tourists.</p>
+
+* <p>Users can seamlessly book services through the platform and make payments securely.</p>
+
+* <p>Secure login and authentication for both service providers and tourists ensure a safe and personalized experience.</p>
+
+* <p>The platform is designed to be accessible and user-friendly across various devices and screen sizes.</p>
  
 ## Build with
 
