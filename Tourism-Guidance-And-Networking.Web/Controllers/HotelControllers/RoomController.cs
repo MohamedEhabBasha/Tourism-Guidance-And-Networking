@@ -75,7 +75,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Room room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
+            RoomOutputDTO room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {

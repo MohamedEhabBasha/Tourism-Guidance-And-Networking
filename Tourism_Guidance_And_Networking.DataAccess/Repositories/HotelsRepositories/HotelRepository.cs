@@ -1,19 +1,38 @@
-﻿namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
+﻿
+namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class HotelRepository : BaseRepository<Hotel>, IHotelRepository
     {
         private new readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageService _imageService;
         private readonly string _imagesPath;
-        public HotelRepository(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : base(context) 
+        public HotelRepository(ApplicationDbContext context, IImageService imageService) : base(context) 
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettings.hotelImagesPath}";
+            _imageService = imageService;
+            _imagesPath = FileSettings.hotelImagesPath;
         }
-        public async Task<Hotel> GetHotelByNameAsync(string name)
+        public async Task<ICollection<HotelOutputDTO>> GetAllHotels()
+        {
+            return await _context.Hotels.Select(h => new HotelOutputDTO { 
+            Address = h.Address,
+            Name = h.Name,
+            Rating = h.Rating,
+                Reviews = h.Reviews,
+            ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
+            }).ToListAsync(); 
+        }
+        public async Task<HotelOutputDTO> GetHotelByNameAsync(string name)
         {
             return await _context.Hotels
+                .Select(h => new HotelOutputDTO
+                {
+                    Address = h.Address,
+                    Name = h.Name,
+                    Rating = h.Rating,
+                    Reviews = h.Reviews,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
+                })
                 .AsNoTracking()
                 .FirstAsync(c => c.Name.Trim().ToLower().Contains(name));
         }
@@ -33,56 +52,69 @@
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO)
+        public async Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO)
         {
-            string coverName = await SaveCover(hotelDTO.ImagePath, _imagesPath);
-
             Hotel hotel = new() { 
                 Name = hotelDTO.Name,
                 Address = hotelDTO.Address,
                 Rating = hotelDTO.Rating,
                 Reviews = hotelDTO.Reviews,
-                Image = coverName
             };
 
-            return await AddAsync(hotel);
+            var fileResult = _imageService.SaveImage(hotelDTO.ImagePath, _imagesPath);
+
+            if (fileResult.Item1 == 1)
+            {
+                hotel.Image = fileResult.Item2;
+            }
+            HotelOutputDTO hoteldTo = new() { 
+                Address = hotelDTO.Address,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{fileResult.Item2}",
+                Rating = hotelDTO .Rating,
+                Name = hotelDTO.Name,
+                Reviews = hotelDTO .Reviews
+            };
+            await AddAsync(hotel);
+
+            return hoteldTo;
         }
-        public async Task<Hotel?> UpdateHotel(int hotelId,HotelDTO hotelDTO)
+        public async Task<HotelOutputDTO?> UpdateHotel(int hotelId,HotelDTO hotelDTO)
         {
-            var hotel = _context.Hotels.SingleOrDefault(c => c.Id == hotelId);
+            var hotel = await _context.Hotels.SingleOrDefaultAsync(c => c.Id == hotelId);
             if (hotel is null) { return null; }
 
-            bool hasNewCover = hotelDTO.ImagePath is not null;
-            bool equal = Equal(hotel, hotelDTO);
-            var oldCover = hotel.Image;
+            string oldImage = hotel.Image;
+
+            if (hotelDTO.ImagePath is not null)
+            {
+                var fileResult = _imageService.SaveImage(hotelDTO.ImagePath, _imagesPath);
+
+                if (fileResult.Item1 == 1)
+                {
+                    hotel.Image = fileResult.Item2;
+                }
+            }
 
             hotel.Name = hotelDTO.Name;
             hotel.Address = hotelDTO.Address;
             hotel.Rating = hotelDTO.Rating;
             hotel.Reviews = hotelDTO.Reviews;
 
-            if (hasNewCover)
+            if (hotelDTO.ImagePath is not null)
             {
-                hotel.Image = await SaveCover(hotelDTO.ImagePath!,_imagesPath);
-                equal = oldCover == hotel.Image;
+                _imageService.DeleteImage(oldImage, _imagesPath);
             }
-            if (!equal)
-            {
-                if (hasNewCover)
-                {
-                    var cover = Path.Combine(_imagesPath, oldCover);
-                    File.Delete(cover);
-                }
 
-                return hotel;
-            }
-            else
+            HotelOutputDTO hoteldTo = new()
             {
-                //var cover = Path.Combine(_imagesPath, touristPlace.Image);
-                //File.Delete(cover);
+                Address = hotelDTO.Address,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}",
+                Rating = hotelDTO.Rating,
+                Name = hotelDTO.Name,
+                Reviews = hotelDTO.Reviews
+            };
 
-                return hotel;
-            }
+            return hoteldTo;
         }
         public bool DeleteHotel(int id)
         {
@@ -92,19 +124,10 @@
             {
                 return false;
             }
-            var cover = Path.Combine(_imagesPath, hotel.Image);
-            File.Delete(cover);
 
             Delete(hotel);
+            _imageService.DeleteImage(hotel.Image, _imagesPath);
 
-            return true;
-        }
-
-        private static bool Equal(Hotel hotel,HotelDTO hotelDTO)
-        {
-            if(hotel.Name != hotelDTO.Name || hotel.Address != hotelDTO.Address ||
-                hotel.Rating !=  hotelDTO.Rating || hotel.Reviews != hotelDTO.Reviews)
-                return false;
             return true;
         }
     }

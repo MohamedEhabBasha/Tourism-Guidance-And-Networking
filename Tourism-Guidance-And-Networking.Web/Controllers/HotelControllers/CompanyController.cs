@@ -61,7 +61,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (companyDTO == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            Company company = await _unitOfWork.Companies.CreateCompanyAsync(companyDTO);
+            CompanyOutputDTO company = await _unitOfWork.Companies.CreateCompanyAsync(companyDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {

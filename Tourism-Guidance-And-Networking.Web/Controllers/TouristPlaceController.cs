@@ -95,7 +95,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            TouristPlace touristPlace = await _unitOfWork.TouristPlaces.CreateTouristPlace(touristPlaceDTO);
+            var touristPlace = await _unitOfWork.TouristPlaces.CreateTouristPlace(touristPlaceDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {

@@ -225,8 +225,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             postDTO.Comments = commentsDTO;
             postDTO.TotalComments = commentsDTO.Count;
 
-            var totalLikes = _context.PostLikes.Where(p => p.PostId == post.Id).Count(c => c.IsLiked);
-            var totalDisLikes = _context.PostLikes.Where(p => p.PostId == post.Id).Count(c => !c.IsLiked);
+            var userLikes = await _context.PostLikes.Where(p => p.PostId == post.Id).Select(pl => pl.IsLiked).ToListAsync();
+            var totalLikes = userLikes.Count(l => l);
+            var totalDisLikes = userLikes.Count(l => !l);
 
             postDTO.TotalLikes = totalLikes;
             postDTO.TotalDisLikes = totalDisLikes;

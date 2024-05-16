@@ -1,32 +1,43 @@
 ﻿
 
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+using Tourism_Guidance_And_Networking.Core.Interfaces;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
+using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
     {
         private new readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IImageService _imageService;
         private readonly string _imagesPath;
-        public RoomRepository(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment) : base(context) 
+        public RoomRepository(ApplicationDbContext context, IImageService imageService) : base(context) 
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}{FileSettings.roomImagesPath}";
+            _imageService = imageService;
+            _imagesPath = FileSettings.roomImagesPath;
         }
-        public async Task<ICollection<Room>> SearchRoomByNameAsync(string name)
+        public async Task<ICollection<RoomOutputDTO>> SearchRoomByNameAsync(string name)
         {
             return await _context.Rooms
                 .Where(c => c.Type.Trim().ToLower().Contains(name) || c.Info!.Trim().ToLower().Contains(name))
+                .Select(roomDTO => new RoomOutputDTO
+                {
+                    Type = roomDTO.Type,
+                    Price = roomDTO.Price,
+                    Taxes = roomDTO.Taxes,
+                    Info = roomDTO.Info,
+                    Capicity = roomDTO.Capicity,
+                    HotelId = roomDTO.HotelId,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{roomDTO.Image}",
+                    Count = roomDTO.Count
+                })
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<Room> CreateRoomAsync(RoomDTO roomDTO)
+        public async Task<RoomOutputDTO> CreateRoomAsync(RoomDTO roomDTO)
         {
-            string coverName = await SaveCover(roomDTO.ImagePath, _imagesPath);
-
             Room room = new()
             {
                  Type = roomDTO.Type,
@@ -35,20 +46,48 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                  Info = roomDTO.Info,
                  Capicity = roomDTO.Capicity,
                  HotelId = roomDTO.HotelId,
-                 Image = coverName,
-                 Count = roomDTO.Count,
+                 Count = roomDTO.Count
             };
 
-            return await AddAsync(room);
+            var fileResult = _imageService.SaveImage(roomDTO.ImagePath, _imagesPath);
+
+            if (fileResult.Item1 == 1)
+            {
+                room.Image = fileResult.Item2;
+            }
+
+            RoomOutputDTO roomOutputDTO = new()
+            {
+                Type = roomDTO.Type,
+                Price = roomDTO.Price,
+                Taxes = roomDTO.Taxes,
+                Info = roomDTO.Info,
+                Capicity = roomDTO.Capicity,
+                HotelId = roomDTO.HotelId,
+                Count = roomDTO.Count,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}"
+            };
+
+            await AddAsync(room);
+
+            return roomOutputDTO;
         }
-        public async Task<Room?> UpdateRoom(int roomId,RoomDTO roomDTO)
+        public async Task<RoomOutputDTO?> UpdateRoom(int roomId,RoomDTO roomDTO)
         {
-            var room = _context.Rooms.SingleOrDefault(c => c.Id == roomId);
+            var room = await _context.Rooms.SingleOrDefaultAsync(c => c.Id == roomId);
             if (room is null) { return null; }
 
-            bool hasNewCover = roomDTO.ImagePath is not null;
-            bool equal = Equal(room, roomDTO);
-            var oldCover = room.Image;
+            string oldImage = room.Image;
+
+            if (roomDTO.ImagePath is not null)
+            {
+                var fileResult = _imageService.SaveImage(roomDTO.ImagePath, _imagesPath);
+
+                if (fileResult.Item1 == 1)
+                {
+                    room.Image = fileResult.Item2;
+                }
+            }
 
             room.Type = roomDTO.Type;
             room.Price = roomDTO.Price;
@@ -57,28 +96,25 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             room.Info = roomDTO.Info;
             room.HotelId = roomDTO.HotelId;
 
-            if (hasNewCover)
+            if (roomDTO.ImagePath is not null)
             {
-                room.Image = await SaveCover(roomDTO.ImagePath!, _imagesPath);
-                equal = oldCover == room.Image;
+                _imageService.DeleteImage(oldImage, _imagesPath);
             }
-            if (!equal)
-            {
-                if (hasNewCover)
-                {
-                    var cover = Path.Combine(_imagesPath, oldCover);
-                    File.Delete(cover);
-                }
 
-                return room;
-            }
-            else
+            RoomOutputDTO roomOutputDTO = new()
             {
-                //var cover = Path.Combine(_imagesPath, touristPlace.Image);
-                //File.Delete(cover);
+                Type = roomDTO.Type,
+                Price = roomDTO.Price,
+                Taxes = roomDTO.Taxes,
+                Info = roomDTO.Info,
+                Capicity = roomDTO.Capicity,
+                HotelId = roomDTO.HotelId,
+                Count = roomDTO.Count,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}"
+            };
 
-                return room;
-            }
+            return roomOutputDTO;
+
         }
         public bool DeleteRoom(int id)
         {
@@ -88,24 +124,15 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 return false;
             }
-            var cover = Path.Combine(_imagesPath, room.Image);
-            File.Delete(cover);
 
             Delete(room);
+            _imageService.DeleteImage(room.Image, _imagesPath);
 
             return true;
         }
         public bool TypeExist(string type)
         {
             return _context.Rooms.SingleOrDefault(c => c.Type == type) != null;
-        }
-        private static bool Equal(Room room, RoomDTO roomDTO)
-        {
-            if (room.Type != roomDTO.Type || room.Price != roomDTO.Price || room.Taxes != roomDTO.Taxes ||
-                room.Info != roomDTO.Info || room.Capicity != roomDTO.Capicity || room.HotelId != roomDTO.HotelId 
-                )
-                return false;
-            return true;
         }
     }
 }

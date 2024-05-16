@@ -7,10 +7,10 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
 {
     public interface IRoomRepository : IBaseRepository<Room>
     {
-        Task<ICollection<Room>> SearchRoomByNameAsync(string name);
-        Task<Room> CreateRoomAsync(RoomDTO roomlDTO);
+        Task<ICollection<RoomOutputDTO>> SearchRoomByNameAsync(string name);
+        Task<RoomOutputDTO> CreateRoomAsync(RoomDTO roomlDTO);
 
-        Task<Room?> UpdateRoom(int roomId, RoomDTO roomDTO);
+        Task<RoomOutputDTO?> UpdateRoom(int roomId, RoomDTO roomDTO);
 
         bool DeleteRoom(int id);
         bool TypeExist(string type);
