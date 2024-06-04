@@ -7,6 +7,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
 {
     public interface IAccommodationRepository : IBaseRepository<Accommodation>
     {
+        Task<ICollection<AccommodationOutputDTO>> GetAllAccommodationsAsync();
+        Task<AccommodationOutputDTO> GetAccommodationByIdAsync(int accomId);
         Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int companyId);
         Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByTypeAsync(string type, int companyId);
         Task<AccommodationOutputDTO> CreateAccommodationAsync(AccommodationDTO accommodationDTO);
