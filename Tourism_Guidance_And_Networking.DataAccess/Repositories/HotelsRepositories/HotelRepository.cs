@@ -15,18 +15,36 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         public async Task<ICollection<HotelOutputDTO>> GetAllHotels()
         {
             return await _context.Hotels.Select(h => new HotelOutputDTO { 
+            ID = h.Id,
             Address = h.Address,
             Name = h.Name,
             Rating = h.Rating,
-                Reviews = h.Reviews,
+            Reviews = h.Reviews,
             ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
             }).ToListAsync(); 
+        }
+        public async Task<HotelOutputDTO> GetHotelByIdAsync(int id)
+        {
+            var h = await _context.Hotels.SingleAsync(h => h.Id == id);
+
+            var hotelOutputDto = new HotelOutputDTO
+            {
+                ID = h.Id,
+                Address = h.Address,
+                Name = h.Name,
+                Rating = h.Rating,
+                Reviews = h.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
+            };
+
+            return hotelOutputDto;
         }
         public async Task<HotelOutputDTO> GetHotelByNameAsync(string name)
         {
             return await _context.Hotels
                 .Select(h => new HotelOutputDTO
                 {
+                    ID = h.Id,
                     Address = h.Address,
                     Name = h.Name,
                     Rating = h.Rating,
@@ -54,7 +72,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         }
         public async Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO)
         {
-            Hotel hotel = new() { 
+            Hotel hotel = new() {
                 Name = hotelDTO.Name,
                 Address = hotelDTO.Address,
                 Rating = hotelDTO.Rating,
@@ -67,14 +85,18 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 hotel.Image = fileResult.Item2;
             }
-            HotelOutputDTO hoteldTo = new() { 
+
+            await AddAsync(hotel);
+
+            HotelOutputDTO hoteldTo = new()
+            {
+                ID = hotel.Id,
                 Address = hotelDTO.Address,
                 ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{fileResult.Item2}",
-                Rating = hotelDTO .Rating,
+                Rating = hotelDTO.Rating,
                 Name = hotelDTO.Name,
-                Reviews = hotelDTO .Reviews
+                Reviews = hotelDTO.Reviews
             };
-            await AddAsync(hotel);
 
             return hoteldTo;
         }
@@ -107,6 +129,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             HotelOutputDTO hoteldTo = new()
             {
+                ID = hotel.Id,
                 Address = hotelDTO.Address,
                 ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}",
                 Rating = hotelDTO.Rating,
