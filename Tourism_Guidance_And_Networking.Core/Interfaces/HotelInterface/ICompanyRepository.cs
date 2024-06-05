@@ -7,6 +7,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
 {
     public interface ICompanyRepository : IBaseRepository<Company>
     {
+        Task<ICollection<CompanyOutputDTO>> GetAllCompaniesAsync();
+        Task<CompanyOutputDTO> GetCompanyById(int id);
         Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name);
         Task<CompanyOutputDTO> CreateCompanyAsync(CompanyDTO companyDTO);
 

@@ -21,7 +21,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         [HttpGet("companies")]
         public async Task<IActionResult> GetAllCompaniesAsync()
         {
-            var companies = await _unitOfWork.Companies.GetAllAsync();
+            var companies = await _unitOfWork.Companies.GetAllCompaniesAsync();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -39,7 +39,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(company);
+            var companyDto = await _unitOfWork.Companies.GetCompanyById(id);
+
+            return Ok(companyDto);
         }
         [HttpGet("companyByName")]
         public async Task<IActionResult> GetCompanyByName(string name)

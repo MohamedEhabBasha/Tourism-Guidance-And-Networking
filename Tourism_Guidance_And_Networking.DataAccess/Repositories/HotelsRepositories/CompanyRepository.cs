@@ -1,6 +1,7 @@
 ﻿
 
 
+using Microsoft.AspNetCore.Mvc;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
@@ -17,19 +18,51 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _imageService = imageService;
             _imagesPath = FileSettings.companyImagesPath;
         }
-        public async Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name)
+        public async Task<ICollection<CompanyOutputDTO>> GetAllCompaniesAsync()
         {
-            CompanyOutputDTO? company = await _context.Companies
-            .Select(companyDTO => new CompanyOutputDTO
-            {
+            return await _context.Companies
+                .Select(companyDTO => new CompanyOutputDTO
+                {
+                    ID = companyDTO.Id,
                     Name = companyDTO.Name,
                     Address = companyDTO.Address,
                     Rating = companyDTO.Rating,
                     Reviews = companyDTO.Reviews,
                     ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{companyDTO.Image}"
-            })
+                })
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
+                .ToListAsync();
+        }
+        public async Task<CompanyOutputDTO> GetCompanyById(int id)
+        {
+            var company = await _context.Companies.SingleAsync(c => c.Id == id);
+
+            var companyDto = new CompanyOutputDTO
+            {
+                ID = company.Id,
+                Name = company.Name,
+                Address = company.Address,
+                Rating = company.Rating,
+                Reviews = company.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
+            };
+
+            return companyDto;
+        }
+        public async Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name)
+        {
+            CompanyOutputDTO? company = await _context.Companies
+            .Select(companyDTO => new CompanyOutputDTO
+            {
+                ID = companyDTO.Id,
+                Name = companyDTO.Name,
+                Address = companyDTO.Address,
+                Rating = companyDTO.Rating,
+                Reviews = companyDTO.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{companyDTO.Image}"
+            })
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
 
             if (company is null)
                 return null;
@@ -51,15 +84,18 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 company.Image = fileResult.Item2;
             }
+
+            await AddAsync(company);
+
             CompanyOutputDTO companyOutputDTO = new()
             {
+                ID = company.Id,
                 Name = companyDTO.Name,
                 Address = companyDTO.Address,
                 Rating = companyDTO.Rating,
                 Reviews = companyDTO.Reviews,
                 ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
             };
-            await AddAsync(company);
 
             return companyOutputDTO;
         }
@@ -91,6 +127,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             }
             CompanyOutputDTO companyOutputDTO = new()
             {
+                ID = company.Id,
                 Name = companyDTO.Name,
                 Address = companyDTO.Address,
                 Rating = companyDTO.Rating,
