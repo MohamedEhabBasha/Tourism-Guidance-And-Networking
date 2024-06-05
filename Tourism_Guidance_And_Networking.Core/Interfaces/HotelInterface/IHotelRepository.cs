@@ -11,10 +11,6 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<HotelOutputDTO> GetHotelByIdAsync(int id);
         Task<HotelOutputDTO> GetHotelByNameAsync(string name);
 
-        Task<ICollection<Room>> GetRoomsByIdAsync(int hotelId);
-        
-        Task<ICollection<Room>> GetRoomsByTypeAsync(string type,int hotelId);
-
         Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO);
 
         Task<HotelOutputDTO?> UpdateHotel(int hotelId, HotelDTO hotelDTO);

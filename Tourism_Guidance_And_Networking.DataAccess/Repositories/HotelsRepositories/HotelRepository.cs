@@ -54,22 +54,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .FirstAsync(c => c.Name.Trim().ToLower().Contains(name));
         }
-
-        public async Task<ICollection<Room>> GetRoomsByIdAsync(int hotelId)
-        {
-            return await _context.Rooms
-                .Where(c => c.HotelId == hotelId)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task<ICollection<Room>> GetRoomsByTypeAsync(string type,int hotelId)
-        {
-            return await _context.Rooms
-                .Where(c => c.Type.Trim().ToLower().Contains(type) && c.HotelId == hotelId)
-                .AsNoTracking()
-                .ToListAsync();
-        }
         public async Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO)
         {
             Hotel hotel = new() {
