@@ -6,6 +6,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
     public interface IPostRepository : IBaseRepository<Post>
     {
         Task<ICollection<PostDTO>> GetAllPosts();
+        Task<PostDTO> GetPostById(int id);
         Task<ICollection<PostDTO>> GetAllPostsByUserId(string id);
         Task<ICollection<PostDTO>> GetAllFriendsPostsByUserId(string id);
         Task<int> GetPostLikeStatus(int postId, string userId);

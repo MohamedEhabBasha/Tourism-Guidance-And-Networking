@@ -43,7 +43,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             BookingDetails = new BookingDetailRepository(_context);
             PrivateChats = new PrivateChatRepository(_context);
             Messages = new MessageRepository(_context);
-            UserProfiles = new UserProfileRepository(_context);
+            UserProfiles = new UserProfileRepository(_context,imageService);
             Posts = new PostRepository(_context, imageService);
             Comments = new CommentRepository(_context);
         }

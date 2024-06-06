@@ -141,6 +141,29 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return StatusCode(201, newFriend);
         }
+        [HttpPost("UploadProfileImage")]
+        public async Task<IActionResult> UploadTouristProfileImage([FromForm] UserPhotoDTO userPhotoDTO)
+        {
+            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userPhotoDTO.UserId);
+
+            if(user is null)
+            {
+                return NotFound("User does not exist!!");
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _unitOfWork.UserProfiles.UploadTouristPhoto(userPhotoDTO);
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Uploaded Successfully");
+        }
 
         [HttpDelete("DeleteFriend")]
         public IActionResult DeleteFriend([FromQuery] string userId, [FromQuery] string friendId)

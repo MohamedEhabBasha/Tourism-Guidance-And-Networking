@@ -34,7 +34,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return postDTOs;
         }
+        public async Task<PostDTO> GetPostById(int id)
+        {
+            var post = await _context.Posts.SingleAsync(p => p.Id == id);
 
+            PostDTO postDTO = await PostToPostDTO(post);
+
+            return postDTO;
+        }
         public async Task<ICollection<PostDTO>> GetAllPostsByUserId(string id)
         {
             List<PostDTO> postDTOs = new();

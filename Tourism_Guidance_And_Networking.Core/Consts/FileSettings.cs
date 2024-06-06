@@ -5,6 +5,7 @@ namespace Tourism_Guidance_And_Networking.Core.Consts
     public static class FileSettings
     {
         public const string RootPath = "https://antonsamoel14.bsite.net/staticfiles";
+        public const string userPhotoImagePath = "images/UserProfilePhoto";
         public const string touristplaceImagesPath = "images/TouristPlaceImages";
         public const string hotelImagesPath = "images/HotelImages";
         public const string postImagesPath = "images/Posts";

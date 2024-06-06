@@ -26,6 +26,16 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(posts);
         }
+        [HttpGet("GetPostById/{id:int}")]
+        public async Task<IActionResult> GetPostById(int id)
+        {
+            var post = await _unitOfWork.Posts.GetByIdAsync(id);
+
+            if(post is null)
+                return NotFound();
+
+            return Ok(await _unitOfWork.Posts.GetPostById(id));
+        }
         [HttpGet("GetAllPostsByUserId")]
         public async Task<IActionResult> GetAllPostsByUserId([FromQuery] string userId)
         {
