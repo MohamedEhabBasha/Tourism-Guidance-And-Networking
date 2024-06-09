@@ -34,7 +34,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if(post is null)
                 return NotFound();
 
-            return Ok(await _unitOfWork.Posts.GetPostById(id));
+            return Ok(await _unitOfWork.Posts.GetPostByIdAsync(id));
         }
         [HttpGet("GetAllPostsByUserId")]
         public async Task<IActionResult> GetAllPostsByUserId([FromQuery] string userId)
@@ -109,7 +109,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return StatusCode(201, post);
         }
         [HttpPut("UpdatePost/{id}")]
-        public async Task<IActionResult> UpdatePost(int id,[FromForm] PostInputDTO postDTO)
+        public IActionResult UpdatePost(int id,[FromForm] PostInputDTO postDTO)
         {
             if (postDTO == null)
                 return BadRequest(ModelState);
@@ -117,17 +117,16 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == postDTO.UserId);
+            var user = _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == postDTO.UserId);
+            var post = _unitOfWork.Posts.GetById(id);
 
-            if (user is null)
+            if (user is null || post is null)
             {
                 return NotFound();
-            }
+            } 
 
-            var post = await _unitOfWork.Posts.UpdatePostAsync(id, postDTO);
+            var updatedPost = _unitOfWork.Posts.UpdatePost(id, postDTO);
 
-            if (post == null)
-                return BadRequest("No existing post");
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -135,7 +134,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return StatusCode(500, ModelState);
             }
 
-            return StatusCode(201, post);
+            return StatusCode(201, updatedPost);
         }
         [HttpDelete("{id}")]
         public IActionResult DeletePost(int id)
@@ -178,16 +177,16 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(postLike);
         }
         [HttpPut("UpdatePostLike")]
-        public async Task<IActionResult> UpdatePostLike(PostLikeDTO postLikeDTO)
+        public IActionResult UpdatePostLike(PostLikeDTO postLikeDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var post =  _unitOfWork.Posts.GetById(postLikeDTO.PostId);
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(a => a.Id == postLikeDTO.ApplicationUserId); // need to be checked
+            var user = _unitOfWork.ApplicationUsers.GetApplicationUserById(postLikeDTO.ApplicationUserId); // need to be checked
 
             if (post is null || user is null)
-                return BadRequest(ModelState);
+                return NotFound(ModelState);
 
             var postLike = _unitOfWork.Posts.UpdatePostLike(postLikeDTO);
 
@@ -200,13 +199,13 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(postLike);
         }
         [HttpDelete("DeletePostLike/{postId}")]
-        public async Task<IActionResult> DeletePostLike(int postId, string userId)
+        public IActionResult DeletePostLike(int postId, string userId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var post = _unitOfWork.Posts.GetById(postId);
-            var user = await _unitOfWork.ApplicationUsers.FindAsync(a => a.Id == userId);
+            var user = _unitOfWork.ApplicationUsers.GetApplicationUserById(userId);
 
             if (post is null || user is null)
                 return BadRequest(ModelState);

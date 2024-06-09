@@ -9,5 +9,6 @@
         public int TotalLikes { get; set; }
         public int TotalDisLikes { get; set; }
         public double Rate { get; set; }
+        public string CreationDate { get; set; } = string.Empty;
     }
 }

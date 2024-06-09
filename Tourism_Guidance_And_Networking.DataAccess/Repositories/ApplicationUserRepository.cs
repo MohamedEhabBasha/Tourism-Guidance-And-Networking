@@ -20,5 +20,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
         {
             return await _context.ApplicationUsers.FirstAsync(x => x.UserName == userName);
         }
+        public ApplicationUser? GetApplicationUserById(string userId) => _context.ApplicationUsers.SingleOrDefault(a => a.Id == userId);
     }
 }

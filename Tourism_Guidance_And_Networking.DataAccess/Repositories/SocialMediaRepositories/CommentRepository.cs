@@ -47,7 +47,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 Text = commentDTO.Text,
                 ApplicationUserId = commentDTO.UserId,
                 PostId = commentDTO.PostID,
-                Rate = commentDTO.Rate
+                Rate = commentDTO.Rate,
+                CreationDate = DateTime.Now.ToString()
             };
 
             return await AddAsync(comment);

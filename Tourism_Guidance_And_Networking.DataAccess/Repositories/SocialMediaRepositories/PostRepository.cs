@@ -34,7 +34,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return postDTOs;
         }
-        public async Task<PostDTO> GetPostById(int id)
+        public async Task<PostDTO> GetPostByIdAsync(int id)
         {
             var post = await _context.Posts.SingleAsync(p => p.Id == id);
 
@@ -81,7 +81,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             Post post = new()
             {
                 Description = postDTO.Description,
-                ApplicationUserId = postDTO.UserId
+                ApplicationUserId = postDTO.UserId,
+                CreationDate = DateTime.Now.ToString()
             };
 
             var fileResult = _imageService.SaveImage(postDTO.ImagePath, _imagesPath);
@@ -93,12 +94,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return await AddAsync(post);
         }
-        public async Task<Post?> UpdatePostAsync(int postId, PostInputDTO postDTO)
+        public Post UpdatePost(int postId, PostInputDTO postDTO)
         {
-            var post = await FindAsync(x => x.Id ==  postId);
-
-            if (post is null)
-                return null;
+            var post = _context.Posts.Single(x => x.Id ==  postId);
 
             #region OldWayImageSave
             //bool hasNewCover = postDTO.ImagePath is not null;
@@ -238,6 +236,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             postDTO.TotalLikes = totalLikes;
             postDTO.TotalDisLikes = totalDisLikes;
+            postDTO.CreationDate = post.CreationDate;
 
             return postDTO;
         }
@@ -265,6 +264,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             commentDTO.ApplicationUser = userDTO;
             commentDTO.Rate = comment.Rate;
+            commentDTO.CreationDate = comment.CreationDate;
 
             return commentDTO;
         }
@@ -280,5 +280,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             return -1;
 
         }
+
     }
 }
