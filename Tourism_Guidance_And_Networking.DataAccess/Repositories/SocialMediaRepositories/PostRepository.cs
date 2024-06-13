@@ -178,6 +178,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             var postLikes = _context.PostLikes.Where(p => p.PostId ==  postId).ToList();
             var comments = _context.Comments.Where(c => c.PostId  == postId).ToList();
+            
+            foreach(var comment in comments)
+            {
+                var commentLikes = _context.CommentLikes.Where(cl => cl.CommentId == comment.Id).ToList();
+                _context.CommentLikes.RemoveRange(commentLikes);
+            }
 
             _context.PostLikes.RemoveRange(postLikes);
             _context.Comments.RemoveRange(comments);
