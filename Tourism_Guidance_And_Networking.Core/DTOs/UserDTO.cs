@@ -11,5 +11,6 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs
         public string Address { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Image {  get; set; } = string.Empty;
+        public List<string> Role {  get; set; } = default!;
     }
 }

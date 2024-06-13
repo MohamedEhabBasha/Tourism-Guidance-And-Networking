@@ -76,6 +76,23 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             return postDTOs;
         }
+        public async Task<ICollection<PostDTO>> SearchPostsByName(string name)
+        {
+            var list = new List<PostDTO>();
+            var posts = await _context.Posts
+                .Where(p => p.Description!.Trim().ToLower().Contains(name))
+                .ToListAsync();
+
+            PostDTO postDTO = new();
+            foreach(var post in posts)
+            {
+                postDTO = await PostToPostDTO(post);
+                list.Add(postDTO);
+            }
+
+            return list;
+        }
+
         public async Task<Post> CreatePostAsync(PostInputDTO postDTO)
         {
             Post post = new()

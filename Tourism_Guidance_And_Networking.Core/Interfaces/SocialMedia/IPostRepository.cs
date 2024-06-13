@@ -10,6 +10,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
         Task<ICollection<PostDTO>> GetAllPostsByUserId(string id);
         Task<ICollection<PostDTO>> GetAllFriendsPostsByUserId(string id);
         Task<int> GetPostLikeStatus(int postId, string userId);
+        Task<ICollection<PostDTO>> SearchPostsByName(string name);
         Task<Post> CreatePostAsync(PostInputDTO postDTO);
         Post UpdatePost(int postId,PostInputDTO postDTO);
         bool DeletePost(int postId);

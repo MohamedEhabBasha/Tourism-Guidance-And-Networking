@@ -82,6 +82,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(status);
 
         }
+        [HttpGet("postsByName")]
+        public async Task<IActionResult> SearchAllPostsByName([FromQuery]string name)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(await _unitOfWork.Posts.SearchPostsByName(name));
+        }
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO) 
         {
