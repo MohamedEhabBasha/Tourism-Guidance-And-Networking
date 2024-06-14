@@ -23,9 +23,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         {
             var room = await _unitOfWork.Rooms.GetByIdAsync(id);
 
+            if(room == null)
+            {
+                return NotFound("Room do not exist!!");
+            }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(room);
+
+            var roomDto = await _unitOfWork.Rooms.GetRoomById(id); 
+            return Ok(roomDto);
         }
         [HttpGet("rooms/{hotelId:int}")]
         public async Task<IActionResult> GetRoomsByHotelId(int hotelId)
@@ -33,7 +39,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!_unitOfWork.Hotels.Exist(hotelId))
                 return NotFound();
 
-            var rooms = await _unitOfWork.Hotels.GetRoomsByIdAsync(hotelId);
+            var rooms = await _unitOfWork.Rooms.GetRoomsByHotelIdAsync(hotelId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -48,7 +54,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!_unitOfWork.Rooms.TypeExist(type))
                 return NotFound();
 
-            var rooms = await _unitOfWork.Hotels.GetRoomsByTypeAsync(type, id);
+            var rooms = await _unitOfWork.Rooms.GetRoomsByTypeAsync(type, id);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

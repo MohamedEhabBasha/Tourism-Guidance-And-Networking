@@ -30,5 +30,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentLikes> CommentLikes { get; set; }
+        public DbSet<TouristProfileImage> TouristProfilesImages { get; set; }
     }
 }

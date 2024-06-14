@@ -10,6 +10,7 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs
         public int TotalLikes { get; set; }
         public int TotalDisLikes { get; set; }
         public int TotalComments { get; set; }
+        public string CreationDate { get; set; } = string.Empty;
         public UserDTO UserDTO { get; set; } = default!;
         public IEnumerable<CommentDTO> Comments { get; set; } = Enumerable.Empty<CommentDTO>();
     }

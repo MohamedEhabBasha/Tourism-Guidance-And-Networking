@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
@@ -12,6 +13,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
         public ICategoryRepository Categories { get; private set; }
         public ITouristPlaceRepository TouristPlaces { get; private set; }
         public IHotelRepository Hotels { get; private set; } 
@@ -28,9 +30,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IUserProfileRepository UserProfiles { get; private set; }
         public IPostRepository Posts { get; private set; }
         public ICommentRepository Comments { get; private set; }
-        public UnitOfWork(ApplicationDbContext context ,IImageService imageService)
+        public UnitOfWork(ApplicationDbContext context ,IImageService imageService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
             Categories = new CategoryRepository(_context);
             TouristPlaces = new TouristPlaceRepository(_context, imageService);
             Hotels = new HotelRepository(_context, imageService);
@@ -43,7 +46,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             BookingDetails = new BookingDetailRepository(_context);
             PrivateChats = new PrivateChatRepository(_context);
             Messages = new MessageRepository(_context);
-            UserProfiles = new UserProfileRepository(_context);
+            UserProfiles = new UserProfileRepository(_context,imageService,_userManager);
             Posts = new PostRepository(_context, imageService);
             Comments = new CommentRepository(_context);
         }

@@ -18,12 +18,56 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _imageService = imageService;
             _imagesPath = FileSettings.accommodationImagesPath; 
         }
+        public async Task<ICollection<AccommodationOutputDTO>> GetAllAccommodationsAsync()
+        {
+            return await _context.Accommodations.Select(accommodationDTO => new AccommodationOutputDTO
+            {
+                Id = accommodationDTO.Id,
+                Name = accommodationDTO.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodationDTO.Image}",
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                Count = accommodationDTO.Count,
+                CompanyId = accommodationDTO.CompanyId
+            }).AsNoTracking()
+              .ToListAsync();
+        }
+        public async Task<AccommodationOutputDTO> GetAccommodationByIdAsync(int accomId)
+        {
+            var accommodationDTO = await _context.Accommodations.SingleOrDefaultAsync(C => C.Id == accomId);
+
+            var accomm = new AccommodationOutputDTO
+            {
+                Id = accomId,
+                Name = accommodationDTO!.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodationDTO.Image}",
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                Count = accommodationDTO.Count,
+                CompanyId = accommodationDTO.CompanyId
+            };
+
+            return accomm;
+        }
         public async Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int companyId)
         {
             return await _context.Accommodations
             .Where(c => c.CompanyId == companyId)
             .Select(accommodationDTO => new AccommodationOutputDTO
             {
+                Id = accommodationDTO.Id,
                 Name = accommodationDTO.Name,
                 Address = accommodationDTO.Address,
                 Rating = accommodationDTO.Rating,
@@ -47,6 +91,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .Where(c => c.Type.Trim().ToLower().Contains(type) && c.CompanyId == companyId)
                 .Select(accommodationDTO => new AccommodationOutputDTO
                 {
+                    Id = accommodationDTO.Id,
                     Name = accommodationDTO.Name,
                     Address = accommodationDTO.Address,
                     Rating = accommodationDTO.Rating,
@@ -87,6 +132,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             }
             AccommodationOutputDTO accommodationOutputDTO = new()
             {
+                Id = accommodation.Id,
                 Name = accommodationDTO.Name,
                 Address = accommodationDTO.Address,
                 Rating = accommodationDTO.Rating,
@@ -139,6 +185,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             AccommodationOutputDTO accommodationOutputDTO = new()
             {
+                Id = accommodation.Id,
                 Name = accommodationDTO.Name,
                 Address = accommodationDTO.Address,
                 Rating = accommodationDTO.Rating,

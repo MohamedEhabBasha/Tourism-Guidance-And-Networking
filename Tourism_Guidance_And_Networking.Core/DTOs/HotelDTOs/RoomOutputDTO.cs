@@ -3,6 +3,7 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
 {
     public class RoomOutputDTO
     {
+        public int ID { get; set; }
         public string Type { get; set; } = string.Empty;
         public double Price { get; set; }
         public int Count { get; set; }

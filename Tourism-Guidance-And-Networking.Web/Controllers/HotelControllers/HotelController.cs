@@ -33,21 +33,26 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         public async Task<IActionResult> GetHotelById(int id)
         {
             var hotel = await _unitOfWork.Hotels.GetByIdAsync(id);
-
+            if(hotel is null)
+                return NotFound("Hotel does not exist");
+            var hotelDto = await _unitOfWork.Hotels.GetHotelByIdAsync(id);
+            
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(hotel);
+            return Ok(hotelDto);
         }
         [HttpGet("hotelByName")]
         public async Task<IActionResult> GetHotelByName(string name)
         {
-            var hotel = await _unitOfWork.Hotels.GetHotelByNameAsync(name);
+            var hotel = await _unitOfWork.Hotels.FindAsync(H => H.Name == name);
 
             if (hotel is null)
                 return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(hotel);
+
+            var hotelDto = await _unitOfWork.Hotels.GetHotelByNameAsync(name);
+            return Ok(hotelDto);
         }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]

@@ -1,19 +1,29 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Identity.Client;
 using System.Linq.Expressions;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
+using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
+using Tourism_Guidance_And_Networking.DataAccess.Migrations;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories
 {
     public class UserProfileRepository : IUserProfileRepository
     {
         private  readonly ApplicationDbContext _context;
-        public UserProfileRepository(ApplicationDbContext context) 
+        private readonly IImageService _imageService;
+        private readonly string _imagesPath;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserProfileRepository(ApplicationDbContext context, IImageService imageService, UserManager<ApplicationUser> userManager) 
         {
             _context = context;
+            _imageService = imageService;
+            _imagesPath = FileSettings.userPhotoImagePath;
+            _userManager = userManager;
         }
         public async Task<ICollection<ContactDTO>> GetAllContacts(string id)
         {
@@ -30,6 +40,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     user = await _context.ApplicationUsers.SingleAsync(x => x.Id == contact.AppUserId);
 
                 var chat = await _context.PrivateChats.SingleAsync(c => ((c.SenderId == id && c.ReceiverId == user.Id) || (c.ReceiverId == id && c.SenderId == user.Id)));
+                var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
+                var roles = await _userManager.GetRolesAsync(user);
 
                 UserDTO userDTO = new()
                 {
@@ -39,8 +51,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     Address = user.Address,
                     Email = user.Email!,
                     PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    Role = roles.ToList()
                 };
+                if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
                 ContactDTO contactDTO = new()
                 {
                     ChatId = chat.Id,
@@ -65,7 +79,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 }
                 else
                     user = await _context.ApplicationUsers.SingleAsync(x => x.Id == friend.AppUserId);
-
+                var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
+                var roles = await _userManager.GetRolesAsync(user);
                 UserDTO userDTO = new()
                 {
                     Id = user.Id,
@@ -74,9 +89,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     Address = user.Address,
                     Email = user.Email!,
                     PhoneNumber = user.PhoneNumber,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    Role = roles.ToList()
                 };
-
+                if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
                 users.Add(userDTO);
             }
             return users;
@@ -84,6 +100,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         public async Task<UserProfileDTO> GetUserProfileDTOAsync(string userId)
         {
             var user = await _context.ApplicationUsers.SingleAsync(x=> x.Id == userId);
+            var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
+            var roles = await _userManager.GetRolesAsync(user);
             UserDTO userDTO = new()
             {
                 Id = user.Id,
@@ -92,8 +110,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 Address = user.Address,
                 Email = user.Email!,
                 PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Role = roles.ToList()
             };
+            if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
             var friends = await GetAllFriends(user.Id);
 
             UserProfileDTO userProfileDTO = new() { 
@@ -114,6 +134,41 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             }
 
             return true;
+        }
+        public async Task<TouristProfileImage> UploadTouristPhoto(UserPhotoDTO userPhoto)
+        {
+            TouristProfileImage? touristProfile = await _context.TouristProfilesImages.SingleOrDefaultAsync(t => t.AppUserId == userPhoto.UserId);
+            string oldImage = string.Empty;
+
+            if (touristProfile is null)
+            {
+                touristProfile = new()
+                {
+                    AppUserId = userPhoto.UserId
+                };
+            }
+            else
+            {
+                oldImage = touristProfile.Image;
+            }
+
+            var fileResult = _imageService.SaveImage(userPhoto.ImagePath, _imagesPath);
+
+            if (fileResult.Item1 == 1)
+            {
+                touristProfile.Image = fileResult.Item2;
+            }
+
+            if(oldImage != string.Empty)
+            {
+                _imageService.DeleteImage(oldImage, _imagesPath);
+            }
+            else
+            {
+                await _context.TouristProfilesImages.AddAsync(touristProfile);
+            }
+
+            return touristProfile;
         }
         public async Task<Friend> CreateFriendAsync(FriendDTO friendDTO)
         {
@@ -151,5 +206,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
         {
             return await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId && x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
         }
-    }
+        private string GetImageURL(string imageId) => $"{FileSettings.RootPath}/{_imagesPath}/{imageId}";
+}
 }

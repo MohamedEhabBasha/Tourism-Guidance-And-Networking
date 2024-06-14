@@ -31,6 +31,15 @@ namespace Tourism_Guidance_And_Networking.Web
                                   .AllowAnyHeader()
                                   .AllowAnyMethod());
             });
+            // Cors for SignalR
+            builder.Services.AddCors(options => options.AddPolicy("SignalrCorsPolicy",
+                builder =>
+                {
+                    builder.AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .SetIsOriginAllowed((host) => true)
+                           .AllowCredentials();
+                }));
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -129,14 +138,14 @@ namespace Tourism_Guidance_And_Networking.Web
             //}
 
 
-            app.UseCors("AllowAnyOrigin");
+           /* app.UseCors("AllowAnyOrigin");
 
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                 Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
                 RequestPath = "/StaticFiles"
-            });
+            });*/
 
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -157,7 +166,7 @@ namespace Tourism_Guidance_And_Networking.Web
             app.MapControllers();
 
             // Hubs
-            app.MapHub<ChatHub>("/services/hubs/chathub").RequireCors("AllowAnyOrigin");
+            app.MapHub<ChatHub>("/services/hubs/chathub").RequireCors("SignalrCorsPolicy");
 
             app.Run();
 

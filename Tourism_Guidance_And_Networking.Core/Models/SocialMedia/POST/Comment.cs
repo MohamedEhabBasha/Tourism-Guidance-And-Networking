@@ -14,6 +14,8 @@ namespace Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST
         [ValidateNever]
         [JsonIgnore]
         public ApplicationUser User { get; set; } = default!;
+
+        public string CreationDate { get; set; } = string.Empty;
         [Required]
         public int PostId { get; set; } 
         [ForeignKey("PostId")]

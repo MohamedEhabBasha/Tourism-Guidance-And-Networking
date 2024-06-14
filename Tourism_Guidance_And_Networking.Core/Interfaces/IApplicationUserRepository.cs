@@ -10,5 +10,6 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
     public interface IApplicationUserRepository : IBaseRepository<ApplicationUser>
     {
         public Task<ApplicationUser> GetApplicationUserByUserName(string userName);
+        public ApplicationUser? GetApplicationUserById(string userId);
     }
 }

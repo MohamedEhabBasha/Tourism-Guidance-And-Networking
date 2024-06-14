@@ -21,9 +21,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         [HttpGet("accommodations")]
         public async Task<IActionResult> GetAllAccommodationsAsync()
         {
-            var accommodations =  await _unitOfWork.Accommodations.GetAllAsync();
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var accommodations =  await _unitOfWork.Accommodations.GetAllAccommodationsAsync();
+
             return Ok(accommodations);
         }
         [HttpGet("{id:int}")]
@@ -35,7 +34,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 return NotFound();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(accommodation);
+            var accommDTO = await _unitOfWork.Accommodations.GetAccommodationByIdAsync(id);
+            return Ok(accommDTO);
         }
         [HttpGet("accommodations/{companyId:int}")]
         public async Task<IActionResult> GetAccommodationsByCompanyId(int companyId)

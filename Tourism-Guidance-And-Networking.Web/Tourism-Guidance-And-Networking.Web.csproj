@@ -34,4 +34,8 @@
 		<ProjectReference Include="..\Tourism_Guidance_And_Networking.DataAccess\Tourism_Guidance_And_Networking.DataAccess.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\UserProfilePhoto\" />
+	</ItemGroup>
+
 </Project>

@@ -18,12 +18,70 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _imageService = imageService;
             _imagesPath = FileSettings.roomImagesPath;
         }
+        public async Task<RoomOutputDTO> GetRoomById(int id)
+        {
+            var room = await _context.Rooms.SingleAsync(r => r.Id == id);
+
+            var roomDto = new RoomOutputDTO
+            {
+                ID = room.Id,
+                Type = room.Type,
+                Price = room.Price,
+                Taxes = room.Taxes,
+                Info = room.Info,
+                Capicity = room.Capicity,
+                HotelId = room.HotelId,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}",
+                Count = room.Count
+            };
+
+            return roomDto;
+        }
+        public async Task<ICollection<RoomOutputDTO>> GetRoomsByHotelIdAsync(int hotelId)
+        {
+            return await _context.Rooms
+                .Where(c => c.HotelId == hotelId)
+                .AsNoTracking()
+                .Select(roomDTO => new RoomOutputDTO
+                {
+                    ID = roomDTO.Id,
+                    Type = roomDTO.Type,
+                    Price = roomDTO.Price,
+                    Taxes = roomDTO.Taxes,
+                    Info = roomDTO.Info,
+                    Capicity = roomDTO.Capicity,
+                    HotelId = roomDTO.HotelId,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{roomDTO.Image}",
+                    Count = roomDTO.Count
+                })
+                .ToListAsync();
+        }
+        public async Task<ICollection<RoomOutputDTO>> GetRoomsByTypeAsync(string type, int hotelId)
+        {
+            return await _context.Rooms
+                .Where(c => c.Type.Trim().ToLower().Contains(type) && c.HotelId == hotelId)
+                .Select(roomDTO => new RoomOutputDTO
+                {
+                    ID = roomDTO.Id,
+                    Type = roomDTO.Type,
+                    Price = roomDTO.Price,
+                    Taxes = roomDTO.Taxes,
+                    Info = roomDTO.Info,
+                    Capicity = roomDTO.Capicity,
+                    HotelId = roomDTO.HotelId,
+                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{roomDTO.Image}",
+                    Count = roomDTO.Count
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<ICollection<RoomOutputDTO>> SearchRoomByNameAsync(string name)
         {
             return await _context.Rooms
                 .Where(c => c.Type.Trim().ToLower().Contains(name) || c.Info!.Trim().ToLower().Contains(name))
                 .Select(roomDTO => new RoomOutputDTO
                 {
+                    ID = roomDTO.Id,
                     Type = roomDTO.Type,
                     Price = roomDTO.Price,
                     Taxes = roomDTO.Taxes,
@@ -56,8 +114,11 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 room.Image = fileResult.Item2;
             }
 
+            await AddAsync(room);
+
             RoomOutputDTO roomOutputDTO = new()
             {
+                ID = room.Id,
                 Type = roomDTO.Type,
                 Price = roomDTO.Price,
                 Taxes = roomDTO.Taxes,
@@ -67,8 +128,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Count = roomDTO.Count,
                 ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}"
             };
-
-            await AddAsync(room);
 
             return roomOutputDTO;
         }
@@ -103,6 +162,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             RoomOutputDTO roomOutputDTO = new()
             {
+                ID = room.Id,
                 Type = roomDTO.Type,
                 Price = roomDTO.Price,
                 Taxes = roomDTO.Taxes,

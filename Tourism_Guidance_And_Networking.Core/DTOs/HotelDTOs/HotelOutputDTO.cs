@@ -3,6 +3,7 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
 {
     public class HotelOutputDTO
     {
+        public int ID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
 
