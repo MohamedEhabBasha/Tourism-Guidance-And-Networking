@@ -11,9 +11,10 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
         public string Name { get; set; } = string.Empty;
         [Required, MaxLength(250)]
         public string Address { get; set; } = string.Empty;
-
         public double Rating { get; set; }
-
+        public string Location { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Governorate { get; set; } = string.Empty;
         public int Reviews { get; set; }
         [Required]
         public string Type { get; set; } = string.Empty;

@@ -11,10 +11,10 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<RoomOutputDTO> GetRoomById(int id);
         Task<ICollection<RoomOutputDTO>> GetRoomsByHotelIdAsync(int hotelId);
         Task<ICollection<RoomOutputDTO>> GetRoomsByTypeAsync(string type, int hotelId);
-        Task<RoomOutputDTO> CreateRoomAsync(RoomDTO roomlDTO);
+        Task<Room> CreateRoomAsync(RoomDTO roomlDTO);
 
-        Task<RoomOutputDTO?> UpdateRoom(int roomId, RoomDTO roomDTO);
-
+        RoomOutputDTO UpdateRoom(int roomId, RoomDTO roomDTO);
+        static abstract RoomOutputDTO ToRoomOutputDto(Room room);
         bool DeleteRoom(int id);
         bool TypeExist(string type);
     }

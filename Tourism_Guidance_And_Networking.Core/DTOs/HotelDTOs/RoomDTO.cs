@@ -17,6 +17,8 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
         public double Taxes { get; set; }
         [Required]
         public string Info { get; set; } = string.Empty;
+        [Required]
+        public string Description { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Choose an image"),
          AllowedExtenstions(FileSettings.AllowedExtensions)]

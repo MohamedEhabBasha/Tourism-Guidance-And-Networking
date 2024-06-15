@@ -1,67 +1,48 @@
 ﻿
+using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories
 {
     public class HotelRepository : BaseRepository<Hotel>, IHotelRepository
     {
         private new readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
-        private readonly string _imagesPath;
+        private readonly static string _imagesPath = FileSettings.hotelImagesPath;
         public HotelRepository(ApplicationDbContext context, IImageService imageService) : base(context) 
         {
             _context = context;
             _imageService = imageService;
-            _imagesPath = FileSettings.hotelImagesPath;
         }
         public async Task<ICollection<HotelOutputDTO>> GetAllHotels()
         {
-            return await _context.Hotels.Select(h => new HotelOutputDTO { 
-            ID = h.Id,
-            Address = h.Address,
-            Name = h.Name,
-            Rating = h.Rating,
-            Reviews = h.Reviews,
-            ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
-            }).ToListAsync(); 
+            return await _context.Hotels.Select(h => ToHotelOutputDto(h)).ToListAsync(); 
         }
         public async Task<HotelOutputDTO> GetHotelByIdAsync(int id)
         {
             var h = await _context.Hotels.SingleAsync(h => h.Id == id);
 
-            var hotelOutputDto = new HotelOutputDTO
-            {
-                ID = h.Id,
-                Address = h.Address,
-                Name = h.Name,
-                Rating = h.Rating,
-                Reviews = h.Reviews,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
-            };
+            var hotelOutputDto = ToHotelOutputDto(h);
 
             return hotelOutputDto;
         }
-        public async Task<HotelOutputDTO> GetHotelByNameAsync(string name)
+        public async Task<ICollection<HotelOutputDTO>> GetHotelByNameAsync(string name)
         {
             return await _context.Hotels
-                .Select(h => new HotelOutputDTO
-                {
-                    ID = h.Id,
-                    Address = h.Address,
-                    Name = h.Name,
-                    Rating = h.Rating,
-                    Reviews = h.Reviews,
-                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{h.Image}"
-                })
+                .Where(h => h.Name.Trim().ToLower().Contains(name))
+                .Select(h => ToHotelOutputDto(h))
                 .AsNoTracking()
-                .FirstAsync(c => c.Name.Trim().ToLower().Contains(name));
+                .ToListAsync();
         }
-        public async Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO)
+        public async Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO)
         {
             Hotel hotel = new() {
                 Name = hotelDTO.Name,
                 Address = hotelDTO.Address,
                 Rating = hotelDTO.Rating,
                 Reviews = hotelDTO.Reviews,
-                ApplicationUserId = hotelDTO.ApplicationUserId
+                ApplicationUserId = hotelDTO.ApplicationUserId,
+                Location = hotelDTO.Location,
+                Governorate = hotelDTO.Governorate
             };
 
             var fileResult = _imageService.SaveImage(hotelDTO.ImagePath, _imagesPath);
@@ -71,26 +52,13 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 hotel.Image = fileResult.Item2;
             }
 
-            await AddAsync(hotel);
-
-            HotelOutputDTO hoteldTo = new()
-            {
-                ID = hotel.Id,
-                Address = hotelDTO.Address,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{fileResult.Item2}",
-                Rating = hotelDTO.Rating,
-                Name = hotelDTO.Name,
-                Reviews = hotelDTO.Reviews
-            };
-
-            return hoteldTo;
+            return await AddAsync(hotel);
         }
-        public async Task<HotelOutputDTO?> UpdateHotel(int hotelId,HotelDTO hotelDTO)
+        public HotelOutputDTO UpdateHotel(int hotelId,HotelDTO hotelDTO)
         {
-            var hotel = await _context.Hotels.SingleOrDefaultAsync(c => c.Id == hotelId);
-            if (hotel is null) { return null; }
+            var hotel = _context.Hotels.SingleOrDefault(c => c.Id == hotelId);
 
-            string oldImage = hotel.Image;
+            string oldImage = hotel!.Image;
 
             if (hotelDTO.ImagePath is not null)
             {
@@ -106,21 +74,15 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             hotel.Address = hotelDTO.Address;
             hotel.Rating = hotelDTO.Rating;
             hotel.Reviews = hotelDTO.Reviews;
+            hotel.Governorate = hotelDTO.Governorate;
+            hotel.Location = hotelDTO.Location;
 
             if (hotelDTO.ImagePath is not null)
             {
                 _imageService.DeleteImage(oldImage, _imagesPath);
             }
 
-            HotelOutputDTO hoteldTo = new()
-            {
-                ID = hotel.Id,
-                Address = hotelDTO.Address,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}",
-                Rating = hotelDTO.Rating,
-                Name = hotelDTO.Name,
-                Reviews = hotelDTO.Reviews
-            };
+            HotelOutputDTO hoteldTo = ToHotelOutputDto(hotel);
 
             return hoteldTo;
         }
@@ -137,6 +99,23 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _imageService.DeleteImage(hotel.Image, _imagesPath);
 
             return true;
+        }
+        public static HotelOutputDTO ToHotelOutputDto(Hotel hotel)
+        {
+            HotelOutputDTO hoteldTo = new()
+            {
+                ID = hotel.Id,
+                Address = hotel.Address,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}",
+                Rating = hotel.Rating,
+                Name = hotel.Name,
+                Reviews = hotel.Reviews,
+                Location = hotel.Location,
+                Governorate = hotel.Governorate,
+                //ApplicationUserId = hotel.ApplicationUserId
+            };
+
+            return hoteldTo;
         }
     }
 }

@@ -9,12 +9,12 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
     {
         Task<ICollection<HotelOutputDTO>> GetAllHotels();
         Task<HotelOutputDTO> GetHotelByIdAsync(int id);
-        Task<HotelOutputDTO> GetHotelByNameAsync(string name);
+        Task<ICollection<HotelOutputDTO>> GetHotelByNameAsync(string name);
 
-        Task<HotelOutputDTO> CreateHotelAsync(HotelDTO hotelDTO);
+        Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO);
 
-        Task<HotelOutputDTO?> UpdateHotel(int hotelId, HotelDTO hotelDTO);
-
+        HotelOutputDTO UpdateHotel(int hotelId, HotelDTO hotelDTO);
+        //HotelOutputDTO ToHotelOutputDto(Hotel hotel);
         bool DeleteHotel(int id);
     }
 }

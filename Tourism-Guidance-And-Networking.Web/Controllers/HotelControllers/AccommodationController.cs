@@ -76,17 +76,36 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            AccommodationOutputDTO accommodation = await _unitOfWork.Accommodations.CreateAccommodationAsync(accommodationDTO);
+            Accommodation accommodation = await _unitOfWork.Accommodations.CreateAccommodationAsync(accommodationDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-            return StatusCode(201, accommodation);
+            AccommodationOutputDTO output = new()
+            {
+                Id = accommodation.Id,
+                Name = accommodation.Name,
+                Address = accommodation.Address,
+                Rating = accommodation.Rating,
+                Reviews = accommodation.Reviews,
+                Type = accommodation.Type,
+                Price = accommodation.Price,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.accommodationImagesPath}/{accommodation.Image}",
+                Taxes = accommodation.Taxes,
+                Info = accommodation.Info,
+                Capicity = accommodation.Capicity,
+                Count = accommodation.Count,
+                CompanyId = accommodation.CompanyId,
+                Location = accommodation.Location,
+                Governorate = accommodation.Governorate,
+                Description = accommodation.Description
+            };
+            return StatusCode(201, output);
         }
         [HttpPut("{accommodationId:int}")]
-        public async Task<IActionResult> UpdateAccommodationAsync([FromRoute] int accommodationId, [FromForm] AccommodationDTO accommodationDTO)
+        public IActionResult UpdateAccommodationAsync([FromRoute] int accommodationId, [FromForm] AccommodationDTO accommodationDTO)
         {
             if (accommodationDTO == null || !_unitOfWork.Companies.Exist(accommodationDTO.CompanyId))
                 return BadRequest(ModelState);
@@ -97,9 +116,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var accommodation = _unitOfWork.Accommodations.GetById(accommodationId);
-
-            await _unitOfWork.Accommodations.UpdateAccommodation(accommodationId, accommodationDTO);
+            var output = _unitOfWork.Accommodations.UpdateAccommodation(accommodationId, accommodationDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -109,7 +126,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             // hotelDTO.Id = hotel!.Id;
 
-            return Ok(accommodation);
+            return Ok(output);
         }
         [HttpDelete("{accommodationId:int}")]
         public IActionResult DeleteAccommodation([FromRoute] int accommodationId)

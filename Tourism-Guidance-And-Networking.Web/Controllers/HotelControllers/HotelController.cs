@@ -76,10 +76,6 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         [HttpGet("hotelByName")]
         public async Task<IActionResult> GetHotelByName(string name)
         {
-            var hotel = await _unitOfWork.Hotels.FindAsync(H => H.Name == name);
-
-            if (hotel is null)
-                return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -119,22 +115,23 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 Rating = hotelDTO.Rating,
                 Reviews = hotelDTO.Reviews,
                 ImagePath = hotelDTO.ImagePath,
-                ApplicationUserId = result.UserId
-
+                ApplicationUserId = result.UserId,
+                Location = hotelDTO.Location,
+                Governorate = hotelDTO.Governorate
             };
 
-            HotelOutputDTO hotel = await _unitOfWork.Hotels.CreateHotelAsync(myHotelDTO);
+            await _unitOfWork.Hotels.CreateHotelAsync(myHotelDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-            
+            //HotelOutputDTO hoteldTo = _unitOfWork.Hotels.ToHotelOutputDto(hotel);
             return StatusCode(201, result);
         }
         [HttpPut("{hotelId:int}")]
-        public async Task<IActionResult> UpdateHotel([FromRoute] int hotelId, [FromForm] HotelDTO hotelDTO)
+        public IActionResult UpdateHotel([FromRoute] int hotelId, [FromForm] HotelDTO hotelDTO)
         {
             if (hotelDTO == null)
                 return BadRequest(ModelState);
@@ -147,7 +144,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
            // var hotel = _unitOfWork.Hotels.GetById(hotelId);
 
-            HotelOutputDTO h = await _unitOfWork.Hotels.UpdateHotel(hotelId,hotelDTO);
+            HotelOutputDTO h = _unitOfWork.Hotels.UpdateHotel(hotelId,hotelDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {

@@ -82,7 +82,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            RoomOutputDTO room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
+            var room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
 
 
             if (!(_unitOfWork.Complete() > 0))
@@ -91,8 +91,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 return StatusCode(500, ModelState);
             }
 
-
-            return StatusCode(201, room);
+            RoomOutputDTO output = new()
+            {
+                ID = room.Id,
+                Type = room.Type,
+                Price = room.Price,
+                Taxes = room.Taxes,
+                Info = room.Info,
+                Description = room.Description,
+                Capicity = room.Capicity,
+                HotelId = room.HotelId,
+                Count = room.Count,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.roomImagesPath}/{room.Image}"
+            };
+            return StatusCode(201, output);
         }
         /*
         [HttpPost("CreaterRoomFromHotel")]
@@ -122,7 +134,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         }
         */
         [HttpPut("{roomId:int}")]
-        public async Task<IActionResult> UpdateRoom([FromRoute] int roomId, [FromForm] RoomDTO roomDTO)
+        public IActionResult UpdateRoom([FromRoute] int roomId, [FromForm] RoomDTO roomDTO)
         {
             if (roomDTO == null || !_unitOfWork.Hotels.Exist(roomDTO.HotelId))
                 return BadRequest(ModelState);
@@ -135,7 +147,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             var room = _unitOfWork.Rooms.GetById(roomId);
 
-            await _unitOfWork.Rooms.UpdateRoom(roomId,roomDTO);
+            var output = _unitOfWork.Rooms.UpdateRoom(roomId,roomDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -145,7 +157,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
           //  roomDTO.Id = room!.Id;
 
-            return Ok(room);
+            return Ok(output);
         }
         [HttpDelete("{roomId:int}")]
         public IActionResult DeleteRoom([FromRoute] int roomId)
