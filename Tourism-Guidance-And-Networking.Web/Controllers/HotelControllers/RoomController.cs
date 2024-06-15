@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using System.Security.Claims;
 using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
@@ -23,14 +24,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
         {
             var room = await _unitOfWork.Rooms.GetByIdAsync(id);
 
-            if(room == null)
+            if (room == null)
             {
                 return NotFound("Room do not exist!!");
             }
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var roomDto = await _unitOfWork.Rooms.GetRoomById(id); 
+            var roomDto = await _unitOfWork.Rooms.GetRoomById(id);
             return Ok(roomDto);
         }
         [HttpGet("rooms/{hotelId:int}")]
@@ -47,7 +48,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(rooms);
         }
         [HttpGet("roomsByRoomType/{id:int}")]
-        public async Task<IActionResult> GetRoomsByRoomType(string type,int id)
+        public async Task<IActionResult> GetRoomsByRoomType(string type, int id)
         {
             if (!_unitOfWork.Hotels.Exist(id))
                 return NotFound();
@@ -72,7 +73,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(rooms);
         }
         [HttpPost]
-        [Authorize(Roles = Roles.Admin + "," + Roles.Hotel)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateRoom([FromForm] RoomDTO roomDTO)
         {
             if (roomDTO == null || !_unitOfWork.Hotels.Exist(roomDTO.HotelId))
@@ -83,6 +84,35 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             RoomOutputDTO room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
 
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something Went Wrong While Saving");
+                return StatusCode(500, ModelState);
+            }
+
+
+            return StatusCode(201, room);
+        }
+        /*
+        [HttpPost("CreaterRoomFromHotel")]
+        [Authorize(Roles.Hotel)]
+        public async Task<IActionResult> CreateRoomFromHotel([FromForm] CreateRoomFromHotelDTO roomDTO)
+        {
+            if (roomDTO == null || !ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            var hotel = await _unitOfWork.Hotels.FindAsync(h => h.ApplicationUserId == applicationUser.Id);
+
+            if (hotel is null)
+                return BadRequest("The Current User is not an hotel user");
+
+            RoomOutputDTO room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
+
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
@@ -90,6 +120,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             }
             return StatusCode(201, room);
         }
+        */
         [HttpPut("{roomId:int}")]
         public async Task<IActionResult> UpdateRoom([FromRoute] int roomId, [FromForm] RoomDTO roomDTO)
         {

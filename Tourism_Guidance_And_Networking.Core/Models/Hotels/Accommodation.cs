@@ -7,7 +7,11 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
     public class Accommodation : BaseEntity
     {
         [Required, MaxLength(250)]
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty; 
+        [Required, MaxLength(250)]
+        public string Location { get; set; } = string.Empty;
+        [Required, MaxLength(250)]
+        public string Governorate { get; set; } = string.Empty;
 
         public double Rating { get; set; }
 
@@ -18,7 +22,9 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         public double Price { get; set; }
         public double Taxes { get; set; }
         [Required]
-        public string Info { get; set; } = string.Empty;
+        public string Info { get; set; } = string.Empty; 
+        [Required]
+        public string Description { get; set; } = string.Empty;
         [Required]
         public string Image { get; set; } = string.Empty;
         [Required]

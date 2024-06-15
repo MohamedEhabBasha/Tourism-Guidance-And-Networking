@@ -84,7 +84,7 @@ namespace Tourism_Guidance_And_Networking.Web.Services
 
 		}
 
-		public async Task<AuthModel> RegisterAsync(RegisterModel model)
+		public async Task<AuthModel> RegisterAsync(RegisterModel model,string role = Roles.Tourist)
 		{
 			if (await _userManager.FindByEmailAsync(model.Email) is not null)
 				return new AuthModel { Message = "Email is already registered !" };
@@ -134,7 +134,7 @@ namespace Tourism_Guidance_And_Networking.Web.Services
             }
 
 
-            await _userManager.AddToRoleAsync(user, Roles.Tourist); 
+            await _userManager.AddToRoleAsync(user, role); 
 			
 			var jwtSecurityToken = await CreateJwtToken(user);
             var refreshToken = GenerateRefreshToken();

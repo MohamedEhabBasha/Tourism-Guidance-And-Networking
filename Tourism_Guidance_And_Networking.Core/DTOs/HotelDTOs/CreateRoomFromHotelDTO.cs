@@ -1,12 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
-namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
+namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
 {
-    public class Room 
+    public class CreateRoomFromHotelDTO
     {
-        public int Id { get; set; }
 
         [MaxLength(250)]
         public string Type { get; set; } = string.Empty;
@@ -25,10 +27,6 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         public int Count { get; set; }
         [Required]
         public int CountOfReserved { get; set; } = 0;
-        [Required]
-        public int HotelId { get; set; }
-        [JsonIgnore]
-        [ValidateNever]
-        public Hotel Hotel { get; set; } = default!;
+        
     }
 }

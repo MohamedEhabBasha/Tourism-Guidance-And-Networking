@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tourism_Guidance_And_Networking.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Tourism_Guidance_And_Networking.DataAccess.Data;
 namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240614214341_addForienKeyInHotelForUser")]
+    partial class addForienKeyInHotelForUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -388,15 +391,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     b.Property<int>("CountOfReserved")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Governorate")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -404,11 +398,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     b.Property<string>("Info")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -451,10 +440,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -471,8 +456,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Companies");
                 });
@@ -502,11 +485,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -542,10 +520,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
 
                     b.Property<int>("CountOfReserved")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
@@ -1012,17 +986,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Company", b =>
-                {
-                    b.HasOne("Tourism_Guidance_And_Networking.Core.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Tourism_Guidance_And_Networking.Core.Models.Hotels.Hotel", b =>

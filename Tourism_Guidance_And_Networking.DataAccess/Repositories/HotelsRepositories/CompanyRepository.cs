@@ -76,7 +76,9 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Name = companyDTO.Name,
                 Address = companyDTO.Address,
                 Rating = companyDTO.Rating,
-                Reviews = companyDTO.Reviews
+                Reviews = companyDTO.Reviews,
+                ApplicationUserId = companyDTO.ApplicationUserId
+
             };
             var fileResult = _imageService.SaveImage(companyDTO.ImagePath, _imagesPath);
 

@@ -19,5 +19,11 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         [JsonIgnore]
         [ValidateNever]
         public ICollection<Accommodation> Accommodations { get; set; } = default!;
+        [Required]
+        public string ApplicationUserId { get; set; }
+        [ForeignKey("ApplicationUserId")]
+        [ValidateNever]
+        [JsonIgnore]
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }
