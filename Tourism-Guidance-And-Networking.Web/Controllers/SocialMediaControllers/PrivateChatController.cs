@@ -115,11 +115,11 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return NotFound();
             }
 
-            Message newMessage = new() { 
+            Message newMessage = new() {
                 Text = messageDTO.Text,
                 ApplicationUserId = sender.Id,
-                ChatId = messageDTO.ChatId
-
+                ChatId = messageDTO.ChatId,
+                CreatedDate = DateTime.Now.ToString()
             };
 
             await _unitOfWork.Messages.AddAsync(newMessage);

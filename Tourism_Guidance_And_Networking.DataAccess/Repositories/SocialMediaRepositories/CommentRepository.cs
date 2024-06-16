@@ -138,7 +138,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
 
             commentDTO.ApplicationUser = userDTO;
             commentDTO.Rate = comment.Rate;
-
+            commentDTO.CreationDate = comment.CreationDate;
             return commentDTO;
         }
 

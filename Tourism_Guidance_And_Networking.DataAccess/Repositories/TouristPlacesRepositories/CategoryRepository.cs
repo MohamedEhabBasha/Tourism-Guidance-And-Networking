@@ -10,32 +10,21 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
             _context = context;
             _imagesPath = FileSettings.touristplaceImagesPath;
         }
-        public async Task<Category> GetCategoryByNameAsync(string name)
+        public async Task<ICollection<Category>> GetCategoryByNameAsync(string name)
         {
             return await _context.Categories
-                    .AsNoTracking()
-                    .SingleAsync(c => c.Name == name);
-        }
-        public async Task<ICollection<TouristPlaceOutputDTO>> GetTouristPlacesByIdAsync(int categoryId)
-        {
-            return await _context.Tourists
-                    .Where(c => c.CategoryId == categoryId)
-                    .Select(t => new TouristPlaceOutputDTO
-                    {
-                        Name = t.Name,
-                        Description = t.Description ?? "",
-                        CategoryId = t.CategoryId,
-                        ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{t.Image}"
-                    })
+                    .Where(c => c.Name.Trim().ToLower().Contains(name))
                     .AsNoTracking()
                     .ToListAsync();
         }
+
         public ICollection<TouristPlaceOutputDTO> GetTouristPlacesById(int categoryId)
         {
             return  _context.Tourists
                     .Where(c => c.CategoryId == categoryId)
                     .Select(t => new TouristPlaceOutputDTO
                     {
+                        Id = t.Id,
                         Name = t.Name,
                         Description = t.Description??"",
                         CategoryId = t.CategoryId,
@@ -44,24 +33,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
                     .AsNoTracking()
                     .ToList();
         }
-        public async Task<ICollection<TouristPlaceOutputDTO>> GetTouristPlacesByName(string name)
-        {
-            Category category = await GetCategoryByNameAsync(name);
-            return await _context.Tourists
-                .Where(c => c.CategoryId == category.Id)
-                .Select(t => new TouristPlaceOutputDTO
-                {
-                    Name = t.Name,
-                    Description = t.Description ?? "",
-                    CategoryId = t.CategoryId,
-                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{t.Image}"
-                })
-                .AsNoTracking()
-                .ToListAsync();
-        }
+
         public bool ExistByName(string name)
         {
-            return _context.Categories.SingleOrDefault(c => c.Name.Trim().ToLower() == name) != null;
+            return _context.Categories.SingleOrDefault(c => c.Name.Trim().ToLower().Contains(name)) != null;
         }
     }
 }

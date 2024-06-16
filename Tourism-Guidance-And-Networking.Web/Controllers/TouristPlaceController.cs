@@ -25,7 +25,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             if (!_unitOfWork.Categories.Exist(categoryId))
                 return NotFound();
 
-            var touristPlaces = await _unitOfWork.Categories.GetTouristPlacesByIdAsync(categoryId);
+            var touristPlaces = await _unitOfWork.TouristPlaces.GetTouristPlacesByCategoryIdAsync(categoryId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,10 +35,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpGet("touristplacesByCategoryName")]
         public async Task<IActionResult> GetTouristPlacesByCategoryName(string categoryName)
         {
-            if (!_unitOfWork.Categories.ExistByName(categoryName.Trim().ToLower()))
+            if (!_unitOfWork.Categories.ExistByName(categoryName))
                 return NotFound();
 
-            var touristPlaces = await _unitOfWork.Categories.GetTouristPlacesByName(categoryName);
+            var touristPlaces = await _unitOfWork.TouristPlaces.GetTouristPlacesByCategoryName(categoryName);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -48,7 +48,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpGet("touristplaces")]
         public async Task<IActionResult> GetAllTouristPlaces()
         {
-            var touristPlaces = await _unitOfWork.TouristPlaces.GetAllAsync();
+            var touristPlaces = await _unitOfWork.TouristPlaces.GetTouristPlacesAsync();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -58,7 +58,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         [HttpGet("touristplacesByName")]
         public async Task<IActionResult> GetTouristPlacesByName(string name)
         {
-            var touristPlaces = await _unitOfWork.TouristPlaces.SearchByName(name.Trim().ToLower());
+            var touristPlaces = await _unitOfWork.TouristPlaces.SearchByName(name);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -72,12 +72,21 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             {
                 return NotFound();
             }
-            var touristPlace = await _unitOfWork.TouristPlaces.GetByIdAsync(id);
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(touristPlace);
+            var touristPlace = await _unitOfWork.TouristPlaces.GetByIdAsync(id);
+
+            TouristPlaceOutputDTO touristPlaceOutputDTO = new()
+            {
+                Id = touristPlace!.Id,
+                Name = touristPlace.Name,
+                Description = touristPlace.Description ?? "",
+                CategoryId = touristPlace.CategoryId,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.touristplaceImagesPath}/{touristPlace.Image}"
+            };
+
+            return Ok(touristPlaceOutputDTO);
         }
         [HttpPost("touristplace")]
         [Authorize(Roles = Roles.Admin)]
@@ -102,8 +111,15 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-
-            return StatusCode(201, touristPlace);
+            TouristPlaceOutputDTO touristPlaceOutputDTO = new()
+            {
+                Id = touristPlace.Id,
+                Name = touristPlace.Name,
+                Description = touristPlace.Description ?? "",
+                CategoryId = touristPlace.CategoryId,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.touristplaceImagesPath}/{touristPlace.Image}"
+            };
+            return StatusCode(201, touristPlaceOutputDTO);
         }
 
         [HttpPut("{touristplaceId:int}")]
@@ -118,9 +134,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var touristplace =  _unitOfWork.TouristPlaces.GetById(touristplaceId);
+            _unitOfWork.TouristPlaces.GetById(touristplaceId);
 
-            _unitOfWork.TouristPlaces.UpdateTouristPlace(touristplaceId,updatedTouristPlace);
+            var output = _unitOfWork.TouristPlaces.UpdateTouristPlace(touristplaceId,updatedTouristPlace);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -130,7 +146,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
            // updatedTouristPlace.Id = touristplace!.Id;
 
-            return Ok(updatedTouristPlace);
+            return Ok(output);
         }
 
         [HttpDelete("{touristplaceId:int}")]

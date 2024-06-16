@@ -3,10 +3,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterface
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
-        Task<Category> GetCategoryByNameAsync(string name);
-        Task<ICollection<TouristPlaceOutputDTO>> GetTouristPlacesByIdAsync(int categoryId);
+        Task<ICollection<Category>> GetCategoryByNameAsync(string name);
         ICollection<TouristPlaceOutputDTO> GetTouristPlacesById(int categoryId);
-        Task<ICollection<TouristPlaceOutputDTO>> GetTouristPlacesByName(string name);
         bool ExistByName(string name);
     }
 }
