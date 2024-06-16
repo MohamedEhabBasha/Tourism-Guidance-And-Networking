@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualBasic;
+using Tourism_Guidance_And_Networking.Core.DTOs;
 using Tourism_Guidance_And_Networking.Core.DTOs.SocialMediaDTOs;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
+using Tourism_Guidance_And_Networking.DataAccess.Migrations;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories
 {
@@ -237,7 +239,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             }
 
             var user = await _context.ApplicationUsers.SingleAsync(u => u.Id == post.ApplicationUserId);
-
+            var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
             UserDTO userDTO = new()
             {
                 FirstName = user.FirstName,
@@ -246,9 +248,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 Id = user.Id,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName
-            };
-            
+                UserName = user.UserName,
+                Image = GetTouristProfile(touristProfileImage)
+        };
+
             postDTO.UserDTO = userDTO;
             postDTO.Comments = commentsDTO;
             postDTO.TotalComments = commentsDTO.Count;
@@ -268,6 +271,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             CommentDTO commentDTO = new() { PostId = comment.PostId, Text = comment.Text, Id = comment.Id };
 
             var user = await _context.ApplicationUsers.SingleAsync(a => a.Id == comment.ApplicationUserId);
+            var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
             UserDTO userDTO = new()
             {
                 FirstName = user.FirstName,
@@ -278,7 +282,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 PhoneNumber = user.PhoneNumber,
                 UserName = user.UserName
             };
-
+            userDTO.Image = GetTouristProfile(touristProfileImage);
             var totalLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => c.IsLiked);
             var totalDisLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => !c.IsLiked);
 
@@ -303,6 +307,13 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             return -1;
 
         }
-
+        private string GetImageURL(string imageId) => $"{FileSettings.RootPath}/{FileSettings.userPhotoImagePath}/{imageId}";
+        private string GetTouristProfile(TouristProfileImage? touristProfileImage)
+        {
+            if (touristProfileImage != null) 
+            { return GetImageURL(touristProfileImage.Image); }
+            else 
+                return "https://img.icons8.com/windows/256/user-male-circle.png";
+        }
     }
 }

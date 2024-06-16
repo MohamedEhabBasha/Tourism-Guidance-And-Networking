@@ -119,6 +119,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             CommentDTO commentDTO = new() { PostId = comment.PostId, Text = comment.Text, Id = comment.Id };
 
             var user = await _context.ApplicationUsers.SingleAsync(a => a.Id == comment.ApplicationUserId);
+            var touristProfileImage = await _context.TouristProfilesImages.SingleOrDefaultAsync(x => x.AppUserId == user.Id);
             UserDTO userDTO = new()
             {
                 FirstName = user.FirstName,
@@ -129,7 +130,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 PhoneNumber = user.PhoneNumber,
                 UserName = user.UserName
             };
-
+            if (touristProfileImage != null)
+            { userDTO.Image = $"{FileSettings.RootPath}/{FileSettings.userPhotoImagePath}/{touristProfileImage.Image}"; }
+            else
+                userDTO.Image =  "https://img.icons8.com/windows/256/user-male-circle.png";
             var totalLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => c.IsLiked);
             var totalDisLikes = _context.CommentLikes.Where(c => c.CommentId == comment.Id).Count(c => !c.IsLiked);
 

@@ -55,6 +55,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     Role = roles.ToList()
                 };
                 if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
+                else userDTO.Image = "https://img.icons8.com/windows/256/user-male-circle.png";
+
                 ContactDTO contactDTO = new()
                 {
                     ChatId = chat.Id,
@@ -93,6 +95,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                     Role = roles.ToList()
                 };
                 if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
+                else userDTO.Image = "https://img.icons8.com/windows/256/user-male-circle.png";
                 users.Add(userDTO);
             }
             return users;
@@ -114,6 +117,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 Role = roles.ToList()
             };
             if (touristProfileImage != null) { userDTO.Image = GetImageURL(touristProfileImage.Image); }
+            else userDTO.Image = "https://img.icons8.com/windows/256/user-male-circle.png";
+
             var friends = await GetAllFriends(user.Id);
 
             UserProfileDTO userProfileDTO = new() { 
