@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Models.Bookings;
+using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
 namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
 {
@@ -16,12 +17,25 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
 
         public async Task<int> Decrement(Reservation item, int count)
         {
+            TimeSpan difference = item.EndDate - item.StartDate;
+            int numberOfDays = difference.Days;
+            numberOfDays++;
             item.Count -= count;
 
             if (item.RoomId is null)
-                item.Price -= (item.Accommodation.Price * count);
+            {
+                double totalPrice = (item.Accommodation.Price + item.Accommodation.Taxes )* numberOfDays;
+
+                item.Price -= (totalPrice * count);
+            }
+
             else
-                item.Price -= (item.Room.Price*count);
+            {
+                double totalPrice = (item.Room.Price + item.Room.Taxes) * numberOfDays ;
+
+                item.Price -= (totalPrice * count);
+
+            }
             return await _context.SaveChangesAsync();
         }
 
@@ -29,10 +43,27 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking
         {
             item.Count += count;
 
-            if(item.RoomId is null)
-                item.Price += (item.Accommodation.Price * count);
+            TimeSpan difference = item.EndDate - item.StartDate;
+            int numberOfDays = difference.Days;
+            numberOfDays++;
+
+
+
+            if (item.RoomId is null)
+            {
+                double totalPrice = (item.Accommodation.Price + item.Accommodation.Taxes) * numberOfDays;
+
+                item.Price += (totalPrice * count);
+            }
+
             else
-                item.Price += (item.Room.Price * count);
+            {
+                double totalPrice = (item.Room.Price + item.Room.Taxes) * numberOfDays;
+
+                item.Price += (totalPrice * count);
+
+            }
+
             return await _context.SaveChangesAsync();
             
         }

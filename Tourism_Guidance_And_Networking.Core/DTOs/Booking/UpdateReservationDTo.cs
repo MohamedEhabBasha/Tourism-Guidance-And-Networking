@@ -14,5 +14,9 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.Booking
         public int? AccommodationId { get; set; } = null;
         public int? RoomId { get; set; } = null;
         public double Price { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
     }
 }

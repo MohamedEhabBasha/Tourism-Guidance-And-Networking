@@ -146,8 +146,21 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 reservation.ApplicationUserId = applicationUser.Id;
                 reservation.Room = room;
                 reservation.Count = reservationDTO.Count;
-                reservation.Price = room.Price * reservationDTO.Count;
+             
+                // Add Start and End Date
+                reservation.StartDate = reservationDTO.StartDate;
+                reservation.EndDate = reservationDTO.EndDate;
+
+                // Edit Price to include the number of days
+
+                TimeSpan difference = reservation.EndDate - reservation.StartDate;
+                int numberOfDays = difference.Days + 1;           
+                double totalPrice = (room.Price + room.Taxes) * numberOfDays;
+
+                reservation.Price = totalPrice * reservationDTO.Count;
+
                 await _unitOfWork.Reservations.AddAsync(reservation);
+                
 
                 if (!(_unitOfWork.Complete() > 0))
                 {
@@ -205,7 +218,18 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 reservation.ApplicationUserId = applicationUser.Id;
                 reservation.Accommodation = accommdation;
                 reservation.Count = reservationDTO.Count;
-                reservation.Price = accommdation.Price * reservationDTO.Count;
+                //Add Start and End Date
+                reservation.StartDate = reservationDTO.StartDate;
+                reservation.EndDate = reservationDTO.EndDate;
+
+                // Edit Price to include the number of days
+
+                TimeSpan difference = reservation.EndDate - reservation.StartDate;
+                int numberOfDays = difference.Days + 1;
+                double totalPrice = (accommdation.Price+accommdation.Taxes) * numberOfDays;
+
+                reservation.Price = totalPrice * reservationDTO.Count;
+
                 await _unitOfWork.Reservations.AddAsync(reservation);
 
                 if (!(_unitOfWork.Complete() > 0))
@@ -339,6 +363,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             reservationDb.Count = updatedReservation.Count;
 
             reservationDb.Price = updatedReservation.Price;
+
+            reservationDb.StartDate = updatedReservation.StartDate;
+
+            reservationDb.EndDate = updatedReservation.EndDate;
 
             if (!(_unitOfWork.Complete() > 0))
             {

@@ -106,9 +106,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             };
             return StatusCode(201, output);
         }
-        /*
+        
         [HttpPost("CreaterRoomFromHotel")]
-        [Authorize(Roles.Hotel)]
+        [Authorize(Roles=Roles.Hotel)]
         public async Task<IActionResult> CreateRoomFromHotel([FromForm] CreateRoomFromHotelDTO roomDTO)
         {
             if (roomDTO == null || !ModelState.IsValid)
@@ -123,16 +123,44 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             if (hotel is null)
                 return BadRequest("The Current User is not an hotel user");
 
-            RoomOutputDTO room = await _unitOfWork.Rooms.CreateRoomAsync(roomDTO);
+            RoomDTO roomDto = new()
+            {
+                Type = roomDTO.Type,
+                Price = roomDTO.Price,
+                Count = roomDTO.Count,
+                Taxes = roomDTO.Taxes,
+                Info = roomDTO.Info,
+                Description = roomDTO.Description,
+                ImagePath = roomDTO.ImagePath,
+                Capicity = roomDTO.Capicity,
+                HotelId = hotel.Id
+            };
+
+            var room = await _unitOfWork.Rooms.CreateRoomAsync(roomDto);
+
 
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-            return StatusCode(201, room);
+
+            RoomOutputDTO output = new()
+            {
+                ID = room.Id,
+                Type = room.Type,
+                Price = room.Price,
+                Taxes = room.Taxes,
+                Info = room.Info,
+                Description = room.Description,
+                Capicity = room.Capicity,
+                HotelId = room.HotelId,
+                Count = room.Count,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.roomImagesPath}/{room.Image}"
+            };
+            return StatusCode(201, output);
         }
-        */
+        
         [HttpPut("{roomId:int}")]
         public IActionResult UpdateRoom([FromRoute] int roomId, [FromForm] RoomDTO roomDTO)
         {

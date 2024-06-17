@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using System.Security.Claims;
 using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
@@ -66,7 +67,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(accommodations);
         }
         [HttpPost]
-        [Authorize(Roles = Roles.Admin + "," + Roles.Company)]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateAccommodation([FromForm] AccommodationDTO accommodationDTO)
         {
             if (accommodationDTO == null || !_unitOfWork.Companies.Exist(accommodationDTO.CompanyId))
@@ -83,6 +84,73 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
+            AccommodationOutputDTO output = new()
+            {
+                Id = accommodation.Id,
+                Name = accommodation.Name,
+                Address = accommodation.Address,
+                Rating = accommodation.Rating,
+                Reviews = accommodation.Reviews,
+                Type = accommodation.Type,
+                Price = accommodation.Price,
+                ImageURL = $"{FileSettings.RootPath}/{FileSettings.accommodationImagesPath}/{accommodation.Image}",
+                Taxes = accommodation.Taxes,
+                Info = accommodation.Info,
+                Capicity = accommodation.Capicity,
+                Count = accommodation.Count,
+                CompanyId = accommodation.CompanyId,
+                Location = accommodation.Location,
+                Governorate = accommodation.Governorate,
+                Description = accommodation.Description
+            };
+            return StatusCode(201, output);
+        }
+
+        [HttpPost("CreateAccommdationFromCompany")]
+        [Authorize(Roles = Roles.Company)]
+        public async Task<IActionResult> CreateAccommodationFromCompany([FromForm] CreateAccomdationDTO accommodationDTO)
+        {
+            if (accommodationDTO == null || !ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            var company = await _unitOfWork.Companies.FindAsync(h => h.ApplicationUserId == applicationUser.Id);
+
+            if (company is null)
+                return BadRequest("The Current User is not an Company user");
+
+
+            AccommodationDTO accommodationDto = new() 
+            {
+                Name = accommodationDTO.Name,
+                Address = accommodationDTO.Address,
+                Rating = accommodationDTO.Rating,
+                Reviews = accommodationDTO.Reviews,
+                Type = accommodationDTO.Type,
+                Price = accommodationDTO.Price,
+                Taxes = accommodationDTO.Taxes,
+                Info = accommodationDTO.Info,
+                Capicity = accommodationDTO.Capicity,
+                ImagePath = accommodationDTO.ImagePath,
+                Count = accommodationDTO.Count,
+                CompanyId = company.Id,
+                Location = accommodationDTO.Location,
+                Governorate = accommodationDTO.Governorate,
+                Description = accommodationDTO.Description
+            };
+
+
+            Accommodation accommodation = await _unitOfWork.Accommodations.CreateAccommodationAsync(accommodationDto);
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something Went Wrong While Saving");
+                return StatusCode(500, ModelState);
+            }
+
             AccommodationOutputDTO output = new()
             {
                 Id = accommodation.Id,

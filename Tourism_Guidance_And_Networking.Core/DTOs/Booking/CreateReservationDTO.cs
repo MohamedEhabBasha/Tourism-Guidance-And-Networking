@@ -13,5 +13,10 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.Booking
         public int Count { get; set; }
         [Required]
         public int AccommodationId { get; set; } = 0;
+
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Build.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
+using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
 
 namespace Tourism_Guidance_And_Networking.Core.Models.Bookings
 {
@@ -24,6 +26,10 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Bookings
         [ValidateNever]
         [JsonIgnore]
         public ApplicationUser ApplicationUser { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
         public double Price { get; set; }
     }
 }

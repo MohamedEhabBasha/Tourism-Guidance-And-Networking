@@ -26,6 +26,12 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Bookings
         [ValidateNever]
         [JsonIgnore]
         public Room Room { get; set; }
+
+        [Required]
+        public DateTime StartDate { get; set; }
+        [Required]
+        public DateTime EndDate { get; set; }
+
         public int Count { get; set; }
         public double Price { get; set; }
     }
