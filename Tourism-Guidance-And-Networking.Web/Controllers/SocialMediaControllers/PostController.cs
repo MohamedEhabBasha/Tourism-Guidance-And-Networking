@@ -71,7 +71,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return BadRequest(ModelState);
 
             var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var post = await _unitOfWork.Posts.FindAsync(p => p.Id == postId && p.ApplicationUserId == userId);
+            var post = await _unitOfWork.Posts.FindAsync(p => p.Id == postId);
 
             if (user is null || post is null)
             {

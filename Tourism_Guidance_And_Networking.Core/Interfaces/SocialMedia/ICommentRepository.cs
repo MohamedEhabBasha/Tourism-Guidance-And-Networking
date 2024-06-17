@@ -12,6 +12,6 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
         bool DeleteComment(int id);
         Task<CommentLikes> CreateCommentLikeAsync(CommentLikeDTO commentLikeDTO);
         Task<CommentLikes> UpdateCommentLikeAsync(CommentLikeDTO commentLikeDTO);
-        bool DeleteCommentLike(int id);
+        bool DeleteCommentLike(int commentId, string userId);
     }
 }
