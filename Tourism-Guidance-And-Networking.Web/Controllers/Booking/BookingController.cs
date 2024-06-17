@@ -285,7 +285,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                         BookingHeaderId = summaryDto.BookingHeader.Id,
                         AccommodationId = reservation.AccommodationId,
                         Price = reservation.Price,
-                        Count = reservation.Count
+                        Count = reservation.Count,
+                        StartDate = reservation.StartDate,
+                        EndDate = reservation.EndDate
                     };
                     await _unitOfWork.BookingDetails.AddAsync(orderDetail);
                 }
@@ -297,7 +299,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                         BookingHeaderId = summaryDto.BookingHeader.Id,
                         RoomId = reservation.RoomId,
                         Price = reservation.Price,
-                        Count = reservation.Count
+                        Count = reservation.Count,
+                        StartDate= reservation.StartDate,
+                        EndDate = reservation.EndDate
                     };
                     await _unitOfWork.BookingDetails.AddAsync(orderDetail);
                 }
@@ -327,11 +331,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 // Accommdation
                 if (item.Room is null)
                 {
+                    TimeSpan differnce = item.EndDate - item.StartDate;
+                    int numOfDays = differnce.Days + 1;
+
                     var sessionLineItem = new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = (long)(item.Accommodation.Price * 100),//20.00 -> 2000
+                            UnitAmount = (long)(((item.Accommodation.Price + item.Accommodation.Taxes) * numOfDays)  * 100),//20.00 -> 2000
                             Currency = "EGP",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
@@ -346,11 +353,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
                 else
                 {
                     // Room
+                    TimeSpan differnce = item.EndDate - item.StartDate;
+                    int numOfDays = differnce.Days + 1;
                     var sessionLineItem = new SessionLineItemOptions
                     {
+
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount = (long)(item.Room.Price * 100),//20.00 -> 2000
+                            UnitAmount = (long)(((item.Room.Price + item.Room.Taxes) * numOfDays)  * 100),//20.00 -> 2000
                             Currency = "EGP",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
