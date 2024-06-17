@@ -189,16 +189,19 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok();
         }
-        [HttpDelete("DeleteCommentLike/{id}")]
-        public IActionResult DeleteCommentLike(int id)
+        [HttpDelete("DeleteCommentLike/{commentId}")]
+        public IActionResult DeleteCommentLike(int commentId, [FromQuery] string userId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            bool ok = _unitOfWork.Comments.DeleteCommentLike(id);
+            var user = _unitOfWork.ApplicationUsers.GetApplicationUserById(userId);
+            var comment = _unitOfWork.Comments.GetById(commentId);
 
-            if(!ok)
+            if (user == null || comment is null)
                 return NotFound(ModelState);
+
+            _unitOfWork.Comments.DeleteCommentLike(commentId, userId);
 
             if (!(_unitOfWork.Complete() > 0))
             {
@@ -206,7 +209,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok();
+            return Ok("Deleted Successfully");
         }
     }
 

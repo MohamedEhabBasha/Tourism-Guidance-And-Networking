@@ -80,14 +80,11 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             return true;
         }
 
-        public bool DeleteCommentLike(int id)
+        public bool DeleteCommentLike(int commentId, string userId)
         {
-            var commentLike = _context.CommentLikes.SingleOrDefault(c => c.Id  == id);
+            var commentLike = _context.CommentLikes.Single(c => c.CommentId  == commentId && c.ApplicationUserId == userId);
 
-            if(commentLike == null)
-                return false;
-
-            _context.CommentLikes.Remove(commentLike);
+            _context.CommentLikes.Remove(commentLike!);
 
             return true;
         }
