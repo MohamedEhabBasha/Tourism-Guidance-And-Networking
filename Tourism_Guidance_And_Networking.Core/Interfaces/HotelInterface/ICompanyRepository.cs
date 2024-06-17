@@ -10,7 +10,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<ICollection<CompanyOutputDTO>> GetAllCompaniesAsync();
         Task<CompanyOutputDTO> GetCompanyById(int id);
         Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name);
-        Task<CompanyOutputDTO> CreateCompanyAsync(CompanyDTO companyDTO);
+        Task<Company> CreateCompanyAsync(CompanyDTO companyDTO);
 
         Task<CompanyOutputDTO?> UpdateCompany(int companyId, CompanyDTO companyDTO);
 

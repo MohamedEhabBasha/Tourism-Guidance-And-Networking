@@ -68,7 +68,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 return null;
             return company;
         } 
-        public async Task<CompanyOutputDTO> CreateCompanyAsync(CompanyDTO companyDTO)
+        public async Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
         {
 
             Company company = new()
@@ -87,19 +87,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 company.Image = fileResult.Item2;
             }
 
-            await AddAsync(company);
-
-            CompanyOutputDTO companyOutputDTO = new()
-            {
-                ID = company.Id,
-                Name = companyDTO.Name,
-                Address = companyDTO.Address,
-                Rating = companyDTO.Rating,
-                Reviews = companyDTO.Reviews,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
-            };
-
-            return companyOutputDTO;
+            return await AddAsync(company);
         }
         public async Task<CompanyOutputDTO?> UpdateCompany(int companyId, CompanyDTO companyDTO)
         {

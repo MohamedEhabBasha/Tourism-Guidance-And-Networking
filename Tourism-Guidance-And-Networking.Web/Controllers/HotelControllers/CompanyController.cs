@@ -120,14 +120,30 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 ImagePath = companyDTO.ImagePath,
                 ApplicationUserId = result.UserId
             };
-            CompanyOutputDTO company = await _unitOfWork.Companies.CreateCompanyAsync(mycompanyDTO);
+            Company company = await _unitOfWork.Companies.CreateCompanyAsync(mycompanyDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-            return StatusCode(201, result);
+
+            CreateCompanyResultDTO createCompanyResultDTO = new()
+            {
+                CompanyId = company.Id,
+                Message = result.Message,
+                IsAuthenticated = result.IsAuthenticated,
+                Username = result.Username,
+                Email = result.Email,
+                UserId = result.UserId,
+                Roles = result.Roles,
+                Token = result.Token,
+                RefreshToken = result.RefreshToken,
+                RefrshTokenExpiration = result.RefrshTokenExpiration
+
+            };
+
+            return StatusCode(201, createCompanyResultDTO);
         }
         [HttpPut("{companyId:int}")]
         public async Task<IActionResult> UpdateCompanyAsync([FromRoute] int companyId, [FromForm] CompanyDTO companyDTO)

@@ -120,15 +120,29 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 Governorate = hotelDTO.Governorate
             };
 
-            await _unitOfWork.Hotels.CreateHotelAsync(myHotelDTO);
+            var hotel = await _unitOfWork.Hotels.CreateHotelAsync(myHotelDTO);
 
             if (!(_unitOfWork.Complete() > 0))
             {
                 ModelState.AddModelError("", "Something Went Wrong While Saving");
                 return StatusCode(500, ModelState);
             }
-            //HotelOutputDTO hoteldTo = _unitOfWork.Hotels.ToHotelOutputDto(hotel);
-            return StatusCode(201, result);
+            CreateHotelResultDTO createHotelResultDTO = new()
+            {
+                HotelId = hotel.Id,
+                Message = result.Message,
+                IsAuthenticated = result.IsAuthenticated,
+                Username = result.Username,
+                Email = result.Email,
+                UserId = result.UserId,
+                Roles = result.Roles,
+                Token = result.Token,
+                RefreshToken = result.RefreshToken,
+                RefrshTokenExpiration = result.RefrshTokenExpiration
+
+            };
+
+            return StatusCode(201, createHotelResultDTO);
         }
         [HttpPut("{hotelId:int}")]
         public IActionResult UpdateHotel([FromRoute] int hotelId, [FromForm] HotelDTO hotelDTO)

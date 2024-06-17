@@ -92,6 +92,113 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             return Ok(bookingsDb);
         }
 
+        [Authorize(Roles =Roles.Hotel)]
+        [HttpGet("getBookingsOfHotel")]
+        public async Task<IActionResult> GetBookingsOfHotel([FromQuery] string status)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            var hotel = await _unitOfWork.Hotels.FindAsync(h => h.ApplicationUserId == applicationUser.Id);
+
+
+            var bookingsDetailsDb = await _unitOfWork.BookingDetails.FindAllAsync(bd => bd.RoomId != null, new string[] { "Room"});
+
+            IEnumerable<int> bookingHeadersIds = bookingsDetailsDb.Where(bd=>bd.Room.HotelId==hotel.Id).Select(b=>b.BookingHeaderId).ToList();
+
+            var uniqueBookingHeaders = bookingHeadersIds.Distinct().ToList();
+
+            List<BookingHeader> bookingHeaders = new List<BookingHeader>();
+
+            foreach (var bookingHeaderId in uniqueBookingHeaders)
+            {
+                bookingHeaders.Add(_unitOfWork.BookingHeaders.GetById(bookingHeaderId));
+            }
+
+            IEnumerable<BookingHeader> bookingsDb = bookingHeaders;
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            switch (status)
+            {
+                case "pending":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Pending);
+                    break;
+                case "approved":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Approved);
+                    break;
+                case "inprocess":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.InProcess);
+                    break;
+                case "completed":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Completed);
+                    break;
+                case "cancelled":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Cancelled);
+                    break;
+                default:
+                    break;
+            }
+            return Ok(bookingsDb);
+        }
+
+
+
+
+        [Authorize(Roles = Roles.Company)]
+        [HttpGet("getBookingsOfCompany")]
+        public async Task<IActionResult> GetBookingsOfCompany([FromQuery] string status)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            var Company = await _unitOfWork.Companies.FindAsync(c => c.ApplicationUserId == applicationUser.Id);
+
+
+            var bookingsDetailsDb = await _unitOfWork.BookingDetails.FindAllAsync(bd => bd.AccommodationId != null, new string[] { "Accommodation" });
+
+            IEnumerable<int> bookingHeadersIds = bookingsDetailsDb.Where(bd => bd.Accommodation.CompanyId == Company.Id).Select(b => b.BookingHeaderId).ToList();
+
+            var uniqueBookingHeaders = bookingHeadersIds.Distinct().ToList();
+
+            List<BookingHeader> bookingHeaders = new List<BookingHeader>();
+
+            foreach (var bookingHeaderId in uniqueBookingHeaders)
+            {
+                bookingHeaders.Add(_unitOfWork.BookingHeaders.GetById(bookingHeaderId));
+            }
+
+            IEnumerable<BookingHeader> bookingsDb = bookingHeaders;
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            switch (status)
+            {
+                case "pending":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Pending);
+                    break;
+                case "approved":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Approved);
+                    break;
+                case "inprocess":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.InProcess);
+                    break;
+                case "completed":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Completed);
+                    break;
+                case "cancelled":
+                    bookingsDb = bookingsDb.Where(u => u.BookingStatus == BookingStatus.Cancelled);
+                    break;
+                default:
+                    break;
+            }
+            return Ok(bookingsDb);
+        }
+
 
         [HttpGet("BookingDetails/{bookingId}")]
         public async Task<IActionResult> BookingDetails(int bookingId)
@@ -141,6 +248,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             }
                
         }
+
+
         [HttpPost("CompleteBooking/{bookingId:int}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CompleteBooking(int bookingId)
