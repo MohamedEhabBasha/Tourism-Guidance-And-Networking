@@ -31,7 +31,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             return Ok(comments);
         }
         [HttpGet("GetCommentLikeStatus/{commentId}")]
-        public async Task<IActionResult> GetPostLikeStatus(int commentId, [FromQuery] string userId)
+        public async Task<IActionResult> GetCommentLikeStatus(int commentId, [FromQuery] string userId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -43,7 +43,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
             {
                 return NotFound();
             }
-            int status = await _unitOfWork.Comments.GetCommentLikeStatus(commentId, userId);
+            var status = await _unitOfWork.Comments.GetCommentLikeStatus(commentId, userId);
 
             return Ok(status);
 

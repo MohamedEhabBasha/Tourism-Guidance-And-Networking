@@ -146,15 +146,17 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             return commentDTO;
         }
 
-        public async Task<int> GetCommentLikeStatus(int commentId, string userId)
+        public async Task<StatusDTO> GetCommentLikeStatus(int commentId, string userId)
         {
-            var commentLike = await _context.CommentLikes.SingleOrDefaultAsync(c => c.Id == commentId && c.ApplicationUserId == userId);
-
+            var commentLike = await _context.CommentLikes.SingleOrDefaultAsync(c => c.CommentId == commentId && c.ApplicationUserId == userId);
+            StatusDTO status = new();
             if (commentLike == null)
-                return 0;
-            else if (commentLike.IsLiked) { return 1; }
-
-            return -1;
+                status.Status = 0;
+            else if (commentLike.IsLiked) 
+                status.Status = 1;
+            else 
+                status.Status = -1;
+            return status;
         }
     }
 }

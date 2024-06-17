@@ -8,7 +8,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia
         Task<ICollection<CommentDTO>> GetAllCommentsByUserId(string userId);
         Task<Comment> CreateCommentAsync(CommentInputDTO commentDTO);
         Task<Comment> UpdateCommentAsync(int id, CommentInputDTO commentDTO);
-        Task<int> GetCommentLikeStatus(int commentId, string userId);
+        Task<StatusDTO> GetCommentLikeStatus(int commentId, string userId);
         bool DeleteComment(int id);
         Task<CommentLikes> CreateCommentLikeAsync(CommentLikeDTO commentLikeDTO);
         Task<CommentLikes> UpdateCommentLikeAsync(CommentLikeDTO commentLikeDTO);
