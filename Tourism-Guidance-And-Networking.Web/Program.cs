@@ -14,6 +14,7 @@ using Tourism_Guidance_And_Networking.DataAccess.Data;
 using Tourism_Guidance_And_Networking.DataAccess.DbInitializer;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories;
 using Tourism_Guidance_And_Networking.Web.Services;
+using Tourism_Guidance_And_Networking.Web.Services.AI;
 using Tourism_Guidance_And_Networking.Web.Services.Hubs;
 namespace Tourism_Guidance_And_Networking.Web
 {
@@ -40,6 +41,12 @@ namespace Tourism_Guidance_And_Networking.Web
                            .SetIsOriginAllowed((host) => true)
                            .AllowCredentials();
                 }));
+
+            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient<IExternalService, ExternalService>(client =>
+            {
+                client.BaseAddress = new Uri("http://127.0.0.1:5000"); // Replace with your actual base URL
+            });
             // Add services to the container.
 
             builder.Services.AddControllers();
