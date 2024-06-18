@@ -12,6 +12,11 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<UserMatrix>().HasKey(u => new { u.UserID, u.ItemID, u.Action});
+        }
         public DbSet<Category> Categories { get; set; }
         public DbSet<TouristPlace> Tourists { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
@@ -31,5 +36,6 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentLikes> CommentLikes { get; set; }
         public DbSet<TouristProfileImage> TouristProfilesImages { get; set; }
+        public DbSet<UserMatrix> UserMatrices { get; set; }
     }
 }

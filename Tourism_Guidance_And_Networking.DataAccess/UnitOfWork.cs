@@ -4,6 +4,7 @@ using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models;
+using Tourism_Guidance_And_Networking.DataAccess.Repositories;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories;
@@ -30,6 +31,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IUserProfileRepository UserProfiles { get; private set; }
         public IPostRepository Posts { get; private set; }
         public ICommentRepository Comments { get; private set; }
+        public IUserMatrix UserMatrix { get; private set; }
         public UnitOfWork(ApplicationDbContext context ,IImageService imageService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -49,6 +51,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             UserProfiles = new UserProfileRepository(_context,imageService,_userManager);
             Posts = new PostRepository(_context, imageService);
             Comments = new CommentRepository(_context);
+            UserMatrix = new UserMatrixRepository(_context);
         }
 
         public int Complete()

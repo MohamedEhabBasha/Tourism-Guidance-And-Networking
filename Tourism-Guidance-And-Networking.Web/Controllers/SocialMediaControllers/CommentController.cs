@@ -37,7 +37,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
                 return BadRequest(ModelState);
 
             var user = await _unitOfWork.ApplicationUsers.FindAsync(x => x.Id == userId);
-            var comment = await _unitOfWork.Comments.FindAsync(p => p.Id == commentId && p.ApplicationUserId == userId);
+            var comment = await _unitOfWork.Comments.FindAsync(p => p.Id == commentId);
 
             if (user is null || comment is null)
             {
