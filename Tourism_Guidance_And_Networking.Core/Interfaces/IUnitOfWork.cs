@@ -26,6 +26,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
 
         public IPostRepository Posts { get; }
         public ICommentRepository Comments { get; }
+        public IUserMatrix UserMatrix { get; }
         int Complete();
     }
 }
