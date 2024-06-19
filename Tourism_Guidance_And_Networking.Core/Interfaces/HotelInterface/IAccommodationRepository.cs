@@ -11,7 +11,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<AccommodationOutputDTO> GetAccommodationByIdAsync(int accomId);
         Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int companyId);
         Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByTypeAsync(string type, int companyId);
-        Task<ICollection<AccommodationOutputDTO>> FilterByPrice(double price);
+        Task<ICollection<AccommodationOutputDTO>> FilterByPrice(double minPrice, double maxPrice);
         Task<ICollection<AccommodationOutputDTO>> FilterByRate(double star);
         Task<Accommodation> CreateAccommodationAsync(AccommodationDTO accommodationDTO);
 

@@ -42,10 +42,10 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<ICollection<RoomOutputDTO>> FilterByPrice(double price)
+        public async Task<ICollection<RoomOutputDTO>> FilterByPrice(double minPrice, double maxPrice)
         {
             return await _context.Rooms
-                .Where(r => r.Price ==  price)
+                .Where(r => (r.Price >=  minPrice && r.Price <= maxPrice))
                 .Select (room => ToRoomOutputDto(room)) 
                 .ToListAsync();
         }
