@@ -107,7 +107,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> SeedingHotels()
         {
             // Path to your JSON file
-            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -126,13 +126,33 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
                 if (propertyData.property_type[$"{i}"] == "Hotel" || propertyData.property_type[$"{i}"] == "Suit")
                 {
+                    if (propertyData.governorate[$"{i}"] is null ||
+                       propertyData.Name[$"{i}"] is null ||
+                       propertyData.address[$"{i}"] is null ||
+                       propertyData.img[$"{i}"] is null ||
+                       propertyData.location[$"{i}"] is null ||
+                       propertyData.type[$"{i}"] is null ||
+                       propertyData.price[$"{i}"] is null ||
+                       propertyData.taxes_and_charges[$"{i}"] is null ||
+                       propertyData.info[$"{i}"] is null ||
+                       propertyData.img[$"{i}"] is null ||
+                       propertyData.num_adults[$"{i}"] is null ||
+                       propertyData.description[$"{i}"] is null)
+                        continue;
+
+                    if (namesOfhotels.Contains(propertyData.Name[$"{i}"]))
+                        continue;
+                    else
+                        namesOfhotels.Add(propertyData.Name[$"{i}"]);
+
+
                     RegisterModel registerModel = new RegisterModel();
                     registerModel.FirstName = $"Hotel{i}";
                     registerModel.LastName = $"Hotel{i}";
-                    registerModel.Username = $"Hotel{i + 32000}";
+                    registerModel.Username = $"Hotel{i + 40000}";
                     registerModel.Address = propertyData.address[$"{i}"];
                     registerModel.PhoneNumber = "+20123456789";
-                    registerModel.Email = $"Hotel{i + 32000}@gmail.com";
+                    registerModel.Email = $"Hotel{i + 40000}@gmail.com";
                     registerModel.Password = "Hotel@2001";
                     registerModel.ConfirmPassword = "Hotel@2001";
 
@@ -152,23 +172,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         rating = double.Parse(propertyData.rating[$"{i}"]);
 
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
-                        numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
-
-                    if (propertyData.governorate[$"{i}"] is null ||
-                        propertyData.Name[$"{i}"] is null ||
-                        propertyData.address[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null ||
-                        propertyData.location[$"{i}"] is null ||
-                        propertyData.type[$"{i}"] is null ||
-                        propertyData.price[$"{i}"] is null ||
-                        propertyData.taxes_and_charges[$"{i}"] is null ||
-                        propertyData.info[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null ||
-                        propertyData.num_adults[$"{i}"] is null ||
-                        propertyData.description[$"{i}"] is null)
-                        continue;
-                       
-
+                        numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);    
 
                     Hotel hotel = new()
                     {
@@ -185,14 +189,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Hotel myHotel = await _unitOfWork.Hotels.AddAsync(hotel);
                     _unitOfWork.Complete();
                     Hotels.Add(myHotel);
-
-                    if (namesOfhotels.Contains(propertyData.Name[$"{i}"]))
-                        continue;
-                    else
-                        namesOfhotels.Add(propertyData.Name[$"{i}"]);
+                   
                 }
             }
-            return Ok(Hotels);
+            return Ok(Hotels.Count);
 
         }
 
@@ -200,7 +200,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> SeedingRooms()
         {
             // Path to your JSON file
-            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -217,6 +217,19 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             {
                 if (propertyData.property_type[$"{i}"] == "Hotel" || propertyData.property_type[$"{i}"] == "Suit")
                 {
+                    if (propertyData.governorate[$"{i}"] is null ||
+                        propertyData.Name[$"{i}"] is null ||
+                        propertyData.address[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null ||
+                        propertyData.location[$"{i}"] is null ||
+                        propertyData.type[$"{i}"] is null ||
+                        propertyData.price[$"{i}"] is null ||
+                        propertyData.taxes_and_charges[$"{i}"] is null ||
+                        propertyData.info[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null ||
+                        propertyData.num_adults[$"{i}"] is null ||
+                        propertyData.description[$"{i}"] is null)
+                        continue;
 
                     Random random = new Random();
 
@@ -229,19 +242,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                    if (propertyData.governorate[$"{i}"] is null ||
-                        propertyData.Name[$"{i}"] is null ||
-                        propertyData.address[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null || 
-                        propertyData.location[$"{i}"] is null ||
-                        propertyData.type[$"{i}"] is null ||
-                        propertyData.price[$"{i}"] is null ||
-                        propertyData.taxes_and_charges[$"{i}"] is null ||
-                        propertyData.info[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null ||
-                        propertyData.num_adults[$"{i}"] is null ||
-                        propertyData.description[$"{i}"] is null)
-                           continue;
+                    
 
                     var hotel = await _unitOfWork.Hotels.FindAsync(h => h.Name == propertyData.Name[$"{i}"]);
 
@@ -275,14 +276,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
                 }
             }
-            return Ok(Rooms);
+            return Ok(Rooms.Count);
         }
 
         [HttpGet("SeedingAccommdations")]
         public async Task<IActionResult> Accommdations()
         {// Path to your JSON file
          // Path to your JSON file
-            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -299,6 +300,19 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             {
                 if (!(propertyData.property_type[$"{i}"] == "Hotel" || propertyData.property_type[$"{i}"] == "Suit"))
                 {
+                    if (propertyData.governorate[$"{i}"] is null ||
+                       propertyData.Name[$"{i}"] is null ||
+                       propertyData.address[$"{i}"] is null ||
+                       propertyData.img[$"{i}"] is null ||
+                       propertyData.location[$"{i}"] is null ||
+                       propertyData.type[$"{i}"] is null ||
+                       propertyData.price[$"{i}"] is null ||
+                       propertyData.taxes_and_charges[$"{i}"] is null ||
+                       propertyData.info[$"{i}"] is null ||
+                       propertyData.img[$"{i}"] is null ||
+                       propertyData.num_adults[$"{i}"] is null ||
+                       propertyData.description[$"{i}"] is null)
+                        continue;
 
                     Random random = new Random();
 
@@ -311,19 +325,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                    if (propertyData.governorate[$"{i}"] is null ||
-                        propertyData.Name[$"{i}"] is null ||
-                        propertyData.address[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null ||
-                        propertyData.location[$"{i}"] is null ||
-                        propertyData.type[$"{i}"] is null ||
-                        propertyData.price[$"{i}"] is null ||
-                        propertyData.taxes_and_charges[$"{i}"] is null ||
-                        propertyData.info[$"{i}"] is null ||
-                        propertyData.img[$"{i}"] is null ||
-                        propertyData.num_adults[$"{i}"] is null ||
-                        propertyData.description[$"{i}"] is null)
-                        continue;
+                   
 
                     Accommodation accomdation = new Accommodation()
                     {
@@ -342,7 +344,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         Capicity = int.Parse(propertyData.num_adults[$"{i}"]),
                         Count = random.Next(5, 15),
                         CountOfReserved = 0,
-                        CompanyId =5 // To Be Changed 
+                        CompanyId =1 // To Be Changed 
                     };
 
                     Accommodation accomdationDb = await _unitOfWork.Accommodations.AddAsync(accomdation);
@@ -358,7 +360,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
                 }
             }
-            return Ok(Accommodations);
+            return Ok(Accommodations.Count);
         }
 
         [HttpGet("SeedingCategoriesOfTouristPlaces")]
