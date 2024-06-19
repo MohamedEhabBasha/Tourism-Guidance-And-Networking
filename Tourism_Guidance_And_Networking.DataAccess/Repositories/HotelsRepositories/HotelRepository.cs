@@ -33,6 +33,14 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .ToListAsync();
         }
+        public async Task<ICollection<HotelOutputDTO>> FilterByRate(double star)
+        {
+            return await _context.Hotels
+                .Where(h => (h.Rating <= star*2.0 && h.Rating >= (star-1)*2.0))
+                .Select(h => ToHotelOutputDto(h))
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO)
         {
             Hotel hotel = new() {
@@ -117,7 +125,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Name = hotel.Name,
                 Reviews = hotel.Reviews,
                 Location = hotel.Location,
-                Governorate = hotel.Governorate,
+                Governorate = hotel.Governorate
                 //ApplicationUserId = hotel.ApplicationUserId
             };
 

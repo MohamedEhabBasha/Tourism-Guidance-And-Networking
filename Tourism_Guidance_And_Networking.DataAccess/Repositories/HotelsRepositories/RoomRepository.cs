@@ -33,12 +33,20 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .Select(room => ToRoomOutputDto(room))
                 .ToListAsync();
         }
+
         public async Task<ICollection<RoomOutputDTO>> GetRoomsByTypeAsync(string type, int hotelId)
         {
             return await _context.Rooms
                 .Where(c => c.Type.Trim().ToLower().Contains(type) && c.HotelId == hotelId)
                 .Select(room => ToRoomOutputDto(room))
                 .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<ICollection<RoomOutputDTO>> FilterByPrice(double price)
+        {
+            return await _context.Rooms
+                .Where(r => r.Price ==  price)
+                .Select (room => ToRoomOutputDto(room)) 
                 .ToListAsync();
         }
         public async Task<ICollection<RoomOutputDTO>> SearchRoomByNameAsync(string name)

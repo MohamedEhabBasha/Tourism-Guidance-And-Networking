@@ -11,6 +11,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<RoomOutputDTO> GetRoomById(int id);
         Task<ICollection<RoomOutputDTO>> GetRoomsByHotelIdAsync(int hotelId);
         Task<ICollection<RoomOutputDTO>> GetRoomsByTypeAsync(string type, int hotelId);
+        Task<ICollection<RoomOutputDTO>> FilterByPrice(double price);
         Task<Room> CreateRoomAsync(RoomDTO roomlDTO);
 
         RoomOutputDTO UpdateRoom(int roomId, RoomDTO roomDTO);

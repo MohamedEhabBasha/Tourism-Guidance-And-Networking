@@ -47,7 +47,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 return BadRequest(ModelState);
             return Ok(hotelDto);
         }
+        [HttpGet("FilterHotelByRate")]
+        public async Task<IActionResult> FilterHotelByRate([FromQuery] double rate)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            return Ok(await _unitOfWork.Hotels.FilterByRate(rate));
+        }
         [HttpGet]
         [Authorize(Roles = Roles.Hotel)]
         public async Task<IActionResult> GetHotelUser()

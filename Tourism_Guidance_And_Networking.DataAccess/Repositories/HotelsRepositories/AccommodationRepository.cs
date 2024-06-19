@@ -49,6 +49,22 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .ToListAsync();
         }
+        public async Task<ICollection<AccommodationOutputDTO>> FilterByPrice(double price)
+        {
+            return await _context.Accommodations
+                .Where(a => a.Price == price)
+                .Select(accommodation => ToAccommodationOutputDto(accommodation))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<ICollection<AccommodationOutputDTO>> FilterByRate(double star)
+        {
+            return await _context.Accommodations
+                .Where(a => (a.Rating <= star*2.0 && a.Rating >= (star-1)*2.0))
+                .Select(accommodation => ToAccommodationOutputDto(accommodation))
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<Accommodation> CreateAccommodationAsync(AccommodationDTO accommodationDTO)
         {
             Accommodation accommodation = new()

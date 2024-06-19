@@ -72,6 +72,13 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return Ok(rooms);
         }
+        [HttpGet("FilterRoomsByPrice")]
+        public async Task<IActionResult> FilterRoomByPrice([FromQuery] double price)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            return Ok(await _unitOfWork.Rooms.FilterByPrice(price));
+        }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateRoom([FromForm] RoomDTO roomDTO)

@@ -21,15 +21,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         public async Task<ICollection<CompanyOutputDTO>> GetAllCompaniesAsync()
         {
             return await _context.Companies
-                .Select(companyDTO => new CompanyOutputDTO
-                {
-                    ID = companyDTO.Id,
-                    Name = companyDTO.Name,
-                    Address = companyDTO.Address,
-                    Rating = companyDTO.Rating,
-                    Reviews = companyDTO.Reviews,
-                    ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{companyDTO.Image}"
-                })
+                .Select(companyDTO => ToCompanyOutputDto(companyDTO))
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -37,37 +29,29 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         {
             var company = await _context.Companies.SingleAsync(c => c.Id == id);
 
-            var companyDto = new CompanyOutputDTO
-            {
-                ID = company.Id,
-                Name = company.Name,
-                Address = company.Address,
-                Rating = company.Rating,
-                Reviews = company.Reviews,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
-            };
+            var companyDto = ToCompanyOutputDto(company);
 
             return companyDto;
         }
         public async Task<CompanyOutputDTO?> GetCompanyByNameAsync(string name)
         {
             CompanyOutputDTO? company = await _context.Companies
-            .Select(companyDTO => new CompanyOutputDTO
-            {
-                ID = companyDTO.Id,
-                Name = companyDTO.Name,
-                Address = companyDTO.Address,
-                Rating = companyDTO.Rating,
-                Reviews = companyDTO.Reviews,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{companyDTO.Image}"
-            })
+            .Select(companyDTO => ToCompanyOutputDto(companyDTO))
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Name.Trim().ToLower().Contains(name));
 
             if (company is null)
                 return null;
             return company;
-        } 
+        }
+        public async Task<ICollection<CompanyOutputDTO>> FilterByRate(double star)
+        {
+            return await _context.Companies
+                .Where(c => (c.Rating <= star * 2.0 && c.Rating >= (star - 1) * 2.0))
+                .Select(c => ToCompanyOutputDto(c))
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task<Company> CreateCompanyAsync(CompanyDTO companyDTO)
         {
 
@@ -115,15 +99,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             {
                 _imageService.DeleteImage(oldImage, _imagesPath);
             }
-            CompanyOutputDTO companyOutputDTO = new()
-            {
-                ID = company.Id,
-                Name = companyDTO.Name,
-                Address = companyDTO.Address,
-                Rating = companyDTO.Rating,
-                Reviews = companyDTO.Reviews,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
-            };
+            CompanyOutputDTO companyOutputDTO = ToCompanyOutputDto(company);
             return companyOutputDTO;
         }
         public bool DeleteCompany(int id)
@@ -139,6 +115,19 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             _imageService.DeleteImage(company.Image, _imagesPath);
 
             return true;
+        }
+        private CompanyOutputDTO ToCompanyOutputDto(Company company)
+        {
+            CompanyOutputDTO companyOutputDTO = new()
+            {
+                ID = company.Id,
+                Name = company.Name,
+                Address = company.Address,
+                Rating = company.Rating,
+                Reviews = company.Reviews,
+                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{company.Image}"
+            };
+            return companyOutputDTO;
         }
     }
 }

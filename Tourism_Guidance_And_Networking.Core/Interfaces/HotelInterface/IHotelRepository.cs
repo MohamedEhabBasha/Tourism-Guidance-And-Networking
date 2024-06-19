@@ -10,7 +10,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface
         Task<ICollection<HotelOutputDTO>> GetAllHotels();
         Task<HotelOutputDTO> GetHotelByIdAsync(int id);
         Task<ICollection<HotelOutputDTO>> GetHotelByNameAsync(string name);
-
+        Task<ICollection<HotelOutputDTO>> FilterByRate(double star);
         Task<Hotel> CreateHotelAsync(HotelDTO hotelDTO);
 
         HotelOutputDTO UpdateHotel(int hotelId, HotelDTO hotelDTO);

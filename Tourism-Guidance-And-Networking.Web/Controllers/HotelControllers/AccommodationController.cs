@@ -66,6 +66,22 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return Ok(accommodations);
         }
+        [HttpGet("FilterAccommodationByPrice")]
+        public async Task<IActionResult> FilterAccommodationByPrice([FromQuery] double price)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(await _unitOfWork.Accommodations.FilterByPrice(price));
+        }
+        [HttpGet("FilterAccommodationByRate")]
+        public async Task<IActionResult> FilterAccommodationByRate([FromQuery] double star)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(await _unitOfWork.Accommodations.FilterByRate(star));
+        }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateAccommodation([FromForm] AccommodationDTO accommodationDTO)
