@@ -140,6 +140,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         }
         public static AccommodationOutputDTO ToAccommodationOutputDto(Accommodation accommodation)
         {
+            string image;
+            if (accommodation.Image.Contains("http"))
+                image = accommodation.Image;
+            else
+                image = $"{FileSettings.RootPath}/{_imagesPath}/{accommodation.Image}";
+
             AccommodationOutputDTO accommodationOutputDTO = new()
             {
                 Id = accommodation.Id,
@@ -149,7 +155,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Reviews = accommodation.Reviews,
                 Type = accommodation.Type,
                 Price = accommodation.Price,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{accommodation.Image}",
+                ImageURL = image,
                 Taxes = accommodation.Taxes,
                 Info = accommodation.Info,
                 Capicity = accommodation.Capicity,

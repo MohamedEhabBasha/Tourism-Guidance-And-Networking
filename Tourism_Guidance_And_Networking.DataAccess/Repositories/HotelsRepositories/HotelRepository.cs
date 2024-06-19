@@ -102,11 +102,17 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         }
         public static HotelOutputDTO ToHotelOutputDto(Hotel hotel)
         {
+            string image;
+            if (hotel.Image.Contains("http"))
+                image = hotel.Image;
+            else
+                image = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}";
+
             HotelOutputDTO hoteldTo = new()
             {
                 ID = hotel.Id,
                 Address = hotel.Address,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{hotel.Image}",
+                ImageURL = image,
                 Rating = hotel.Rating,
                 Name = hotel.Name,
                 Reviews = hotel.Reviews,

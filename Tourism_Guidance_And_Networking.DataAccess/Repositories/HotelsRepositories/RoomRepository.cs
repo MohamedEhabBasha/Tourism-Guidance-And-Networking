@@ -127,6 +127,12 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
         }
         public static RoomOutputDTO ToRoomOutputDto(Room room)
         {
+            string image;
+            if (room.Image.Contains("http"))
+                image = room.Image;
+            else
+                image = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}";
+
             RoomOutputDTO roomOutputDTO = new()
             {
                 ID = room.Id,
@@ -138,7 +144,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 Capicity = room.Capicity,
                 HotelId = room.HotelId,
                 Count = room.Count,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{room.Image}"
+                ImageURL = image
             };
             return roomOutputDTO;
         }
