@@ -107,7 +107,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> SeedingHotels()
         {
             // Path to your JSON file
-            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -200,7 +200,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> SeedingRooms()
         {
             // Path to your JSON file
-            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -282,7 +282,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> Accommdations()
         {// Path to your JSON file
          // Path to your JSON file
-            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;

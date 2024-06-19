@@ -106,13 +106,19 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.TouristPlacesR
         }
         public static TouristPlaceOutputDTO ToTouristPlaceOutputDto(TouristPlace touristPlace)
         {
+            string image;
+            if (touristPlace.Image.Contains("http"))
+                image = touristPlace.Image;
+            else
+                image = $"{FileSettings.RootPath}/{_imagesPath}/{touristPlace.Image}";
+
             TouristPlaceOutputDTO touristPlaceOutputDTO = new()
             {
                 Id = touristPlace.Id,
                 Name = touristPlace.Name,
                 Description = touristPlace.Description ?? "",
                 CategoryId = touristPlace.CategoryId,
-                ImageURL = $"{FileSettings.RootPath}/{_imagesPath}/{touristPlace.Image}"
+                ImageURL = image
             };
 
             return touristPlaceOutputDTO;
