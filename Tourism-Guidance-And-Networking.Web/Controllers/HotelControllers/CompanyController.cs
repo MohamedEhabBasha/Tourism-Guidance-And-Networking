@@ -145,6 +145,26 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return StatusCode(201, createCompanyResultDTO);
         }
+
+        [HttpPost("MakeReview")]
+        [Authorize]
+        public async Task<IActionResult> MakeReview([FromBody] ReviewDTo reviewDTo)
+        {
+            var company = _unitOfWork.Companies.GetById(reviewDTo.ItemId);
+
+            if (company is null)
+                return NotFound($"THERE IS NO COMPANY WITH ID = {reviewDTo.ItemId}");
+
+
+            company.Rating = (company.Rating * company.Reviews + reviewDTo.Rating) / (company.Reviews + 1);
+            company.Rating = Math.Round(company.Rating, 2);
+            company.Reviews++;
+
+            _unitOfWork.Complete();
+
+            return Ok(company);
+        }
+
         [HttpPut("{companyId:int}")]
         public async Task<IActionResult> UpdateCompanyAsync([FromRoute] int companyId, [FromForm] CompanyDTO companyDTO)
         {

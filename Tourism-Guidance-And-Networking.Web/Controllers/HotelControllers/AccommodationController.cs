@@ -172,6 +172,27 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             };
             return StatusCode(201, output);
         }
+
+        [HttpPost("MakeReview")]
+        [Authorize]
+        public async Task<IActionResult> MakeReview([FromBody] ReviewDTo reviewDTo)
+        {
+            var accommdation = _unitOfWork.Accommodations.GetById(reviewDTo.ItemId);
+
+            if (accommdation is null)
+                return NotFound($"THERE IS NO ACCOMDATION  WITH ID = {reviewDTo.ItemId}");
+
+
+            accommdation.Rating = (accommdation.Rating * accommdation.Reviews + reviewDTo.Rating) / (accommdation.Reviews + 1);
+            accommdation.Rating = Math.Round(accommdation.Rating, 2);
+            accommdation.Reviews++;
+
+            _unitOfWork.Complete();
+
+            return Ok(accommdation);
+        }
+
+
         [HttpPut("{accommodationId:int}")]
         public IActionResult UpdateAccommodationAsync([FromRoute] int accommodationId, [FromForm] AccommodationDTO accommodationDTO)
         {

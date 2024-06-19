@@ -144,6 +144,27 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return StatusCode(201, createHotelResultDTO);
         }
+
+        [HttpPost("MakeReview")]
+        [Authorize]
+        public async Task<IActionResult> MakeReview([FromBody] ReviewDTo reviewDTo)
+        {
+            var hotel = _unitOfWork.Hotels.GetById(reviewDTo.ItemId);
+
+            if (hotel is null)
+                return NotFound($"THERE IS NO HOTEL WITH ID = {reviewDTo.ItemId}");
+
+
+            hotel.Rating = (hotel.Rating * hotel.Reviews + reviewDTo.Rating) / (hotel.Reviews + 1);
+            hotel.Rating = Math.Round(hotel.Rating, 2);
+            hotel.Reviews++;
+
+            _unitOfWork.Complete();
+
+            return Ok(hotel);
+        }
+
+
         [HttpPut("{hotelId:int}")]
         public IActionResult UpdateHotel([FromRoute] int hotelId, [FromForm] HotelDTO hotelDTO)
         {

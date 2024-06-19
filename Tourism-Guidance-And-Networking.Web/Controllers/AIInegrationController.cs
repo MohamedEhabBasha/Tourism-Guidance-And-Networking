@@ -22,5 +22,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             var response = await _externalService.PostDataToBackendAsync(comments);
             return Ok(response);
         }
+
+        [HttpGet("RecommendationSystem")]
+        public async Task<IActionResult> RecomemndItems(string userId)
+        {
+            return Ok();
+        }
+
+
+
     }
 }
