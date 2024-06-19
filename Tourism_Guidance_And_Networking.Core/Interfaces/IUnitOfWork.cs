@@ -1,5 +1,6 @@
 ﻿
 
+using Tourism_Guidance_And_Networking.Core.Interfaces.Ai_Inegration;
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
@@ -27,6 +28,8 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
         public IPostRepository Posts { get; }
         public ICommentRepository Comments { get; }
         public IUserMatrix UserMatrix { get; }
+        public IRoomMappingRepository RoomMappings { get; }
+        public IAccomdationMappingRepository AccomdationMappings { get; }
         int Complete();
     }
 }

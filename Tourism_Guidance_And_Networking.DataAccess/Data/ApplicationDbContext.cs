@@ -1,5 +1,6 @@
 ﻿
 
+using Tourism_Guidance_And_Networking.Core.Models.AI_Integration;
 using Tourism_Guidance_And_Networking.Core.Models.Bookings;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models.SocialMedia.POST;
@@ -37,5 +38,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<CommentLikes> CommentLikes { get; set; }
         public DbSet<TouristProfileImage> TouristProfilesImages { get; set; }
         public DbSet<UserMatrix> UserMatrices { get; set; }
+        public DbSet<RoomMapping> RoomMappings { get; set; }
+        public DbSet<AccomdationMapping> AccomdationMappings { get; set; }
+       
     }
 }

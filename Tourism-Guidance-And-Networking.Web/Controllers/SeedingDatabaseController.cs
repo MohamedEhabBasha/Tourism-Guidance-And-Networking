@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Helper;
+using Tourism_Guidance_And_Networking.Core.Models.AI_Integration;
 using Tourism_Guidance_And_Networking.Core.Models.Authentication;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 using Tourism_Guidance_And_Networking.Web.Services;
@@ -122,20 +123,16 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             for (int i = 0; i < 5048; i++)
             {
-                if (namesOfhotels.Contains(propertyData.Name[$"{i}"]))
-                    continue;
-                else
-                    namesOfhotels.Add(propertyData.Name[$"{i}"]);
 
                 if (propertyData.property_type[$"{i}"] == "Hotel" || propertyData.property_type[$"{i}"] == "Suit")
                 {
                     RegisterModel registerModel = new RegisterModel();
                     registerModel.FirstName = $"Hotel{i}";
                     registerModel.LastName = $"Hotel{i}";
-                    registerModel.Username = $"Hotel{i + 25000}";
+                    registerModel.Username = $"Hotel{i + 32000}";
                     registerModel.Address = propertyData.address[$"{i}"];
                     registerModel.PhoneNumber = "+20123456789";
-                    registerModel.Email = $"Hotel{i + 25000}@gmail.com";
+                    registerModel.Email = $"Hotel{i + 32000}@gmail.com";
                     registerModel.Password = "Hotel@2001";
                     registerModel.ConfirmPassword = "Hotel@2001";
 
@@ -161,7 +158,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         propertyData.Name[$"{i}"] is null ||
                         propertyData.address[$"{i}"] is null ||
                         propertyData.img[$"{i}"] is null ||
-                        propertyData.location[$"{i}"] is null)
+                        propertyData.location[$"{i}"] is null ||
+                        propertyData.type[$"{i}"] is null ||
+                        propertyData.price[$"{i}"] is null ||
+                        propertyData.taxes_and_charges[$"{i}"] is null ||
+                        propertyData.info[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null ||
+                        propertyData.num_adults[$"{i}"] is null ||
+                        propertyData.description[$"{i}"] is null)
                         continue;
                        
 
@@ -181,6 +185,11 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Hotel myHotel = await _unitOfWork.Hotels.AddAsync(hotel);
                     _unitOfWork.Complete();
                     Hotels.Add(myHotel);
+
+                    if (namesOfhotels.Contains(propertyData.Name[$"{i}"]))
+                        continue;
+                    else
+                        namesOfhotels.Add(propertyData.Name[$"{i}"]);
                 }
             }
             return Ok(Hotels);
@@ -211,7 +220,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
                     Random random = new Random();
 
-                    double rating = random.Next(2, 9);
+                    double rating = 9;
                     int numOfReviews = random.Next(20, 50);
 
                     if (propertyData.rating[$"{i}"] is not null)
@@ -220,23 +229,27 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                    if (propertyData.type[$"{i}"] is null ||
+                    if (propertyData.governorate[$"{i}"] is null ||
+                        propertyData.Name[$"{i}"] is null ||
+                        propertyData.address[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null || 
+                        propertyData.location[$"{i}"] is null ||
+                        propertyData.type[$"{i}"] is null ||
                         propertyData.price[$"{i}"] is null ||
                         propertyData.taxes_and_charges[$"{i}"] is null ||
                         propertyData.info[$"{i}"] is null ||
                         propertyData.img[$"{i}"] is null ||
                         propertyData.num_adults[$"{i}"] is null ||
-                        propertyData.description[$"{i}"] is null )
+                        propertyData.description[$"{i}"] is null)
                            continue;
 
-                    var hotel = _unitOfWork.Hotels.FindAsync(h => h.Name == propertyData.Name[$"{i}"]);
+                    var hotel = await _unitOfWork.Hotels.FindAsync(h => h.Name == propertyData.Name[$"{i}"]);
 
                     if (hotel is null)
                         return BadRequest($"Hotel with name {propertyData.Name[$"{i}"]} DOES NOT EXIST");
 
                     Room room = new Room()
                     {
-                        Id = i+10000,
                         Type = propertyData.type[$"{i}"],
                         Price = int.Parse(propertyData.price[$"{i}"]),
                         Taxes= int.Parse(propertyData.taxes_and_charges[$"{i}"]),
@@ -249,19 +262,26 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         HotelId = hotel.Id
                     };
 
-                    await _unitOfWork.Rooms.AddAsync(room);
-                    
+                    Room roomDb =  await _unitOfWork.Rooms.AddAsync(room);
+                    _unitOfWork.Complete();
+                    RoomMapping roomMapping = new()
+                    {
+                        Room = roomDb.Id,
+                        Item = i
+                    };
+                    await _unitOfWork.RoomMappings.AddAsync(roomMapping);
+                    _unitOfWork.Complete();
                     Rooms.Add(room);
 
                 }
             }
-            _unitOfWork.Complete();
             return Ok(Rooms);
         }
 
         [HttpGet("SeedingAccommdations")]
         public async Task<IActionResult> Accommdations()
         {// Path to your JSON file
+         // Path to your JSON file
             string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
@@ -282,11 +302,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
                     Random random = new Random();
 
-                    double rating = random.Next(2, 9);
+                    double rating = 9;
                     int numOfReviews = random.Next(20, 50);
-                    string governate = "Cairo";
-                    string location = "Cairo";
-                    string description = "\"Situated in Cairo, 6.5 km from City Stars and 10 km from Cairo Intl Conference Centre, Mercy Gardenia Apartment-Heliopolis, New Cairo offers a garden and air conditioning. Both free WiFi and parking on-site are accessible at the apartment free of charge. Mosque of Mohamed Ali Pasha is 15 km away and Cairo Citadel is 16 km from the apartment.\\n\\nThe spacious apartment has a balcony, 3 bedrooms, a living room and a well-equipped kitchen with a minibar. A flat-screen TV is available. The property offers garden views.\\n\\nA bar can be found on-site.\\n\\nAl-Azhar Mosque is 15 km from Mercy Gardenia Apartment-Heliopolis, New Cairo, while El Hussien Mosque is 15 km from the property. The nearest airport is Cairo International Airport, 14 km from the accommodation.\"";
 
                     if (propertyData.rating[$"{i}"] is not null)
                         rating = double.Parse(propertyData.rating[$"{i}"]);
@@ -294,38 +311,54 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                    if (propertyData.governorate[$"{i}"] is not null)
-                        governate = propertyData.governorate[$"{i}"];
+                    if (propertyData.governorate[$"{i}"] is null ||
+                        propertyData.Name[$"{i}"] is null ||
+                        propertyData.address[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null ||
+                        propertyData.location[$"{i}"] is null ||
+                        propertyData.type[$"{i}"] is null ||
+                        propertyData.price[$"{i}"] is null ||
+                        propertyData.taxes_and_charges[$"{i}"] is null ||
+                        propertyData.info[$"{i}"] is null ||
+                        propertyData.img[$"{i}"] is null ||
+                        propertyData.num_adults[$"{i}"] is null ||
+                        propertyData.description[$"{i}"] is null)
+                        continue;
 
-                    Accommodation accommodation = new Accommodation()
+                    Accommodation accomdation = new Accommodation()
                     {
-                        Id = i + 10000,
                         Name = propertyData.Name[$"{i}"],
-                        Location = propertyData.location[$"{i}"],
-                        Governorate = propertyData.governorate[$"{i}"],
                         Address = propertyData.address[$"{i}"],
                         Rating = rating,
+                        Image = propertyData.img[$"{i}"].Replace(@"\/", "/"),
                         Reviews = numOfReviews,
+                        Location = propertyData.location[$"{i}"],
+                        Governorate = propertyData.governorate[$"{i}"],
                         Type = propertyData.type[$"{i}"],
                         Price = int.Parse(propertyData.price[$"{i}"]),
                         Taxes = int.Parse(propertyData.taxes_and_charges[$"{i}"]),
                         Info = propertyData.info[$"{i}"],
                         Description = propertyData.description[$"{i}"],
-                        Image = propertyData.img[$"{i}"].Replace(@"\/", "/"),
                         Capicity = int.Parse(propertyData.num_adults[$"{i}"]),
                         Count = random.Next(5, 15),
                         CountOfReserved = 0,
-                        CompanyId = 5, // To be changed by seeding companies
+                        CompanyId =5 // To Be Changed 
                     };
 
-                    await _unitOfWork.Accommodations.AddAsync(accommodation);
-                    Accommodations.Add(accommodation);
+                    Accommodation accomdationDb = await _unitOfWork.Accommodations.AddAsync(accomdation);
                     _unitOfWork.Complete();
+                    AccomdationMapping accomdationMapping = new()
+                    {
+                        Accomdation = accomdationDb.Id,
+                        Item = i
+                    };
+                    await _unitOfWork.AccomdationMappings.AddAsync(accomdationMapping);
+                    _unitOfWork.Complete();
+                    Accommodations.Add(accomdationDb);
 
                 }
             }
             return Ok(Accommodations);
-
         }
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
         {

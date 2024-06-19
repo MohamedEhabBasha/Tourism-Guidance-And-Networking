@@ -1,10 +1,12 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Tourism_Guidance_And_Networking.Core.Interfaces.Ai_Inegration;
 using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories;
+using Tourism_Guidance_And_Networking.DataAccess.Repositories.Ai_Integration;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsRepositories;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRepositories;
@@ -32,6 +34,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IPostRepository Posts { get; private set; }
         public ICommentRepository Comments { get; private set; }
         public IUserMatrix UserMatrix { get; private set; }
+        public IRoomMappingRepository RoomMappings { get; private set; }
+        public IAccomdationMappingRepository AccomdationMappings { get; private set; }
         public UnitOfWork(ApplicationDbContext context ,IImageService imageService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -52,6 +56,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             Posts = new PostRepository(_context, imageService);
             Comments = new CommentRepository(_context);
             UserMatrix = new UserMatrixRepository(_context);
+            RoomMappings = new RoomMappingRepository(_context);
+            AccomdationMappings = new AccomdationMappingRepository(_context);
         }
 
         public int Complete()
