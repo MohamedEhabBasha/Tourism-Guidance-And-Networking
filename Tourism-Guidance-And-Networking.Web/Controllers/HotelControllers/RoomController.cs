@@ -73,11 +73,11 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(rooms);
         }
         [HttpGet("FilterRoomsByPrice")]
-        public async Task<IActionResult> FilterRoomByPrice([FromQuery] double price)
+        public async Task<IActionResult> FilterRoomByPrice([FromQuery] double minPrice, [FromQuery] double maxPrice)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            return Ok(await _unitOfWork.Rooms.FilterByPrice(price));
+            return Ok(await _unitOfWork.Rooms.FilterByPrice(minPrice,maxPrice));
         }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]

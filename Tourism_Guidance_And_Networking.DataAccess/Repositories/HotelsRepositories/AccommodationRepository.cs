@@ -65,6 +65,24 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .ToListAsync();
         }
+        public async Task<PaginationDTO<AccommodationOutputDTO>> GetPaginatedAccommodationAsync(int pageNumber, int pageSize)
+        {
+            var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                      .OrderBy(a => a.Id)
+                                      .Skip(pageSize * (pageNumber - 1))
+                                      .Take(pageSize)
+                                      .Select(a => ToAccommodationOutputDto(a))
+                                      .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
         public async Task<Accommodation> CreateAccommodationAsync(AccommodationDTO accommodationDTO)
         {
             Accommodation accommodation = new()

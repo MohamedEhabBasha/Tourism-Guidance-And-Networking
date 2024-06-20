@@ -283,7 +283,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> Accommdations()
         {// Path to your JSON file
          // Path to your JSON file
-            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -344,7 +344,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         Capicity = int.Parse(propertyData.num_adults[$"{i}"]),
                         Count = random.Next(5, 15),
                         CountOfReserved = 0,
-                        CompanyId =1 // To Be Changed 
+                        CompanyId = 3 // To Be Changed 
                     };
 
                     Accommodation accomdationDb = await _unitOfWork.Accommodations.AddAsync(accomdation);

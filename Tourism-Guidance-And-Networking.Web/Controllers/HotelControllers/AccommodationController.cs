@@ -67,12 +67,12 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(accommodations);
         }
         [HttpGet("FilterAccommodationByPrice")]
-        public async Task<IActionResult> FilterAccommodationByPrice([FromQuery] double price)
+        public async Task<IActionResult> FilterAccommodationByPrice([FromQuery] double minPrice, [FromQuery] double maxPrice)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(await _unitOfWork.Accommodations.FilterByPrice(price));
+            return Ok(await _unitOfWork.Accommodations.FilterByPrice(minPrice,maxPrice));
         }
         [HttpGet("FilterAccommodationByRate")]
         public async Task<IActionResult> FilterAccommodationByRate([FromQuery] double star)
@@ -81,6 +81,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 return BadRequest(ModelState);
 
             return Ok(await _unitOfWork.Accommodations.FilterByRate(star));
+        }
+        [HttpGet("PaginatedAccommodation")]
+        public async Task<IActionResult> GetPaginatedAccommodation([FromQuery] int pageNumber)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(await _unitOfWork.Accommodations.GetPaginatedAccommodationAsync(pageNumber, 200));
         }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
