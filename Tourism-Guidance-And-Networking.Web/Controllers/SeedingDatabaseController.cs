@@ -906,7 +906,13 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     CategoryId = naturalId
                 }
             };
+            foreach (var item in TouristPlaces)
+            {
+                await _unitOfWork.TouristPlaces.AddAsync(item);
+            }
+            _unitOfWork.Complete();
 
+            return Ok(TouristPlaces);
         }
 
             private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
