@@ -100,7 +100,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 CompanyId = accommodationDTO.CompanyId,
                 Location = accommodationDTO.Location,
                 Governorate = accommodationDTO .Governorate,
-                Description = accommodationDTO .Description
+                Description = accommodationDTO .Description,
+                PropertyType = accommodationDTO.PropertyType
             };
             var fileResult = _imageService.SaveImage(accommodationDTO.ImagePath, _imagesPath);
 
@@ -141,6 +142,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             accommodation.Description = accommodationDTO.Description;
             accommodation.Location = accommodationDTO.Location;
             accommodation.Governorate = accommodationDTO.Governorate;
+            accommodation.PropertyType = accommodationDTO.PropertyType;
 
             if (accommodationDTO.ImagePath is not null)
             {
@@ -197,7 +199,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 CompanyId = accommodation.CompanyId,
                 Location = accommodation.Location,
                 Governorate = accommodation.Governorate,
-                Description = accommodation.Description
+                Description = accommodation.Description,
+                PropertyType = accommodation.PropertyType
             };
 
             return accommodationOutputDTO;

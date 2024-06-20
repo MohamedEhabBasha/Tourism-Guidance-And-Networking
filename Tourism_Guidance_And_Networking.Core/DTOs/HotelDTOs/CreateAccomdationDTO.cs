@@ -34,5 +34,6 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
         public int Capicity { get; set; }
         [Required]
         public int Count { get; set; }
+        public string PropertyType {  get; set; } = string.Empty;
     }
 }

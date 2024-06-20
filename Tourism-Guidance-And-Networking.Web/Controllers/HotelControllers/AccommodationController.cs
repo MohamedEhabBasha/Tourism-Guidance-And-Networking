@@ -125,7 +125,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 CompanyId = accommodation.CompanyId,
                 Location = accommodation.Location,
                 Governorate = accommodation.Governorate,
-                Description = accommodation.Description
+                Description = accommodation.Description,
+                PropertyType = accommodation.PropertyType
             };
             return StatusCode(201, output);
         }
@@ -163,7 +164,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 CompanyId = company.Id,
                 Location = accommodationDTO.Location,
                 Governorate = accommodationDTO.Governorate,
-                Description = accommodationDTO.Description
+                Description = accommodationDTO.Description,
+                PropertyType = accommodationDTO.PropertyType
             };
 
 
@@ -192,7 +194,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
                 CompanyId = accommodation.CompanyId,
                 Location = accommodation.Location,
                 Governorate = accommodation.Governorate,
-                Description = accommodation.Description
+                Description = accommodation.Description,
+                PropertyType = accommodation.PropertyType
             };
             return StatusCode(201, output);
         }
