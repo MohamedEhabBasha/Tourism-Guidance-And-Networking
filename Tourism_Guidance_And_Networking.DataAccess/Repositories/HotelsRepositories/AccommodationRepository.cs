@@ -50,6 +50,40 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 .AsNoTracking()
                 .ToListAsync();
         }
+        public async Task<ICollection<AccommodationOutputDTO>> FilterByPrice(double minPrice, double maxPrice)
+        {
+            return await _context.Accommodations
+                .Where(a => ((a.Price >= minPrice && a.Price <= maxPrice)))
+                .Select(accommodation => ToAccommodationOutputDto(accommodation))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<ICollection<AccommodationOutputDTO>> FilterByRate(double star)
+        {
+            return await _context.Accommodations
+                .Where(a => (a.Rating <= star*2.0 && a.Rating >= (star-1)*2.0))
+                .Select(accommodation => ToAccommodationOutputDto(accommodation))
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<PaginationDTO<AccommodationOutputDTO>> GetPaginatedAccommodationAsync(int pageNumber, int pageSize)
+        {
+            var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                      .OrderBy(a => a.Id)
+                                      .Skip(pageSize * (pageNumber - 1))
+                                      .Take(pageSize)
+                                      .Select(a => ToAccommodationOutputDto(a))
+                                      .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
         public async Task<Accommodation> CreateAccommodationAsync(AccommodationDTO accommodationDTO)
         {
             Accommodation accommodation = new()
@@ -67,7 +101,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 CompanyId = accommodationDTO.CompanyId,
                 Location = accommodationDTO.Location,
                 Governorate = accommodationDTO .Governorate,
-                Description = accommodationDTO .Description
+                Description = accommodationDTO .Description,
+                PropertyType = accommodationDTO.PropertyType
             };
             var fileResult = _imageService.SaveImage(accommodationDTO.ImagePath, _imagesPath);
 
@@ -108,6 +143,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
             accommodation.Description = accommodationDTO.Description;
             accommodation.Location = accommodationDTO.Location;
             accommodation.Governorate = accommodationDTO.Governorate;
+            accommodation.PropertyType = accommodationDTO.PropertyType;
 
             if (accommodationDTO.ImagePath is not null)
             {
@@ -164,7 +200,8 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
                 CompanyId = accommodation.CompanyId,
                 Location = accommodation.Location,
                 Governorate = accommodation.Governorate,
-                Description = accommodation.Description
+                Description = accommodation.Description,
+                PropertyType = accommodation.PropertyType
             };
 
             return accommodationOutputDTO;

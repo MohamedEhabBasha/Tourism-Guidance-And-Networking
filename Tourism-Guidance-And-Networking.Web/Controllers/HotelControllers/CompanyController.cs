@@ -86,7 +86,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             };
             return Ok(companyUser);
         }
+        [HttpGet("FilterCompanyByRate")]
+        public async Task<IActionResult> FilterCompanyByRate([FromQuery] double rate)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            return Ok(await _unitOfWork.Companies.FilterByRate(rate));
+        }
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateCompanyAsync([FromForm] CreateCompanyDTO companyDTO)

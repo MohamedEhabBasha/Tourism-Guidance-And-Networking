@@ -15,6 +15,7 @@ namespace Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs
         public string Location { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Governorate { get; set; } = string.Empty;
+        public string PropertyType {  get; set; } = string.Empty;
         public int Reviews { get; set; }
         [Required]
         public string Type { get; set; } = string.Empty;

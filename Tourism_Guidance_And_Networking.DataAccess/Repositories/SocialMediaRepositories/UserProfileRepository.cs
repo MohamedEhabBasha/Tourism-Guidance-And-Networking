@@ -125,6 +125,33 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
                 User = userDTO,
                 Friends = friends.ToList()
             };
+            var type = GetType(user.Id);
+
+            if (type == "hotel")
+            {
+                userProfileDTO.Type = type;
+                var h = await _context.Hotels.SingleAsync(h => h.ApplicationUserId == user.Id);
+                userProfileDTO.TypeId = h.Id;
+                string image;
+                if (h.Image.Contains("http"))
+                    image = h.Image;
+                else
+                    image = $"{FileSettings.RootPath}/{FileSettings.hotelImagesPath}/{h.Image}";
+
+                userProfileDTO.TypeImage = image;
+            }else if(type == "company")
+            {
+                userProfileDTO.Type = type;
+                var c = await _context.Companies.SingleAsync(c => c.ApplicationUserId == userId);
+                userProfileDTO.TypeId = c.Id;
+                string image;
+                if (c.Image.Contains("http"))
+                    image = c.Image;
+                else
+                    image = $"{FileSettings.RootPath}/{FileSettings.companyImagesPath}/{c.Image}";
+
+                userProfileDTO.TypeImage = image;
+            }
             return userProfileDTO;
         }        
         public async Task<bool> IsFriendAsync(string userId,string friendId)
@@ -212,5 +239,19 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.SocialMediaRep
             return await _context.Friends.SingleOrDefaultAsync(x => ((x.AppUserId == userId && x.AppFriendId == friendId) || (x.AppUserId == friendId && x.AppFriendId == userId)));
         }
         private string GetImageURL(string imageId) => $"{FileSettings.RootPath}/{_imagesPath}/{imageId}";
+
+        private string GetType(string id)
+        {
+            var h = _context.Hotels.SingleOrDefault(h => h.ApplicationUserId == id);
+
+            var c = _context.Companies.SingleOrDefault(c => c.ApplicationUserId == id);
+
+            if (h is not null)
+                return "hotel";
+            else if (c is not null)
+                return "company";
+            else
+                return "NULL";
+        }
 }
 }
