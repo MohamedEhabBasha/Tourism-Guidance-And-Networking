@@ -40,6 +40,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Data
         public DbSet<UserMatrix> UserMatrices { get; set; }
         public DbSet<RoomMapping> RoomMappings { get; set; }
         public DbSet<AccomdationMapping> AccomdationMappings { get; set; }
+        public DbSet<RecommendedItems> RecommendedItems { get; set; }
        
     }
 }

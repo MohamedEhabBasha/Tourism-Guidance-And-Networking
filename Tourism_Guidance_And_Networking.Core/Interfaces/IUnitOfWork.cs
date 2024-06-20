@@ -5,6 +5,7 @@ using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Interfaces.TouristPlacesInterfaces;
+using Tourism_Guidance_And_Networking.Core.Models.AI_Integration;
 
 namespace Tourism_Guidance_And_Networking.Core.Interfaces
 {
@@ -30,6 +31,7 @@ namespace Tourism_Guidance_And_Networking.Core.Interfaces
         public IUserMatrix UserMatrix { get; }
         public IRoomMappingRepository RoomMappings { get; }
         public IAccomdationMappingRepository AccomdationMappings { get; }
+        public IRecommendedItemsRepository RecommendedItems { get; }
         int Complete();
     }
 }

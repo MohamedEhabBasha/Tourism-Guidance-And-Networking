@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
+using Tourism_Guidance_And_Networking.Core.Helper;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
 
@@ -26,6 +28,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return Ok(accommodations);
         }
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAccommodationById(int id)
         {

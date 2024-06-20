@@ -5,6 +5,7 @@ using Tourism_Guidance_And_Networking.Core.Interfaces.Booking;
 using Tourism_Guidance_And_Networking.Core.Interfaces.HotelInterface;
 using Tourism_Guidance_And_Networking.Core.Interfaces.SocialMedia;
 using Tourism_Guidance_And_Networking.Core.Models;
+using Tourism_Guidance_And_Networking.Core.Models.AI_Integration;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.Ai_Integration;
 using Tourism_Guidance_And_Networking.DataAccess.Repositories.Booking;
@@ -36,6 +37,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
         public IUserMatrix UserMatrix { get; private set; }
         public IRoomMappingRepository RoomMappings { get; private set; }
         public IAccomdationMappingRepository AccomdationMappings { get; private set; }
+        public IRecommendedItemsRepository RecommendedItems { get; private set; }
         public UnitOfWork(ApplicationDbContext context ,IImageService imageService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -58,6 +60,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess
             UserMatrix = new UserMatrixRepository(_context);
             RoomMappings = new RoomMappingRepository(_context);
             AccomdationMappings = new AccomdationMappingRepository(_context);
+            RecommendedItems = new RecommendedItemsRepository(_context);
         }
 
         public int Complete()

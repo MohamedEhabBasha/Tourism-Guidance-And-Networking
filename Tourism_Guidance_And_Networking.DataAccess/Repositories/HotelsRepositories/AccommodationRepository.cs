@@ -24,6 +24,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
               .AsNoTracking()
               .ToListAsync();
         }
+
         public async Task<AccommodationOutputDTO> GetAccommodationByIdAsync(int accomId)
         {
             var accommodationDTO = await _context.Accommodations.SingleOrDefaultAsync(C => C.Id == accomId);
@@ -168,5 +169,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return accommodationOutputDTO;
         }
+
+        
     }
 }
