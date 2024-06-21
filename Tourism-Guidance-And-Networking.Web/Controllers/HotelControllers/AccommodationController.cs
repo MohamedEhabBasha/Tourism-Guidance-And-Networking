@@ -42,27 +42,25 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(accommDTO);
         }
         [HttpGet("accommodations/{companyId:int}")]
-        public async Task<IActionResult> GetAccommodationsByCompanyId(int companyId)
+        public async Task<IActionResult> GetAccommodationsByCompanyId(int companyId, [FromQuery] int pageNumber)
         {
             if (!_unitOfWork.Companies.Exist(companyId))
                 return NotFound();
 
-            var accommodations = await _unitOfWork.Accommodations.GetAccommodationsByCompanyIdAsync(companyId);
+            var accommodations = await _unitOfWork.Accommodations.GetAccommodationsByCompanyIdAsync(pageNumber, 200, companyId);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             return Ok(accommodations);
         }
-        [HttpGet("accommodationsByAccommodationType/{companyId:int}")]
-        public async Task<IActionResult> GetAccommodationsByAccommodationType(string type, int companyId)
+        [HttpGet("accommodationsByAccommodationType")]
+        public async Task<IActionResult> GetAccommodationsByAccommodationType([FromQuery] int pageNumber, [FromQuery]string type)
         {
-            if (!_unitOfWork.Companies.Exist(companyId))
-                return NotFound();
             if (!(await _unitOfWork.Accommodations.TypeExistAsync(type)))
                 return NotFound();
 
-            var accommodations = await _unitOfWork.Accommodations.GetAccommodationsByTypeAsync(type,companyId);
+            var accommodations = await _unitOfWork.Accommodations.GetAccommodationsByTypeAsync(pageNumber, 200, type);
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -70,20 +68,20 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             return Ok(accommodations);
         }
         [HttpGet("FilterAccommodationByPrice")]
-        public async Task<IActionResult> FilterAccommodationByPrice([FromQuery] double minPrice, [FromQuery] double maxPrice)
+        public async Task<IActionResult> FilterAccommodationByPrice([FromQuery] int pageNumber, [FromQuery] double minPrice, [FromQuery] double maxPrice)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(await _unitOfWork.Accommodations.FilterByPrice(minPrice,maxPrice));
+            return Ok(await _unitOfWork.Accommodations.FilterByPrice(pageNumber, 200, minPrice,maxPrice));
         }
         [HttpGet("FilterAccommodationByRate")]
-        public async Task<IActionResult> FilterAccommodationByRate([FromQuery] double star)
+        public async Task<IActionResult> FilterAccommodationByRate([FromQuery] int pageNumber, [FromQuery] double star)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(await _unitOfWork.Accommodations.FilterByRate(star));
+            return Ok(await _unitOfWork.Accommodations.FilterByRate(pageNumber, 200, star));
         }
         [HttpGet("PaginatedAccommodation")]
         public async Task<IActionResult> GetPaginatedAccommodation([FromQuery] int pageNumber)

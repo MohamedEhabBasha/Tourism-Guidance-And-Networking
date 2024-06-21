@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using System.Drawing.Printing;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Models.Hotels;
 
@@ -33,38 +34,82 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return accomm;
         }
-        public async Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int companyId)
+        public async Task<PaginationDTO<AccommodationOutputDTO>> GetAccommodationsByCompanyIdAsync(int pageNumber, int pageSize, int companyId)
         {
-            return await _context.Accommodations
-            .Where(c => c.CompanyId == companyId)
-            .Select(accommodation => ToAccommodationOutputDto(accommodation))
-            .AsNoTracking()
-            .ToListAsync();
+           var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                                .Where(c => c.CompanyId == companyId)
+                                                .OrderBy(a => a.Id)
+                                                .Skip(pageSize * (pageNumber - 1))
+                                                .Take(pageSize)
+                                                .Select(a => ToAccommodationOutputDto(a))
+                                                .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
-        public async Task<ICollection<AccommodationOutputDTO>> GetAccommodationsByTypeAsync(string type, int companyId)
+        public async Task<PaginationDTO<AccommodationOutputDTO>> GetAccommodationsByTypeAsync(int pageNumber, int pageSize, string type)
         {
-            return await _context.Accommodations
-                .Where(c => c.Type.Trim().ToLower().Contains(type) && c.CompanyId == companyId)
-                .Select(accommodation => ToAccommodationOutputDto(accommodation))
-                .AsNoTracking()
-                .ToListAsync();
+            var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                                .Where(c => c.Type.Trim().ToLower().Contains(type))
+                                                .OrderBy(a => a.Id)
+                                                .Skip(pageSize * (pageNumber - 1))
+                                                .Take(pageSize)
+                                                .Select(a => ToAccommodationOutputDto(a))
+                                                .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
-        public async Task<ICollection<AccommodationOutputDTO>> FilterByPrice(double minPrice, double maxPrice)
+        public async Task<PaginationDTO<AccommodationOutputDTO>> FilterByPrice(int pageNumber, int pageSize, double minPrice, double maxPrice)
         {
-            return await _context.Accommodations
-                .Where(a => ((a.Price >= minPrice && a.Price <= maxPrice)))
-                .Select(accommodation => ToAccommodationOutputDto(accommodation))
-                .AsNoTracking()
-                .ToListAsync();
+            var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                                .Where(a => ((a.Price >= minPrice && a.Price <= maxPrice)))
+                                                .OrderBy(a => a.Id)
+                                                .Skip(pageSize * (pageNumber - 1))
+                                                .Take(pageSize)
+                                                .Select(a => ToAccommodationOutputDto(a))
+                                                .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
-        public async Task<ICollection<AccommodationOutputDTO>> FilterByRate(double star)
+        public async Task<PaginationDTO<AccommodationOutputDTO>> FilterByRate(int pageNumber,int pageSize, double star)
         {
-            return await _context.Accommodations
-                .Where(a => (a.Rating <= star*2.0 && a.Rating >= (star-1)*2.0))
-                .Select(accommodation => ToAccommodationOutputDto(accommodation))
-                .AsNoTracking()
-                .ToListAsync();
+            var totalCount = await _context.Accommodations.CountAsync();
+            List<AccommodationOutputDTO> items = await _context.Accommodations
+                                                .Where(a => (a.Rating <= star * 2.0 && a.Rating >= (star - 1) * 2.0))
+                                                .OrderBy(a => a.Id)
+                                                .Skip(pageSize * (pageNumber - 1))
+                                                .Take(pageSize)
+                                                .Select(a => ToAccommodationOutputDto(a))
+                                                .ToListAsync();
+
+            return new PaginationDTO<AccommodationOutputDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
         public async Task<PaginationDTO<AccommodationOutputDTO>> GetPaginatedAccommodationAsync(int pageNumber, int pageSize)
         {
