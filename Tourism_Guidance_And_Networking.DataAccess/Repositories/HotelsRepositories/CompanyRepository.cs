@@ -11,12 +11,11 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
     {
         private new readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
-        private readonly string _imagesPath;
+        private readonly static string _imagesPath = FileSettings.companyImagesPath;
         public CompanyRepository(ApplicationDbContext context, IImageService imageService) : base(context)
         {
             _context = context;
             _imageService = imageService;
-            _imagesPath = FileSettings.companyImagesPath;
         }
         public async Task<ICollection<CompanyOutputDTO>> GetAllCompaniesAsync()
         {
@@ -116,7 +115,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return true;
         }
-        private CompanyOutputDTO ToCompanyOutputDto(Company company)
+        private static CompanyOutputDTO ToCompanyOutputDto(Company company)
         {
             CompanyOutputDTO companyOutputDTO = new()
             {
