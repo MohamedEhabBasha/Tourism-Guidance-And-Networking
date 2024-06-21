@@ -157,7 +157,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     registerModel.Password = "Hotel@2001";
                     registerModel.ConfirmPassword = "Hotel@2001";
 
-                   var result = await _authService.RegisterAsync(registerModel, Roles.Hotel);
+                    var result = await _authService.RegisterAsync(registerModel, Roles.Hotel);
 
                     if (!result.IsAuthenticated)
                         return BadRequest(result.Message);
@@ -173,14 +173,14 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         rating = double.Parse(propertyData.rating[$"{i}"]);
 
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
-                        numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);    
+                        numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
                     Hotel hotel = new()
                     {
                         Name = propertyData.Name[$"{i}"],
                         Address = propertyData.address[$"{i}"],
                         Rating = rating,
-                        Image= propertyData.img[$"{i}"].Replace(@"\/", "/"),
+                        Image = propertyData.img[$"{i}"].Replace(@"\/", "/"),
                         Reviews = numOfReviews,
                         ApplicationUserId = result.UserId,
                         Location = propertyData.location[$"{i}"],
@@ -190,7 +190,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Hotel myHotel = await _unitOfWork.Hotels.AddAsync(hotel);
                     _unitOfWork.Complete();
                     Hotels.Add(myHotel);
-                   
+
                 }
             }
             return Ok(Hotels.Count);
@@ -243,7 +243,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                    
+
 
                     var hotel = await _unitOfWork.Hotels.FindAsync(h => h.Name == propertyData.Name[$"{i}"]);
 
@@ -254,17 +254,17 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     {
                         Type = propertyData.type[$"{i}"],
                         Price = int.Parse(propertyData.price[$"{i}"]),
-                        Taxes= int.Parse(propertyData.taxes_and_charges[$"{i}"]),
+                        Taxes = int.Parse(propertyData.taxes_and_charges[$"{i}"]),
                         Info = propertyData.info[$"{i}"],
                         Description = propertyData.description[$"{i}"],
                         Image = propertyData.img[$"{i}"].Replace(@"\/", "/"),
                         Capicity = int.Parse(propertyData.num_adults[$"{i}"]),
-                        Count = random.Next(5,15),
+                        Count = random.Next(5, 15),
                         CountOfReserved = 0,
                         HotelId = hotel.Id
                     };
 
-                    Room roomDb =  await _unitOfWork.Rooms.AddAsync(room);
+                    Room roomDb = await _unitOfWork.Rooms.AddAsync(room);
                     _unitOfWork.Complete();
                     RoomMapping roomMapping = new()
                     {
@@ -326,7 +326,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     if (propertyData.number_of_reviews[$"{i}"] is not null)
                         numOfReviews = ExtractNumberFromString(propertyData.number_of_reviews[$"{i}"]);
 
-                   
+
 
                     Accommodation accomdation = new Accommodation()
                     {
@@ -386,8 +386,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                 new Category
                 {
                     Name="Religional"
-                }, 
-                
+                },
+
             };
 
             foreach (var item in Categories)
@@ -752,7 +752,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Image = "https://media2.thrillophilia.com/images/photos/000/367/652/original/1614249727_shutterstock_774137044.jpg?w=753&h=450&dpr=1.0",
                     CategoryId = naturalId,
                 },
-                
+
                 new TouristPlace
                 {
                     Name="Fjord Bay",
@@ -760,7 +760,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Image = "https://media2.thrillophilia.com/images/photos/000/367/655/original/1614249968_shutterstock_571874752.jpg?w=753&h=450&dpr=1.0",
                     CategoryId = naturalId,
                 },
-                
+
                 new TouristPlace
                 {
                     Name="Fortress of Shali in Siwa Oasis",
@@ -768,7 +768,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                     Image = "https://media2.thrillophilia.com/images/photos/000/367/657/original/1614250125_shutterstock_778951327.jpg?w=753&h=450&dpr=1.0",
                     CategoryId = naturalId,
                 },
-                
+
                 new TouristPlace
                 {
                     Name="Philae Island",
@@ -793,6 +793,129 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
 
             return Ok(TouristPlaces);
         }
+        [HttpGet("SeedingTouristPlaces2")]
+        public async Task<IActionResult> SeedingTouristPlaces2()
+        {
+            var natural = await _unitOfWork.Categories.FindAsync(c => c.Name == "Natural Attractions");
+            int naturalId = natural.Id;
+
+            var Cultural = await _unitOfWork.Categories.FindAsync(c => c.Name == "Cultural and Historical Sites");
+            int CulturalId = Cultural.Id;
+
+            var Entertainment = await _unitOfWork.Categories.FindAsync(c => c.Name == "Entertainment");
+            int EntertainmentId = Entertainment.Id;
+
+            var Religional = await _unitOfWork.Categories.FindAsync(c => c.Name == "Religional");
+            int ReligionalId = Religional.Id;
+            List<TouristPlace> TouristPlaces = new()
+            {
+                new TouristPlace
+                {
+                    Name="Al-Sayeda_Nafeesah_Mosque",
+                    Description = "The al-Sayyida Nafisa Mosque is a mosque in al-Sayyida Nafisa district, a section of the larger historic necropolis called al-Qarafa in Cairo, Egypt. It is built to commemorate Sayyida Nafisa, an Islamic saint and member of the family of the Islamic prophet Muhammad\r\n",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/a/a0/%D9%85%D8%B3%D8%AC%D8%AF_%D8%A7%D9%84%D8%B3%D9%8A%D8%AF%D8%A9_%D9%86%D9%81%D9%8A%D8%B3%D8%A9.jpg",
+                    CategoryId = ReligionalId,
+                },
+                new TouristPlace
+                {
+                    Name = "Al-Sayeda_Zainab_Mosque",
+                    Description = "Al-Sayeda Zainab Mosque is a historic mosque in Cairo, Egypt, and constitutes one of the most important and biggest mosques in the history of Egypt.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/4/4d/Mosque_Seyideh-Zeninab_%28n.d.%29_-_front_-_TIMEA.jpg",
+                    CategoryId= ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Al-Salih_Tala'i_Mosque",
+                    Description = "The Mosque of al-Salih Tala'i is a late Fatimid-era mosque built by the vizier Tala'i ibn Ruzzik in 1160. It is located south of Bab Zuweila, just outside the southern entrance to the old walled city of Cairo.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/0/0d/Cairo%2C_moschea_di_as-salih_talai%2C_cortile_05.JPG",
+                    CategoryId= ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Deir_el-Muharraq",
+                    Description = "The Monastery of Virgin Mary in Koskam or Deir el-Muharraq, also known as the Muharraq Monastery, Virgin Mary monastery and Mount Koskam Monastery, is a monastic complex of the Coptic Orthodox Church of Alexandria in Egypt.",
+                    Image = "http://upload.wikimedia.org/wikipedia/commons/1/19/DeirMuharraqGeneralGate.jpg",
+                    CategoryId= ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Fatima_Khatun_Mosque",
+                    Description = "The Fatima Khatun Mosque, also known as the Great Mosque of Jenin, is the main mosque of the Palestinian city of Jenin in the northern West Bank, in Palestine. Adjacent to the mosque is the still-active Fatima Khatun Girls' School.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/4/41/Great_Mosque_of_Jenin3.jpg",
+                    CategoryId= ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Islamic_Cairo",
+                    Description = "Islamic Cairo (Arabic: قاهرة المعز, romanized: Qāhira al-Muʿizz, lit. 'Al-Mu'izz's Cairo'), or Medieval Cairo, officially Historic Cairo (القاهرة التاريخية al-Qāhira tārīkhiyya), refers mostly to the areas of Cairo, Egypt, that were built from the Muslim conquest in 641 CE until the city's modern expansion in the 19th century during Khedive Ismail's rule, namely: the central parts within the old walled city, the historic cemeteries, the area around the Citadel of Cairo, parts of Bulaq, and Old Cairo (Arabic: مصر القديمة, lit. 'Misr al-Qadima') which dates back to Roman times and includes major Coptic Christian monuments",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Islamic_Cairo115.jpg",
+                    CategoryId = ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Khayrbak_Mosque",
+                    Description = "Amir Khayrbak Funerary Complex, Mosque-Madrasa of Al-Amir Khair Bak or Khayrbak Mosque is a religious complex at Bab al-Wazir street, Islamic Cairo, Egypt. It originally consisted of a mausoleum established by the Ottoman governor of Egypt Khayr Bak in 1502 CE.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/6/6a/Blue_Mosque_%28n.d.%29_-_front_-_TIMEA.jpg",
+                    CategoryId = ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name= "Museum_of_Islamic_Art,_Cairo",
+                    Description = "The Museum of Islamic Art in Cairo, Egypt is considered one of the greatest museums in the world, with its exceptional collection of rare woodwork and plaster artefacts, as well as metal, ceramic, glass, crystal, and textile objects of all periods, from all over the Islamic world.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/d/da/GD-EG-Caire-Mus%C3%A9eIslam001.JPG",
+                    CategoryId= ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "White_Monastery",
+                    Description = "The Coptic White Monastery, also The Monastery of Abba Shenouda and The Athribian Monastery is a Coptic Orthodox monastery named after Saint Shenouda the Archimandrite. It is located near the Upper Egyptian cities of Tahta and Sohag, and about two and a half miles south-east of the Red Monastery. ",
+                    Image = "http://upload.wikimedia.org/wikipedia/commons/8/8a/WhiteMonasteryNorthernApse.jpg",
+                    CategoryId = ReligionalId
+                },
+                new TouristPlace
+                {
+                    Name = "Dream_Park",
+                    Description = "Busy theme park with roller coasters, a ferris wheel & other rides, plus whimsical games & cafes.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/1/17/Dream_park_2.JPG",
+                    CategoryId= EntertainmentId
+                },
+                new TouristPlace
+                {
+                    Name = "Giza_Zoo",
+                    Description = "The Giza Zoo is a zoological garden in Giza, Egypt. It is one of the few green areas in the city, and includes Giza's largest park. The zoo covers about 80 acres, and is home to many endangered species, as well as a selection of endemic fauna.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Giza_Zoo_by_Hatem_Moushir_24.JPG",
+                    CategoryId = EntertainmentId
+                },
+                new TouristPlace
+                {
+                    Name = "El_Alamein_Military_Museum",
+                    Description = "It recites the major events of Al-Alamein battle and the role of the participating forces. It is divided into 3 parts, which are the open-air showground, the permanent display showroom, and the temporary display showroom.",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/1/1c/El_Alamein_Military_Museum_5.jpg",
+                    CategoryId = EntertainmentId
+                },
+                new TouristPlace
+                {
+                    Name = "Nabq_Protected_Area",
+                    Description = "NABQ Protected Area (NPA) is a 600 km2 (230 sq mi) protected area located in the Egypt,[2] South Sinai Governorate. It was established by the Prime Ministerial Decree no.1511/1992 and was extended by Decree 33/1996 where Dahab marine section was added to the protected area as a Dahab Environmentally Managed Area DEMA and finally having NABQ Managed Resource Protected Area which is known shortly as (NMRPA).",
+                    Image = "https://upload.wikimedia.org/wikipedia/commons/7/78/NabqMangroves.jpg",
+                    CategoryId= naturalId
+                },
+                new TouristPlace
+                {
+                    Name = "New_Kalabsha",
+                    Description = "New Kalabsha is a promontory located near the western end of the High Dam a few kilometres south of Aswan. It houses several temples and other structures that have been relocated here from the ancient city of Talmis (later known as Kalabsha) and other sites in Lower Nubia, to avoid the rising waters of Lake Nasser caused by the construction of the Aswan High Dam in the 1960s.\r\n\r\n",
+                    Image = "http://upload.wikimedia.org/wikipedia/commons/a/a1/Assuan-Hochdamm_06.jpg",
+                    CategoryId = naturalId
+                }
+            };
+            foreach (var item in TouristPlaces)
+            {
+                await _unitOfWork.TouristPlaces.AddAsync(item);
+            }
+            _unitOfWork.Complete();
+            return Ok(TouristPlaces);
+        }
+
         [HttpGet("SeedingRecommendedItems")]
         public async Task<IActionResult> SeedingRecommendedItems()
         {
@@ -827,8 +950,6 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             }
             return Ok(usersData);
         }
-
-
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
         {
             var cookieOptions = new CookieOptions()
