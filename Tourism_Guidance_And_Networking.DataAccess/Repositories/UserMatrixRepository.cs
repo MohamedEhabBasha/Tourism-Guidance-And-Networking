@@ -12,30 +12,34 @@ public class UserMatrixRepository : BaseRepository<UserMatrix>, IUserMatrix
         List<UserMatrix> userMatrixList = new()
         {
             // user1 --> 60728638-96b8-4576-ac14-da785002ee04 (High rating, Low Price, Apartment or Villa)
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(0),"VIEW BOOK"),//10, 2761
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(43),"VIEW"),//10, 13905
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(41),"VIEW"),//7, 15450
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(94),"LIKE"),         // 8553
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(1581),"VIEW BOOK"),  // 8.4 , 1911
+            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(217),"LIKE"),//10, 2761
+            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(212),"SAVE"),//10, 13905
+            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(201),"VIEW"),//7, 15450
 
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(1578),"SAVE"),       // 8.5,  3808
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(1552),"VIEW BOOK"),  // 8.6, 3708
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(1520),"BOOK"),       // 8.8, 2781
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(155),"LIKE"),        // 4635
-            CreateUserMatrix("60728638-96b8-4576-ac14-da785002ee04",ScaleItemId(198),"SAVE"),        // 8.9 6489
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1045),"VIEW BOOK"),         // 8553
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1050),"LIKE"),  // 8.4 , 1911
+
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1437),"VIEW BOOK"),       // 8.5,  3808
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2001),"BOOK"),  // 8.6, 3708
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2446),"VIEW BOOK"),       // 8.8, 2781
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2693),"SAVE"),        // 4635
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2700),"VIEW"),        // 8.9 6489
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2852),"VIEW BOOK"),        // 8.9 6489
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2958),"LIKE"),        // 8.9 6489
+            CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(3039),"SAVE"),        // 8.9 6489
 
             //User 2 --> 60728638-96c8-4576-ac14-da785002ee04 (High rating, Any Price, Hotel)
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1437),"VIEW BOOK"),     //9.4, 3980, Hurghada 
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2700),"VIEW"),     //10, Cairo
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(3039),"SAVE"),     // 8.8, Hur
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2958),"LIKE"),     //7.1, hur
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2852),"VIEW BOOK"),     //9.4, hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1437),"VIEW BOOK"),     //9.4, 3980, Hurghada 
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2700),"VIEW"),     //10, Cairo
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(3039),"SAVE"),     // 8.8, Hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2958),"LIKE"),     //7.1, hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2852),"VIEW BOOK"),     //9.4, hur
 
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1045),"VIEW BOOK"),         //9.4, hur
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1050),"LIKE"),         // 8.6, port
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2693),"SAVE"),    //8.6,port
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2446),"VIEW BOOK"),    //9.4,hur
-             CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2001),"BOOK"),         //10, hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1045),"VIEW BOOK"),         //9.4, hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(1050),"LIKE"),         // 8.6, port
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2693),"SAVE"),    //8.6,port
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2446),"VIEW BOOK"),    //9.4,hur
+             //CreateUserMatrix("60728638-96c8-4576-ac14-da785002ee04",ScaleItemId(2001),"BOOK"),         //10, hur
 
              //User 3 --> 60728638-96d8-4576-ac14-da785002ee04 (Luxor and aswan)
              CreateUserMatrix("60728638-96d8-4576-ac14-da785002ee04",ScaleItemId(2010),"LIKE"),
