@@ -116,7 +116,7 @@ namespace Tourism_Guidance_And_Networking.DataAccess.Repositories.HotelsReposito
 
             return true;
         }
-        private CompanyOutputDTO ToCompanyOutputDto(Company company)
+        private  CompanyOutputDTO ToCompanyOutputDto(Company company)
         {
             CompanyOutputDTO companyOutputDTO = new()
             {

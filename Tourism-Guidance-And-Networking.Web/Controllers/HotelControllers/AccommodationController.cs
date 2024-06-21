@@ -266,5 +266,41 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return Ok("Deleted Successfully");
         }
+
+        [HttpDelete("Deleteall")]
+        public async Task<IActionResult> DeleteAccommodations()
+        {
+            
+
+           var accomdations = await _unitOfWork.Accommodations.GetAllAsync();
+
+           _unitOfWork.Accommodations.DeleteRange(accomdations);
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Deleted Successfully");
+        }
+
+        [HttpDelete("Deleteallmapping")]
+        public async Task<IActionResult> DeleteMappings()
+        {
+
+
+            var accomdations = await _unitOfWork.AccomdationMappings.GetAllAsync();
+
+            _unitOfWork.AccomdationMappings.DeleteRange(accomdations);
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Deleted Successfully");
+        }
     }
 }

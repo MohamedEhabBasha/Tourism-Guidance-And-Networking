@@ -14,7 +14,6 @@ namespace Tourism_Guidance_And_Networking.Core.Models.Hotels
         public string Governorate { get; set; } = string.Empty;
         public string PropertyType {  get; set; } = string.Empty;
         public double Rating { get; set; }
-
         public int Reviews { get; set; }
         [Required]
         public string Type { get; set; } = string.Empty;

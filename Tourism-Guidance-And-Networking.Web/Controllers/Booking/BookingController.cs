@@ -224,14 +224,10 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
         public async Task<IActionResult> StartProcessing(int bookingId)
         {
             var bookingDb = await _unitOfWork.BookingHeaders.GetByIdAsync(bookingId);
-
             if(bookingDb == null)
                 return NotFound();
-
             if((bookingDb.BookingStatus!=BookingStatus.Approved))
                 return BadRequest("Booking is not approved yet!, you must make payment first");
-
-
             await _unitOfWork.BookingHeaders.UpdateStatus(bookingId, BookingStatus.InProcess);
 
             if (!ModelState.IsValid)
@@ -255,10 +251,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
         public async Task<IActionResult> CompleteBooking(int bookingId)
         {
             var bookingDb = await _unitOfWork.BookingHeaders.GetByIdAsync(bookingId);
-
             if (bookingDb == null)
                 return NotFound();
-
             if ((bookingDb.BookingStatus != BookingStatus.InProcess))
                 return BadRequest("Booking is not inprocessing yet!, Admin must process the booking first");
 
@@ -330,6 +324,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
 
 
         [HttpPost("MakeBooking")]
+        [Authorize]
         public async Task<IActionResult> MakeBooking([FromQuery]string successUrl, [FromQuery] string cancelUrl)
         {
 
@@ -499,6 +494,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.Booking
             };
             return Ok(summaryResultDTO);
         }
+
+
+
 
         [HttpPost("BookingConfirmation/{id:int}")]
         public async Task<IActionResult> BookingConfirmation(int id)

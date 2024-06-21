@@ -89,6 +89,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
             var hotelDto = await _unitOfWork.Hotels.GetHotelByNameAsync(name);
             return Ok(hotelDto);
         }
+
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> CreateHotel([FromForm] CreateHotelDto hotelDTO)
@@ -151,6 +152,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.HotelControllers
 
             return StatusCode(201, createHotelResultDTO);
         }
+
 
         [HttpPost("MakeReview")]
         [Authorize]

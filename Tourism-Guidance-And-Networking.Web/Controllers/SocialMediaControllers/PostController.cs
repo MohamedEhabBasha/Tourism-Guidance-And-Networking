@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using System.Runtime.InteropServices;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
@@ -90,7 +91,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return Ok(await _unitOfWork.Posts.SearchPostsByName(name));
         }
+
         [HttpPost("CreatePost")]
+        [Authorize]
         public async Task<IActionResult> CreatePost([FromForm] PostInputDTO postDTO) 
         {
             if (postDTO == null)
@@ -116,6 +119,9 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers.SocialMediaControllers
 
             return StatusCode(201, post);
         }
+
+
+
         [HttpPut("UpdatePost/{id}")]
         public IActionResult UpdatePost(int id,[FromForm] PostInputDTO postDTO)
         {

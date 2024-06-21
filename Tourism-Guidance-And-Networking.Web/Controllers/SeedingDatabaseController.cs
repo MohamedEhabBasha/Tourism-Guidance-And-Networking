@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using Tourism_Guidance_And_Networking.Core.Consts;
 using Tourism_Guidance_And_Networking.Core.DTOs.HotelDTOs;
 using Tourism_Guidance_And_Networking.Core.Helper;
@@ -283,7 +284,7 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
         public async Task<IActionResult> Accommdations()
         {// Path to your JSON file
          // Path to your JSON file
-            string filePath = "D:\\Visual studio setup\\TourismGaudinceProject\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
+            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\stays.json";
 
             // Read the JSON file asynchronously
             string jsonData;
@@ -344,7 +345,8 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
                         Capicity = int.Parse(propertyData.num_adults[$"{i}"]),
                         Count = random.Next(5, 15),
                         CountOfReserved = 0,
-                        CompanyId = 3 // To Be Changed 
+                        CompanyId = 1, // To Be Changed 
+                        PropertyType = propertyData.property_type[$"{i}"]
                     };
 
                     Accommodation accomdationDb = await _unitOfWork.Accommodations.AddAsync(accomdation);
@@ -790,6 +792,40 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             _unitOfWork.Complete();
 
             return Ok(TouristPlaces);
+        }
+        [HttpGet("SeedingRecommendedItems")]
+        public async Task<IActionResult> SeedingRecommendedItems()
+        {
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userName = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var applicationUser = await _unitOfWork.ApplicationUsers.GetApplicationUserByUserName(userName);
+
+            // Path to your JSON file
+            string filePath = "D:\\University\\Graduation-Project\\Phase1\\Tourism-Guidance-And-Networking\\Tourism-Guidance-And-Networking.Web\\wwwroot\\Data\\users.json";
+
+            // Read the JSON file asynchronously
+            string jsonData;
+            using (var reader = new StreamReader(filePath))
+            {
+                jsonData = await reader.ReadToEndAsync();
+            }
+            // Deserialize the JSON data into the PropertyData class
+            IEnumerable<UserData> usersData = JsonConvert.DeserializeObject<IEnumerable<UserData>>(jsonData);
+
+            foreach (var userData in usersData)
+            {
+                RecommendedItems recommendedItem = new()
+                {
+                    UserId = userData.user_id,
+                    ItemId = userData.ContentId
+                };
+
+
+                await _unitOfWork.RecommendedItems.AddAsync(recommendedItem);
+                _unitOfWork.Complete();
+            }
+            return Ok(usersData);
         }
 
 
