@@ -950,6 +950,25 @@ namespace Tourism_Guidance_And_Networking.Web.Controllers
             }
             return Ok(usersData);
         }
+
+
+
+        [HttpDelete("DeleteallRecommenedItems")]
+        public async Task<IActionResult> DeleteMappings()
+        {
+
+            var accomdations = await _unitOfWork.RecommendedItems.GetAllAsync();
+
+            _unitOfWork.RecommendedItems.DeleteRange(accomdations);
+
+            if (!(_unitOfWork.Complete() > 0))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Deleted Successfully");
+        }
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
         {
             var cookieOptions = new CookieOptions()

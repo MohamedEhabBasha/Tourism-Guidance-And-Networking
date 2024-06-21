@@ -38,4 +38,22 @@ public class UserMatrixController : ControllerBase
 
         return Ok("Added Successfully");
     }
+
+    [HttpDelete("DeleteallInteractions")]
+    public async Task<IActionResult> DeleteMappings()
+    {
+
+
+        var accomdations = await _unitOfWork.UserMatrix.GetAllAsync();
+
+        _unitOfWork.UserMatrix.DeleteRange(accomdations);
+
+        if (!(_unitOfWork.Complete() > 0))
+        {
+            ModelState.AddModelError("", "Something went wrong while saving");
+            return StatusCode(500, ModelState);
+        }
+
+        return Ok("Deleted Successfully");
+    }
 }
