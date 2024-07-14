@@ -1,41 +1,68 @@
-# Tourism-Guidance-And-Networking
+# 🌍 Tourism-Guidance-And-Networking Platform
 
 <p align="center">
 <a href="https://git.io/typing-svg"><img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=C2850F&center=true&vCenter=true&random=false&width=600&height=100&lines=Welcome+to+the+Home+of+Tourists!;Step+into+our+world+of+travel+and+exploration!" alt="Typing SVG" /></a>
 </p>
 
-## Overview
+A comprehensive platform facilitating direct interactions between service providers and tourists, incorporating robust social features and online booking. The platform aggregates Egypt's attractions for easy exploration and offers personalized pages for providers to share posts and interact with tourists.
 
-<p>This website is designed to facilitate interactions between tourism service providers (hotels, apartment owners, etc.) and tourists. Service providers can create accounts and showcase their offerings through personalized pages. Tourists can explore these pages, interact with providers, and even book services directly through the platform.</p>
+---
 
-* 🖥️  See Project APIs at [Project Swagger UI](https://antonsamoel14.bsite.net/swagger/index.html)
+## 🚀 Features
 
-## Features
+- **User Authentication:** Secure login and registration for all users.
+- **Attraction Aggregation:** Explore Egypt's attractions easily.
+- **Personalized Pages:** Service providers can share posts and interact with tourists.
+- **Social Features:** Tourists can interact, comment, and engage in online chat with providers.
+- **Online Booking:** Seamlessly book services such as hotel rooms and accommodations.
+- **Real-time Communication:** Powered by SignalR for live chat functionalities.
 
-* <p>Collect all attraction places in Egypt, and make it easy to search.</p>
+---
 
-* <p>Filter attraction places according to tourists' needs.</p>
+## 🛠️ Technologies Used
 
-* <p>Tourism service providers can easily create accounts to establish their presence on the platform.</p>
+- **Framework:** .NET Core API
+- **Database:** SQL Server
+- **Real-time Communication:** SignalR
+- **Languages:** C#, HTML, CSS, JavaScript
+- **Tools:** Visual Studio, Visual Studio Code
 
-* <p>Each provider gets a dedicated page where they can share posts, photos, and information about their services.</p>
+---
 
-* <p>Tourists can search for specific hotels or apartments based on location, amenities, and other criteria.</p>
+## 👥 User Roles
 
-* <p>Tourists can chat directly with service providers to inquire about services, amenities, and booking details, and with other tourists.</p>
+### Service Providers
+- Share posts and interact with tourists.
+- Offer personalized pages for their services.
+- Manage bookings and respond to inquiries.
 
-* <p>Users can seamlessly book services through the platform and make payments securely.</p>
+### Tourists
+- Explore attractions and interact with service providers.
+- Comment on posts and engage in live chats.
+- Book services directly through the platform.
 
-* <p>Secure login and authentication for both service providers and tourists ensure a safe and personalized experience.</p>
+---
 
-* <p>The platform is designed to be accessible and user-friendly across various devices and screen sizes.</p>
- 
-## Build with
+## 🔒 Authentication
 
-<div align="center">
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/121405384-444d7300-c95d-11eb-959f-913020d3bf90.png" alt="C#" title="C#"/></code>
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/121405754-b4f48f80-c95d-11eb-8893-fc325bde617f.png" alt=".NET Core" title=".NET Core"/></code>
-	<code><img width="50" src="https://github.com/marwin1991/profile-technology-icons/assets/19180175/3b371807-db7c-45b4-8720-c0cfc901680a" alt="MSSQL" title="MSSQL"/></code>
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/192109061-e138ca71-337c-4019-8d42-4792fdaa7128.png" alt="Postman" title="Postman"/></code>
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/186711335-a3729606-5a78-4496-9a36-06efcc74f800.png" alt="Swagger" title="Swagger"/></code>
-</div>
+- **Register:** Create a new account for service providers or tourists.
+- **Login:** Secure login for all user roles.
+- **Authorization:** Role-based access control to ensure proper permissions.
+
+---
+
+## 🏨 Online Booking
+
+- **Service Booking:** Easily book services such as hotel rooms or accommodations.
+- **Real-time Communication:** Live chat with service providers for inquiries and bookings.
+
+---
+
+## 🛠️ Setup and Installation
+
+### Prerequisites
+
+- Visual Studio 2019 or later
+- SQL Server 2019 or later
+- .NET Core SDK
+
